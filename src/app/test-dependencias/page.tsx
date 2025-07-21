@@ -96,11 +96,7 @@ const TestDependenciasPage: React.FC = () => {
       placeholder: 'Código único de la dependencia (ej: DEP-001)',
       helperText: 'Código único identificador de la dependencia',
       validation: {
-        ...commonValidationRules.required,
-        pattern: {
-          value: /^[A-Z0-9-]+$/,
-          message: 'El código debe contener solo letras mayúsculas, números y guiones',
-        },
+        ...commonValidationRules.codigo,
       },
     },
     {
@@ -109,7 +105,7 @@ const TestDependenciasPage: React.FC = () => {
       type: 'text',
       required: true,
       placeholder: 'Nombre de la dependencia',
-      validation: commonValidationRules.required,
+      validation: commonValidationRules.name,
     },
     {
       name: 'descripcion',

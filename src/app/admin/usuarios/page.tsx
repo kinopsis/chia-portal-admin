@@ -123,18 +123,18 @@ function UsuariosPage() {
   // Validation schema for user forms
   const validationSchema = {
     nombre: {
-      required: 'El nombre es obligatorio',
       ...commonValidationRules.name,
+      required: 'El nombre es obligatorio',
     },
     email: {
-      required: 'El correo electrónico es obligatorio',
       ...commonValidationRules.email,
+      required: 'El correo electrónico es obligatorio',
     },
     password: editingUser
       ? {}
       : {
-          required: 'La contraseña es obligatoria',
           ...commonValidationRules.password,
+          required: 'La contraseña es obligatoria',
         },
     rol: {
       required: 'Debe seleccionar un rol',

@@ -119,11 +119,7 @@ const TestSubdependenciasPage: React.FC = () => {
       placeholder: 'Código único de la subdependencia (ej: SUB-001)',
       helperText: 'Código único identificador de la subdependencia',
       validation: {
-        ...commonValidationRules.required,
-        pattern: {
-          value: /^[A-Z0-9-]+$/,
-          message: 'El código debe contener solo letras mayúsculas, números y guiones',
-        },
+        ...commonValidationRules.codigo,
       },
     },
     {
@@ -132,7 +128,7 @@ const TestSubdependenciasPage: React.FC = () => {
       type: 'text',
       required: true,
       placeholder: 'Nombre de la subdependencia',
-      validation: commonValidationRules.required,
+      validation: commonValidationRules.name,
     },
     {
       name: 'descripcion',
