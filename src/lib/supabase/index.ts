@@ -1,0 +1,52 @@
+// Supabase exports for easy importing
+
+export { default as supabase } from './client'
+// export { createClient, createServiceRoleClient } from './server'
+export { updateSession } from './middleware'
+
+// Re-export Supabase types for convenience
+export type {
+  User,
+  Session,
+  AuthError,
+  AuthResponse,
+  AuthTokenResponse,
+  UserResponse,
+  WeakPassword,
+  AuthOtpResponse,
+  AuthTokenResponsePassword,
+  AuthChangePasswordRequest,
+  AuthUpdateUserRequest,
+  AuthSignInWithPasswordRequest,
+  AuthSignUpWithPasswordRequest,
+  AuthResetPasswordForEmailRequest,
+  AuthConfirmRequest,
+  AuthResendRequest,
+  AuthVerifyOtpRequest,
+  AuthSignInWithOAuthRequest,
+  AuthSignInWithIdTokenRequest,
+  AuthSignInWithSSO,
+  AuthSignInAnonymouslyRequest,
+  AuthExchangeCodeForSessionRequest,
+  AuthMfaEnrollRequest,
+  AuthMfaChallengeRequest,
+  AuthMfaVerifyRequest,
+  AuthMfaUnenrollRequest,
+  AuthMfaAdminDeleteFactorRequest,
+  AuthMfaAdminListFactorsRequest,
+  AuthAdminUserResponse,
+  AuthAdminDeleteUserRequest,
+  AuthAdminCreateUserRequest,
+  AuthAdminUpdateUserRequest,
+  AuthAdminInviteUserRequest,
+  AuthAdminGenerateLinkRequest,
+  AuthAdminListUsersRequest,
+  AuthAdminGetUserRequest,
+  AuthAdminDeleteUserResponse,
+  AuthAdminCreateUserResponse,
+  AuthAdminUpdateUserResponse,
+  AuthAdminInviteUserResponse,
+  AuthAdminGenerateLinkResponse,
+  AuthAdminListUsersResponse,
+  AuthAdminGetUserResponse,
+} from '@supabase/supabase-js'

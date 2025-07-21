@@ -1,0 +1,94 @@
+# Configuración de Coolify para Portal de Atención Ciudadana de Chía
+# Archivo de configuración para despliegue automatizado
+
+version: '1.0'
+
+# Información del proyecto
+project:
+  name: "chia-portal-admin"
+  description: "Portal de Atención Ciudadana de Chía - Sistema municipal con IA integrada"
+  
+# Configuración de build
+build:
+  # Comando de instalación de dependencias
+  install: "npm ci"
+  
+  # Comando de construcción
+  build: "npm run build"
+  
+  # Comando de inicio
+  start: "npm start"
+  
+  # Directorio de salida (para Next.js standalone)
+  output: ".next"
+  
+  # Variables de entorno requeridas para build
+  build_args:
+    - NEXT_PUBLIC_SUPABASE_URL
+    - NEXT_PUBLIC_SUPABASE_ANON_KEY
+    - APP_ENV
+
+# Configuración del contenedor
+container:
+  # Puerto interno de la aplicación
+  port: 3000
+  
+  # Health check endpoint
+  health_check: "/api/health"
+  
+  # Timeout para health check
+  health_timeout: 30
+  
+  # Recursos del contenedor
+  resources:
+    memory: "1Gi"
+    cpu: "500m"
+
+# Variables de entorno requeridas
+environment:
+  # Supabase (REQUERIDO)
+  - NEXT_PUBLIC_SUPABASE_URL
+  - NEXT_PUBLIC_SUPABASE_ANON_KEY
+  - SUPABASE_SERVICE_ROLE_KEY
+  
+  # OpenAI (OPCIONAL - para chatbot IA)
+  - OPENAI_API_KEY
+  - OPENAI_MODEL
+  - OPENAI_EMBEDDING_MODEL
+  
+  # Configuración de aplicación
+  - APP_ENV
+  - APP_NAME
+  - APP_VERSION
+  
+  # Feature flags
+  - ENABLE_AI_CHATBOT
+  - ENABLE_NOTIFICATIONS
+  - ENABLE_ANALYTICS
+  
+  # Email (OPCIONAL - para notificaciones)
+  - SMTP_HOST
+  - SMTP_PORT
+  - SMTP_USER
+  - SMTP_PASS
+  - FROM_EMAIL
+  
+  # Analytics (OPCIONAL)
+  - GOOGLE_ANALYTICS_ID
+  - SENTRY_DSN
+
+# Configuración de dominio
+domain:
+  # Configurar en Coolify UI
+  # Ejemplo: portal.chia.gov.co
+  
+# Configuración de SSL
+ssl:
+  enabled: true
+  force_https: true
+
+# Configuración de logs
+logging:
+  level: "info"
+  max_size: "100m"
+  max_files: 3
