@@ -34,7 +34,7 @@ export default function TestAdminSetup() {
       }
     } catch (error) {
       console.error('Error updating user:', error)
-      setMessage(`❌ Error: ${error.message}`)
+      setMessage(`❌ Error: ${error instanceof Error ? error.message : 'Error desconocido'}`)
     } finally {
       setLoading(false)
     }
@@ -64,7 +64,7 @@ export default function TestAdminSetup() {
       }
     } catch (error) {
       console.error('Error fetching users:', error)
-      setMessage(`❌ Error: ${error.message}`)
+      setMessage(`❌ Error: ${error instanceof Error ? error.message : 'Error desconocido'}`)
     } finally {
       setLoading(false)
     }

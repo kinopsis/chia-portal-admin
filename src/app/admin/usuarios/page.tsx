@@ -121,7 +121,7 @@ function UsuariosPage() {
   ]
 
   // Validation schema for user forms
-  const validationSchema = {
+  const validationSchema: Record<string, any> = {
     nombre: {
       ...commonValidationRules.name,
       required: 'El nombre es obligatorio',
@@ -257,7 +257,7 @@ function UsuariosPage() {
         const nameB = `${b.nombre} ${b.apellido}`.toLowerCase()
         return nameA.localeCompare(nameB)
       },
-      render: (value, record) => (
+      render: (value: any, record: User) => (
         <div>
           <div className="font-medium text-gray-900">
             {record.nombre} {record.apellido}
@@ -271,14 +271,14 @@ function UsuariosPage() {
       title: 'Rol',
       sortable: true,
       align: 'center',
-      render: (value) => {
-        const roleColors = {
+      render: (value: string) => {
+        const roleColors: Record<string, string> = {
           admin: 'bg-red-100 text-red-800',
           funcionario: 'bg-blue-100 text-blue-800',
           ciudadano: 'bg-green-100 text-green-800',
         }
 
-        const roleLabels = {
+        const roleLabels: Record<string, string> = {
           admin: 'Administrador',
           funcionario: 'Funcionario',
           ciudadano: 'Ciudadano',
@@ -286,9 +286,9 @@ function UsuariosPage() {
 
         return (
           <span
-            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${roleColors[value]}`}
+            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${roleColors[value] || 'bg-gray-100 text-gray-800'}`}
           >
-            {roleLabels[value]}
+            {roleLabels[value] || value}
           </span>
         )
       },
@@ -298,7 +298,7 @@ function UsuariosPage() {
       title: 'Estado',
       sortable: true,
       align: 'center',
-      render: (value) => (
+      render: (value: boolean) => (
         <span
           className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
             value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
@@ -313,7 +313,7 @@ function UsuariosPage() {
       title: 'Fecha de Registro',
       sortable: true,
       sorter: (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
-      render: (value) => new Date(value).toLocaleDateString('es-CO'),
+      render: (value: string) => new Date(value).toLocaleDateString('es-CO'),
     },
   ]
 
