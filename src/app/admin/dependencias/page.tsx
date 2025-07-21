@@ -6,7 +6,7 @@ import { Form, FormField } from '@/components/molecules'
 import { DataTable } from '@/components/organisms'
 import { RoleGuard } from '@/components/auth'
 import { dependenciasClientService } from '@/services'
-import { validateForm, commonValidationRules } from '@/lib/validation'
+import { commonValidationRules } from '@/lib/validation'
 import type { Dependencia } from '@/types'
 import type { Column } from '@/components/organisms/DataTable'
 import { formatDate } from '@/utils'
@@ -158,11 +158,6 @@ const DependenciasAdminPage: React.FC = () => {
     try {
       setFormLoading(true)
 
-      const validation = validateForm(formData, formFields)
-      if (!validation.isValid) {
-        throw new Error(Object.values(validation.errors)[0])
-      }
-
       await dependenciasClientService.create({
         codigo: formData.codigo,
         nombre: formData.nombre,
@@ -186,11 +181,6 @@ const DependenciasAdminPage: React.FC = () => {
 
     try {
       setFormLoading(true)
-
-      const validation = validateForm(formData, formFields)
-      if (!validation.isValid) {
-        throw new Error(Object.values(validation.errors)[0])
-      }
 
       await dependenciasClientService.update(selectedDependencia.id, {
         codigo: formData.codigo,
