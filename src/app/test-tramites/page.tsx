@@ -603,7 +603,7 @@ const TestTramitesPage: React.FC = () => {
         onConfirm={handleDelete}
         title="Eliminar Trámite"
         confirmText="Eliminar"
-        confirmVariant="error"
+        confirmVariant="danger"
         loading={formLoading}
       >
         <p className="text-gray-600">

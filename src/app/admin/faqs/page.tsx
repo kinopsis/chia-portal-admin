@@ -575,7 +575,7 @@ export default function FAQsAdminPage() {
           title="Eliminar FAQ"
           confirmText="Eliminar"
           cancelText="Cancelar"
-          confirmVariant="error"
+          confirmVariant="danger"
           loading={isSubmitting}
         >
           {selectedFAQ && (

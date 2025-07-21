@@ -458,7 +458,7 @@ export default function OPAsAdminPage() {
           title="Eliminar OPA"
           confirmText="Eliminar"
           cancelText="Cancelar"
-          confirmVariant="error"
+          confirmVariant="danger"
           loading={isSubmitting}
         >
           {selectedOPA && (
