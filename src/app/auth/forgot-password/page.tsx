@@ -1,6 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+
+// Disable SSR for this auth page to avoid build errors when Supabase env vars are missing
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
 import Link from 'next/link'
 import { Button, Input, Card } from '@/components'
 import { useAuth } from '@/hooks'

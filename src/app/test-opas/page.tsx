@@ -1,6 +1,10 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+
+// Disable SSR for this test page to avoid build errors when Supabase env vars are missing
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
 import { DataTable } from '@/components/organisms'
 import { Modal, ConfirmDialog, Button, Badge } from '@/components/atoms'
 import { Form } from '@/components/molecules'
