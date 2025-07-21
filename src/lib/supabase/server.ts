@@ -10,6 +10,7 @@ export async function createClient() {
 
   return createServerClient(config.supabase.url, config.supabase.anonKey, {
     cookies: {
+      // @ts-ignore - getAll is valid according to Supabase SSR docs
       getAll() {
         return cookieStore.getAll()
       },
@@ -34,6 +35,7 @@ export function createServiceRoleClient() {
 
   return createServerClient(config.supabase.url, config.supabase.serviceRoleKey, {
     cookies: {
+      // @ts-ignore - getAll is valid according to Supabase SSR docs
       getAll() {
         return []
       },

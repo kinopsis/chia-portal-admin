@@ -1,5 +1,4 @@
 import { renderHook, waitFor } from '@testing-library/react'
-import { jest } from '@jest/globals'
 import { useSystemMetrics } from '@/hooks'
 import { supabase } from '@/lib/supabase'
 

@@ -1,5 +1,4 @@
 import { renderHook, act } from '@testing-library/react'
-import { jest } from '@jest/globals'
 import useBreakpoint from '@/hooks/useBreakpoint'
 
 // Mock window object

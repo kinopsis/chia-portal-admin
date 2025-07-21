@@ -6,6 +6,18 @@ import { Card, Button, AuthenticatedRoute, RoleGuard } from '@/components'
 function DashboardContent() {
   const { userProfile } = useAuth()
 
+  if (!userProfile) {
+    return (
+      <div className="container-custom py-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center">
+            <p className="text-gray-600">Cargando perfil de usuario...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="container-custom py-8">
       <div className="max-w-4xl mx-auto">

@@ -489,7 +489,7 @@ export default function TestOPAsPage() {
           title="Eliminar OPA"
           confirmText="Eliminar"
           cancelText="Cancelar"
-          confirmVariant="error"
+          confirmVariant="danger"
           loading={isSubmitting}
         >
           {selectedOPA && (

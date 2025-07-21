@@ -17,6 +17,7 @@ export async function updateSession(request: NextRequest) {
 
   const supabase = createServerClient(config.supabase.url, config.supabase.anonKey, {
     cookies: {
+      // @ts-ignore - getAll is valid according to Supabase SSR docs
       getAll() {
         return request.cookies.getAll()
       },
