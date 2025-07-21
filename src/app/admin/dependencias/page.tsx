@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { Card, Button, Modal, ConfirmDialog } from '@/components/atoms'
-import { Form } from '@/components/molecules'
+import { Form, FormField } from '@/components/molecules'
 import { DataTable } from '@/components/organisms'
 import { RoleGuard } from '@/components/auth'
 import { dependenciasClientService } from '@/services'
 import { validateForm, commonValidationRules } from '@/lib/validation'
-import type { Dependencia, FormField } from '@/types'
+import type { Dependencia } from '@/types'
 import type { Column } from '@/components/organisms/DataTable'
 import { formatDate } from '@/utils'
 import { useAuth } from '@/contexts/AuthContext'
@@ -87,7 +87,8 @@ const DependenciasAdminPage: React.FC = () => {
       name: 'activa',
       label: 'Activa',
       type: 'checkbox',
-            helperText: 'Indica si la dependencia está activa en el sistema',
+      defaultValue: true,
+      helperText: 'Indica si la dependencia está activa en el sistema',
     },
   ]
 
