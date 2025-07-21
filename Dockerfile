@@ -28,8 +28,8 @@ COPY postcss.config.js ./
 COPY tailwind.config.ts ./
 COPY tsconfig.json ./
 
-# Instalar todas las dependencias (incluyendo devDependencies)
-RUN npm ci
+# Instalar todas las dependencias (incluyendo devDependencies, skip scripts)
+RUN npm ci --ignore-scripts
 
 # Copiar código fuente
 COPY src ./src

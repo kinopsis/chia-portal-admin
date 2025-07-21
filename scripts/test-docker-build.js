@@ -42,15 +42,21 @@ if (dockerfileContent.includes('npm ci --only=production --ignore-scripts')) {
   console.error('❌ Production npm install configuration incorrect');
 }
 
+if (dockerfileContent.includes('npm ci --ignore-scripts')) {
+  console.log('✅ Builder npm install will skip scripts');
+} else {
+  console.error('❌ Builder npm install configuration incorrect');
+}
+
 // Test 3: Check package.json structure
 console.log('\n3️⃣ Validating package.json structure...');
 const packageJsonPath = path.join(__dirname, '..', 'package.json');
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
-if (packageJson.scripts.prepare.includes('try') && packageJson.scripts.prepare.includes('catch')) {
-  console.log('✅ Prepare script has error handling');
+if (packageJson.scripts.prepare.includes('import') && packageJson.scripts.prepare.includes('catch')) {
+  console.log('✅ Prepare script has ES module support and error handling');
 } else {
-  console.error('❌ Prepare script lacks proper error handling');
+  console.error('❌ Prepare script lacks proper ES module support or error handling');
 }
 
 if (packageJson.devDependencies.husky) {
