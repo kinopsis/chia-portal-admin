@@ -43,11 +43,20 @@ Thumbs.db
 .git
 .gitignore
 
-# Documentation
+# Documentation - Exclude all documentation files and folders
 README.md
 CHANGELOG.md
+LICENSE
+*.md
+# Exclude Docs folder (capital D) and all its contents
 Docs/
+Docs/**
+# Exclude docs folder (lowercase d) and all its contents
 docs/
+docs/**
+# Exclude other common documentation patterns
+documentation/
+Documentation/
 
 # Logs
 logs
