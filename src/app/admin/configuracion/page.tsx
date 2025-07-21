@@ -2,9 +2,8 @@
 
 import { useState } from 'react'
 import { Card, Button, Badge } from '@/components/atoms'
-import { Form } from '@/components/molecules'
+import { Form, FormField } from '@/components/molecules'
 import { RoleGuard } from '@/components/auth'
-import { FormField } from '@/types'
 
 interface ConfigSection {
   id: string
@@ -195,15 +194,24 @@ export default function ConfiguracionAdminPage() {
   const activeConfig = configSections.find((section) => section.id === activeSection)
 
   const getFormFields = (settings: ConfigSetting[]): FormField[] => {
-    return settings.map((setting) => ({
-      name: setting.key,
-      label: setting.label,
-      type: setting.type === 'boolean' ? 'checkbox' : setting.type as FormField['type'],
-      required: false,
-      defaultValue: setting.value,
-      helpText: setting.description,
-      options: setting.options,
-    }))
+    return settings.map((setting) => {
+      const baseField: FormField = {
+        name: setting.key,
+        label: setting.label,
+        type: setting.type === 'boolean' ? 'checkbox' : setting.type as FormField['type'],
+        required: false,
+      }
+
+      if (setting.description) {
+        baseField.helperText = setting.description
+      }
+
+      if (setting.options) {
+        baseField.options = setting.options
+      }
+
+      return baseField
+    })
   }
 
   const handleSaveConfig = async (formData: Record<string, any>, isValid: boolean) => {
