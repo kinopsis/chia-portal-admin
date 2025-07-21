@@ -175,7 +175,7 @@ export default function ConfiguracionAdminPage() {
   const getStatusBadge = (status: string) => {
     const variants = {
       active: 'success',
-      inactive: 'secondary',
+      inactive: 'neutral',
       maintenance: 'warning',
     } as const
 
@@ -247,6 +247,7 @@ export default function ConfiguracionAdminPage() {
                 {configSections.map((section) => (
                   <button
                     key={section.id}
+                    type="button"
                     onClick={() => setActiveSection(section.id)}
                     className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                       activeSection === section.id
