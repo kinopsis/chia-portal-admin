@@ -460,21 +460,21 @@ const TestSubdependenciasPage: React.FC = () => {
         }}
         onConfirm={handleDelete}
         title="Eliminar Subdependencia"
-        message={
-          selectedSubdependencia ? (
-            <>
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        loading={formLoading}
+        confirmVariant="danger"
+      >
+        {selectedSubdependencia && (
+          <>
+            <p className="text-gray-600">
               ¿Estás seguro de que deseas eliminar la subdependencia{' '}
               <strong>{selectedSubdependencia.nombre}</strong>?
-            </>
-          ) : (
-            ''
-          )
-        }
-        confirmLabel="Eliminar"
-        cancelLabel="Cancelar"
-        loading={formLoading}
-        variant="error"
-      />
+            </p>
+            <p className="text-sm text-red-600 mt-2">Esta acción no se puede deshacer.</p>
+          </>
+        )}
+      </ConfirmDialog>
     </div>
   )
 }

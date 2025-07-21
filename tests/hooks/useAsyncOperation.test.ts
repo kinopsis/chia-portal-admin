@@ -1,5 +1,4 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
-import { jest } from '@jest/globals'
 import useAsyncOperation from '@/hooks/useAsyncOperation'
 
 describe('useAsyncOperation', () => {
