@@ -168,7 +168,7 @@ export default function OPAsAdminPage() {
       type: 'text',
       required: true,
       placeholder: 'Ej: 010-015-001',
-      helpText: 'Código único de la OPA',
+      helperText: 'Código único de la OPA',
       disabled: isEdit,
     },
     {
@@ -184,7 +184,7 @@ export default function OPAsAdminPage() {
       type: 'select',
       required: true,
       options: [
-        { value: '', label: 'Seleccionar dependencia', disabled: true },
+        { value: '', label: 'Seleccionar dependencia', },
         ...dependencias.map((dep) => ({
           value: dep.id,
           label: dep.nombre,
@@ -204,8 +204,7 @@ export default function OPAsAdminPage() {
           label: selectedDependenciaId
             ? 'Seleccionar subdependencia'
             : 'Primero seleccione una dependencia',
-          disabled: true,
-        },
+          },
         ...filteredSubdependencias.map((sub) => ({
           value: sub.id,
           label: sub.nombre,
@@ -216,8 +215,7 @@ export default function OPAsAdminPage() {
       name: 'activo',
       label: 'Activo',
       type: 'checkbox',
-      defaultValue: true,
-    },
+          },
   ]
 
   // Event handlers
@@ -386,7 +384,7 @@ export default function OPAsAdminPage() {
           footer={
             <>
               <Button
-                variant="outline"
+                variant="neutral"
                 onClick={() => setIsCreateModalOpen(false)}
                 disabled={isSubmitting}
               >
@@ -422,7 +420,7 @@ export default function OPAsAdminPage() {
           footer={
             <>
               <Button
-                variant="outline"
+                variant="neutral"
                 onClick={() => setIsEditModalOpen(false)}
                 disabled={isSubmitting}
               >
@@ -460,7 +458,7 @@ export default function OPAsAdminPage() {
           title="Eliminar OPA"
           confirmText="Eliminar"
           cancelText="Cancelar"
-          confirmVariant="danger"
+          confirmVariant="error"
           loading={isSubmitting}
         >
           {selectedOPA && (

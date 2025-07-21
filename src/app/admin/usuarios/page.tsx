@@ -117,8 +117,7 @@ function UsuariosPage() {
       name: 'activo',
       label: 'Usuario Activo',
       type: 'checkbox' as const,
-      defaultValue: true,
-    },
+          },
   ]
 
   // Validation schema for user forms
@@ -685,7 +684,7 @@ function UsuariosPage() {
         variant="admin"
         actions={
           <div className="flex space-x-2">
-            <Button variant="outline" size="sm">
+            <Button variant="neutral" size="sm">
               Exportar
             </Button>
             <Button variant="primary" size="sm" onClick={() => setIsCreateModalOpen(true)}>
@@ -727,13 +726,13 @@ function UsuariosPage() {
                   {selectedRowKeys.length} usuario(s) seleccionado(s)
                 </span>
                 <div className="flex space-x-2">
-                  <Button variant="outline" size="sm">
+                  <Button variant="neutral" size="sm">
                     Activar
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button variant="neutral" size="sm">
                     Desactivar
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button variant="neutral" size="sm">
                     Eliminar
                   </Button>
                 </div>
@@ -842,7 +841,7 @@ function UsuariosPage() {
         footer={
           <>
             <Button
-              variant="outline"
+              variant="neutral"
               onClick={() => setIsCreateModalOpen(false)}
               disabled={formLoading}
             >
@@ -884,7 +883,7 @@ function UsuariosPage() {
         footer={
           <>
             <Button
-              variant="outline"
+              variant="neutral"
               onClick={() => {
                 setIsEditModalOpen(false)
                 setEditingUser(null)

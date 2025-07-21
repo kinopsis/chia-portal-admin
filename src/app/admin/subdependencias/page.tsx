@@ -80,7 +80,7 @@ const SubdependenciasAdminPage: React.FC = () => {
       type: 'text',
       required: true,
       placeholder: 'Código único de la subdependencia (ej: SUB-001)',
-      helpText: 'Código único identificador de la subdependencia',
+      helperText: 'Código único identificador de la subdependencia',
       validation: {
         ...commonValidationRules.required,
         pattern: {
@@ -102,7 +102,7 @@ const SubdependenciasAdminPage: React.FC = () => {
       label: 'Descripción',
       type: 'textarea',
       placeholder: 'Descripción de la subdependencia y sus funciones',
-      helpText: 'Descripción detallada de las funciones y responsabilidades',
+      helperText: 'Descripción detallada de las funciones y responsabilidades',
     },
     {
       name: 'dependencia_id',
@@ -120,8 +120,7 @@ const SubdependenciasAdminPage: React.FC = () => {
       name: 'activa',
       label: 'Activa',
       type: 'checkbox',
-      defaultValue: true,
-      helpText: 'Indica si la subdependencia está activa en el sistema',
+            helperText: 'Indica si la subdependencia está activa en el sistema',
     },
   ]
 
@@ -408,7 +407,7 @@ const SubdependenciasAdminPage: React.FC = () => {
           confirmLabel="Eliminar"
           cancelLabel="Cancelar"
           loading={formLoading}
-          variant="danger"
+          variant="error"
         />
       </div>
     </RoleGuard>

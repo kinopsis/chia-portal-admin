@@ -2,24 +2,11 @@
 
 import React, { useState, useCallback, useEffect } from 'react'
 import { clsx } from 'clsx'
-import { validateForm, ValidationRule, FormValidationResult } from '@/lib/validation'
-
-export interface FormField {
-  name: string
-  label: string
-  type: 'text' | 'email' | 'password' | 'textarea' | 'select' | 'checkbox' | 'number'
-  placeholder?: string
-  required?: boolean
-  options?: { value: string | number; label: string; disabled?: boolean }[]
-  validation?: ValidationRule
-  helperText?: string
-  disabled?: boolean
-  fullWidth?: boolean
-  rows?: number // for textarea
-  onChange?: (value: any) => void // Custom onChange handler
-}
+import { validateForm, FormValidationResult } from '@/lib/validation'
+import type { FormField, ValidationRule } from '@/types'
 
 export interface FormProps<T extends Record<string, any>> {
+  id?: string
   fields: FormField[]
   initialData?: Partial<T>
   validationSchema?: Record<keyof T, ValidationRule>
@@ -33,10 +20,14 @@ export interface FormProps<T extends Record<string, any>> {
   showErrorSummary?: boolean
   autoSave?: boolean
   autoSaveDelay?: number
+  submitLabel?: string
+  cancelLabel?: string
+  onCancel?: () => void
   children?: React.ReactNode
 }
 
 const Form = <T extends Record<string, any>>({
+  id,
   fields,
   initialData = {},
   validationSchema = {},
@@ -50,6 +41,9 @@ const Form = <T extends Record<string, any>>({
   showErrorSummary = false,
   autoSave = false,
   autoSaveDelay = 2000,
+  submitLabel = 'Enviar',
+  cancelLabel = 'Cancelar',
+  onCancel,
   children,
 }: FormProps<T>) => {
   const [formData, setFormData] = useState<Partial<T>>(initialData)
