@@ -186,7 +186,7 @@ const TramitesAdminPage: React.FC = () => {
       type: 'select',
       required: true,
       options: [
-        { value: '', label: 'Seleccionar dependencia', disabled: true },
+        { value: '', label: 'Seleccionar dependencia', },
         ...dependencias.map((dep) => ({
           value: dep.id,
           label: dep.nombre,
@@ -206,8 +206,7 @@ const TramitesAdminPage: React.FC = () => {
           label: selectedDependenciaId
             ? 'Seleccionar subdependencia'
             : 'Primero seleccione una dependencia',
-          disabled: true,
-        },
+          },
         ...filteredSubdependencias.map((sub) => ({
           value: sub.id,
           label: sub.nombre,
@@ -529,7 +528,7 @@ const TramitesAdminPage: React.FC = () => {
           footer={
             <>
               <Button
-                variant="outline"
+                variant="neutral"
                 onClick={() => setIsCreateModalOpen(false)}
                 disabled={formLoading}
               >
@@ -568,7 +567,7 @@ const TramitesAdminPage: React.FC = () => {
           footer={
             <>
               <Button
-                variant="outline"
+                variant="neutral"
                 onClick={() => {
                   setIsEditModalOpen(false)
                   setSelectedTramite(null)
@@ -608,7 +607,7 @@ const TramitesAdminPage: React.FC = () => {
           onConfirm={handleDelete}
           title="Eliminar Trámite"
           confirmText="Eliminar"
-          confirmVariant="danger"
+          confirmVariant="error"
           loading={formLoading}
         >
           <p className="text-gray-600">

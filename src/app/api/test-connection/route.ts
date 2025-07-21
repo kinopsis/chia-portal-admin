@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function GET() {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Test basic connection by querying system information
     const { data: connectionTest, error: connectionError } = await supabase
