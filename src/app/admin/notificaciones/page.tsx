@@ -77,12 +77,12 @@ export default function NotificacionesAdminPage() {
   }
 
   const getTypeBadge = (type: string) => {
-    const variants = {
+    const variants: Record<string, 'primary' | 'secondary' | 'info' | 'success' | 'warning' | 'error' | 'neutral'> = {
       info: 'primary',
       success: 'success',
       warning: 'warning',
-      error: 'danger',
-    } as const
+      error: 'error',
+    }
 
     const labels = {
       info: 'Información',
@@ -91,9 +91,11 @@ export default function NotificacionesAdminPage() {
       error: 'Error',
     }
 
+    const variant = variants[type] || 'neutral'
+
     return (
-      <Badge variant={variants[type as keyof typeof variants]} size="sm">
-        {labels[type as keyof typeof labels]}
+      <Badge variant={variant} size="sm">
+        {labels[type as keyof typeof labels] || type}
       </Badge>
     )
   }
