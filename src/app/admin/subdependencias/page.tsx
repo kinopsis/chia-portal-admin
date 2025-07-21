@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { Card, Button, Modal, ConfirmDialog } from '@/components/atoms'
-import { Form } from '@/components/molecules'
+import { Form, FormField } from '@/components/molecules'
 import { DataTable } from '@/components/organisms'
 import { RoleGuard } from '@/components/auth'
 import { subdependenciasClientService, dependenciasClientService } from '@/services'
 import { validateForm, commonValidationRules } from '@/lib/validation'
-import type { Subdependencia, Dependencia, FormField } from '@/types'
+import type { Subdependencia, Dependencia } from '@/types'
 import type { Column } from '@/components/organisms/DataTable'
 import { formatDate } from '@/utils'
 import { useAuth } from '@/contexts/AuthContext'
@@ -80,7 +80,7 @@ const SubdependenciasAdminPage: React.FC = () => {
       type: 'text',
       required: true,
       placeholder: 'Código único de la subdependencia (ej: SUB-001)',
-      helpText: 'Código único identificador de la subdependencia',
+      helperText: 'Código único identificador de la subdependencia',
       validation: {
         ...commonValidationRules.required,
         pattern: {
@@ -102,7 +102,7 @@ const SubdependenciasAdminPage: React.FC = () => {
       label: 'Descripción',
       type: 'textarea',
       placeholder: 'Descripción de la subdependencia y sus funciones',
-      helpText: 'Descripción detallada de las funciones y responsabilidades',
+      helperText: 'Descripción detallada de las funciones y responsabilidades',
     },
     {
       name: 'dependencia_id',
@@ -121,7 +121,7 @@ const SubdependenciasAdminPage: React.FC = () => {
       label: 'Activa',
       type: 'checkbox',
       defaultValue: true,
-      helpText: 'Indica si la subdependencia está activa en el sistema',
+      helperText: 'Indica si la subdependencia está activa en el sistema',
     },
   ]
 

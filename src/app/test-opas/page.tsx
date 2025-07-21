@@ -215,7 +215,7 @@ export default function TestOPAsPage() {
       type: 'text',
       required: true,
       placeholder: 'Ej: 010-015-001',
-      helpText: 'Código único de la OPA',
+      helperText: 'Código único de la OPA',
       disabled: isEdit,
     },
     {

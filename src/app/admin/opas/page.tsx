@@ -3,12 +3,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { DataTable } from '@/components/organisms'
 import { Modal, ConfirmDialog, Button, Badge, Card } from '@/components/atoms'
-import { Form } from '@/components/molecules'
+import { Form, FormField } from '@/components/molecules'
 import { RoleGuard } from '@/components/auth'
 import { opasClientService } from '@/services/opas'
 import { dependenciasClientService } from '@/services/dependencias'
 import { subdependenciasClientService } from '@/services/subdependencias'
-import { OPA, FormField, Dependencia, Subdependencia } from '@/types'
+import { OPA, Dependencia, Subdependencia } from '@/types'
 import { formatDate } from '@/utils'
 import type { Column } from '@/components/organisms/DataTable'
 
@@ -168,7 +168,7 @@ export default function OPAsAdminPage() {
       type: 'text',
       required: true,
       placeholder: 'Ej: 010-015-001',
-      helpText: 'Código único de la OPA',
+      helperText: 'Código único de la OPA',
       disabled: isEdit,
     },
     {
