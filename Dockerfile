@@ -13,8 +13,8 @@ WORKDIR /app
 # Copiar archivos de configuración de dependencias
 COPY package*.json ./
 
-# Instalar dependencias
-RUN npm ci --only=production && npm cache clean --force
+# Instalar dependencias (skip scripts to avoid husky in production)
+RUN npm ci --only=production --ignore-scripts && npm cache clean --force
 
 # Etapa de construcción
 FROM base AS builder
