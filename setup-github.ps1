@@ -16,6 +16,23 @@ if (-not (Test-Path ".git")) {
     exit 1
 }
 
+Write-Host ""
+Write-Host "📋 PASO 1: Crear repositorio en GitHub" -ForegroundColor Cyan
+Write-Host "=======================================" -ForegroundColor Cyan
+Write-Host "1. Ve a: https://github.com/new" -ForegroundColor Yellow
+Write-Host "2. Repository name: chia-portal-admin" -ForegroundColor Yellow
+Write-Host "3. Description: Portal de Atención Ciudadana de Chía - Sistema municipal con IA integrada" -ForegroundColor Yellow
+Write-Host "4. Visibility: Public" -ForegroundColor Yellow
+Write-Host "5. NO marcar 'Initialize with README'" -ForegroundColor Yellow
+Write-Host "6. Hacer clic en 'Create repository'" -ForegroundColor Yellow
+Write-Host ""
+
+$continue = Read-Host "¿Ya creaste el repositorio en GitHub? (y/n)"
+if ($continue -ne "y" -and $continue -ne "Y") {
+    Write-Host "❌ Por favor crea el repositorio primero y luego ejecuta este script nuevamente." -ForegroundColor Red
+    exit 1
+}
+
 # Solicitar el nombre de usuario de GitHub
 $GITHUB_USER = Read-Host "📝 Ingresa tu nombre de usuario de GitHub"
 
@@ -84,14 +101,42 @@ if ($LASTEXITCODE -eq 0) {
 Write-Host ""
 Write-Host "🎉 ¡Configuración completada exitosamente!" -ForegroundColor Green
 Write-Host "==================================================" -ForegroundColor Green
-Write-Host "📋 Próximos pasos:" -ForegroundColor Cyan
-Write-Host "1. Ir a: https://github.com/$GITHUB_USER/chia-portal-admin" -ForegroundColor White
-Write-Host "2. Crear Pull Request desde 'feature/initial-setup' hacia 'main'" -ForegroundColor White
-Write-Host "3. Configurar Coolify con el repositorio" -ForegroundColor White
+
 Write-Host ""
+Write-Host "📋 PASO 3: Crear Pull Request" -ForegroundColor Cyan
+Write-Host "==============================" -ForegroundColor Cyan
+Write-Host "1. Ve a: https://github.com/$GITHUB_USER/chia-portal-admin" -ForegroundColor Yellow
+Write-Host "2. Hacer clic en 'Compare & pull request' (aparecerá automáticamente)" -ForegroundColor Yellow
+Write-Host "3. O ir a 'Pull requests' → 'New pull request'" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "Configuración del Pull Request:" -ForegroundColor White
+Write-Host "- Base: main" -ForegroundColor Gray
+Write-Host "- Compare: feature/initial-setup" -ForegroundColor Gray
+Write-Host "- Title: Initial Setup - Portal de Atención Ciudadana Ready for Deployment" -ForegroundColor Gray
+Write-Host ""
+Write-Host "📄 Descripción del PR (copia y pega):" -ForegroundColor White
+Write-Host "Ver archivo GITHUB_SETUP.md para la descripción completa del Pull Request" -ForegroundColor Gray
+Write-Host ""
+
 Write-Host "🔗 URLs importantes:" -ForegroundColor Cyan
 Write-Host "   - Repositorio: https://github.com/$GITHUB_USER/chia-portal-admin" -ForegroundColor White
 Write-Host "   - Pull Requests: https://github.com/$GITHUB_USER/chia-portal-admin/pulls" -ForegroundColor White
-Write-Host "   - Actions: https://github.com/$GITHUB_USER/chia-portal-admin/actions" -ForegroundColor White
+Write-Host "   - New PR: https://github.com/$GITHUB_USER/chia-portal-admin/compare/main...feature/initial-setup" -ForegroundColor White
 Write-Host ""
-Write-Host "📖 Consulta DEPLOYMENT.md para instrucciones de despliegue en Coolify" -ForegroundColor Yellow
+
+Write-Host "📋 Próximos pasos para Coolify:" -ForegroundColor Cyan
+Write-Host "1. Merge el Pull Request" -ForegroundColor White
+Write-Host "2. Configurar proyecto en Coolify" -ForegroundColor White
+Write-Host "3. Configurar variables de entorno" -ForegroundColor White
+Write-Host "4. Desplegar en producción" -ForegroundColor White
+Write-Host ""
+Write-Host "📖 Consulta DEPLOYMENT.md para instrucciones detalladas de despliegue en Coolify" -ForegroundColor Yellow
+
+# Abrir URLs automáticamente
+Write-Host ""
+$openBrowser = Read-Host "¿Quieres abrir el repositorio en el navegador? (y/n)"
+if ($openBrowser -eq "y" -or $openBrowser -eq "Y") {
+    Start-Process "https://github.com/$GITHUB_USER/chia-portal-admin"
+    Start-Sleep -Seconds 2
+    Start-Process "https://github.com/$GITHUB_USER/chia-portal-admin/compare/main...feature/initial-setup"
+}
