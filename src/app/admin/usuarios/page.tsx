@@ -7,7 +7,15 @@ import { supabase } from '@/lib/supabase'
 import { validateForm, commonValidationRules } from '@/lib/validation'
 import type { Column } from '@/components/organisms/DataTable'
 import type { SortConfig } from '@/components/organisms/DataTable/DataTable'
-import type { FilterConfig, FilterValue, FilterPreset, AdvancedFilterConfig, FilterGroup, RowAction, BulkAction } from '@/components/molecules'
+import type {
+  FilterConfig,
+  FilterValue,
+  FilterPreset,
+  AdvancedFilterConfig,
+  FilterGroup,
+  RowAction,
+  BulkAction,
+} from '@/components/molecules'
 
 interface User {
   id: string
@@ -24,10 +32,14 @@ function UsuariosPage() {
   const { userProfile } = useAuth()
   const breadcrumbs = useAdminBreadcrumbs('usuarios')
   const [users, setUsers] = useState<User[]>([])
-  const { state: asyncState, execute: executeAsync, retry: retryAsync } = useAsyncOperation<User[]>([])
+  const {
+    state: asyncState,
+    execute: executeAsync,
+    retry: retryAsync,
+  } = useAsyncOperation<User[]>([])
   const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>([])
   const [sortConfig, setSortConfig] = useState<SortConfig<User>[]>([
-    { key: 'created_at', direction: 'desc', priority: 0 }
+    { key: 'created_at', direction: 'desc', priority: 0 },
   ])
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
@@ -52,8 +64,8 @@ function UsuariosPage() {
       filters: {
         created_at: {
           start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          end: new Date().toISOString().split('T')[0]
-        }
+          end: new Date().toISOString().split('T')[0],
+        },
       },
     },
   ])
@@ -65,8 +77,6 @@ function UsuariosPage() {
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [passwordChangeUser, setPasswordChangeUser] = useState<User | null>(null)
   const [formLoading, setFormLoading] = useState(false)
-
-
 
   // Form fields for user creation/editing
   const getFormFields = () => [
@@ -115,18 +125,20 @@ function UsuariosPage() {
   const validationSchema = {
     nombre: {
       required: 'El nombre es obligatorio',
-      ...commonValidationRules.name
+      ...commonValidationRules.name,
     },
     email: {
       required: 'El correo electrónico es obligatorio',
-      ...commonValidationRules.email
+      ...commonValidationRules.email,
     },
-    password: editingUser ? {} : {
-      required: 'La contraseña es obligatoria',
-      ...commonValidationRules.password
-    },
+    password: editingUser
+      ? {}
+      : {
+          required: 'La contraseña es obligatoria',
+          ...commonValidationRules.password,
+        },
     rol: {
-      required: 'Debe seleccionar un rol'
+      required: 'Debe seleccionar un rol',
     },
   }
 
@@ -206,26 +218,29 @@ function UsuariosPage() {
 
   // Fetch users data with enhanced error handling
   const fetchUsers = useCallback(async () => {
-    return executeAsync(async () => {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .order('created_at', { ascending: false })
+    return executeAsync(
+      async () => {
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .order('created_at', { ascending: false })
 
-      if (error) throw error
+        if (error) throw error
 
-      setUsers(data || [])
-      return data || []
-    }, {
-      retryAttempts: 2,
-      retryDelay: 1000,
-      onSuccess: (data) => {
-        console.log('Users loaded successfully:', data.length)
+        setUsers(data || [])
+        return data || []
       },
-      onError: (error) => {
-        console.error('Error fetching users:', error)
-      },
-    })
+      {
+        retryAttempts: 2,
+        retryDelay: 1000,
+        onSuccess: (data) => {
+          console.log('Users loaded successfully:', data.length)
+        },
+        onError: (error) => {
+          console.error('Error fetching users:', error)
+        },
+      }
+    )
   }, [executeAsync])
 
   useEffect(() => {
@@ -263,7 +278,7 @@ function UsuariosPage() {
           funcionario: 'bg-blue-100 text-blue-800',
           ciudadano: 'bg-green-100 text-green-800',
         }
-        
+
         const roleLabels = {
           admin: 'Administrador',
           funcionario: 'Funcionario',
@@ -271,7 +286,9 @@ function UsuariosPage() {
         }
 
         return (
-          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${roleColors[value]}`}>
+          <span
+            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${roleColors[value]}`}
+          >
             {roleLabels[value]}
           </span>
         )
@@ -283,11 +300,11 @@ function UsuariosPage() {
       sortable: true,
       align: 'center',
       render: (value) => (
-        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-          value 
-            ? 'bg-green-100 text-green-800' 
-            : 'bg-red-100 text-red-800'
-        }`}>
+        <span
+          className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+            value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          }`}
+        >
           {value ? 'Activo' : 'Inactivo'}
         </span>
       ),
@@ -342,7 +359,7 @@ function UsuariosPage() {
       name,
       filters,
     }
-    setFilterPresets(prev => [...prev, newPreset])
+    setFilterPresets((prev) => [...prev, newPreset])
     console.log('Preset saved:', newPreset)
   }
 
@@ -359,9 +376,12 @@ function UsuariosPage() {
 
     // Validate that all conditions have values where required
     const validateGroup = (group: FilterGroup) => {
-      group.conditions.forEach(condition => {
+      group.conditions.forEach((condition) => {
         if (!['is_null', 'is_not_null'].includes(condition.operator)) {
-          if (!condition.value || (Array.isArray(condition.value) && condition.value.some(v => !v))) {
+          if (
+            !condition.value ||
+            (Array.isArray(condition.value) && condition.value.some((v) => !v))
+          ) {
             errors.push(`La condición "${condition.field}" requiere un valor`)
           }
         }
@@ -384,8 +404,8 @@ function UsuariosPage() {
         options: {
           data: {
             nombre: formData.nombre,
-          }
-        }
+          },
+        },
       })
 
       if (authError) throw authError
@@ -393,20 +413,22 @@ function UsuariosPage() {
       // Create user profile in users table
       const { data: userData, error: userError } = await supabase
         .from('users')
-        .insert([{
-          id: authData.user?.id,
-          email: formData.email,
-          nombre: formData.nombre,
-          rol: formData.rol || 'ciudadano',
-          activo: formData.activo !== false,
-        }])
+        .insert([
+          {
+            id: authData.user?.id,
+            email: formData.email,
+            nombre: formData.nombre,
+            rol: formData.rol || 'ciudadano',
+            activo: formData.activo !== false,
+          },
+        ])
         .select()
         .single()
 
       if (userError) throw userError
 
       // Update local state
-      setUsers(prev => [userData, ...prev])
+      setUsers((prev) => [userData, ...prev])
       setIsCreateModalOpen(false)
       console.log('Usuario creado exitosamente:', userData)
     } catch (error) {
@@ -434,7 +456,7 @@ function UsuariosPage() {
       if (formData.password && formData.password.trim()) {
         // Update password in Supabase Auth
         const { error: authError } = await supabase.auth.updateUser({
-          password: formData.password
+          password: formData.password,
         })
         if (authError) throw authError
       }
@@ -450,9 +472,7 @@ function UsuariosPage() {
       if (userError) throw userError
 
       // Update local state
-      setUsers(prev => prev.map(u =>
-        u.id === editingUser.id ? userData : u
-      ))
+      setUsers((prev) => prev.map((u) => (u.id === editingUser.id ? userData : u)))
       setIsEditModalOpen(false)
       setEditingUser(null)
       console.log('Usuario actualizado exitosamente:', userData)
@@ -463,8 +483,6 @@ function UsuariosPage() {
       setFormLoading(false)
     }
   }
-
-
 
   // Define row actions
   const rowActions: RowAction<User>[] = [
@@ -509,15 +527,12 @@ function UsuariosPage() {
       variant: 'danger',
       onClick: async (user) => {
         try {
-          const { error } = await supabase
-            .from('user_profiles')
-            .delete()
-            .eq('id', user.id)
+          const { error } = await supabase.from('user_profiles').delete().eq('id', user.id)
 
           if (error) throw error
 
           // Update local state
-          setUsers(prev => prev.filter(u => u.id !== user.id))
+          setUsers((prev) => prev.filter((u) => u.id !== user.id))
           console.log('Usuario eliminado:', user)
         } catch (err) {
           console.error('Error deleting user:', err)
@@ -525,7 +540,8 @@ function UsuariosPage() {
       },
       disabled: (user) => user.rol === 'admin', // Can't delete admin users
       tooltip: 'Eliminar usuario',
-      confirmMessage: '¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.',
+      confirmMessage:
+        '¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.',
       confirmTitle: 'Confirmar eliminación',
       shortcut: 'Delete',
     },
@@ -540,7 +556,7 @@ function UsuariosPage() {
       variant: 'primary',
       onClick: async (selectedUsers) => {
         try {
-          const userIds = selectedUsers.map(user => user.id)
+          const userIds = selectedUsers.map((user) => user.id)
           const { error } = await supabase
             .from('user_profiles')
             .update({ activo: true })
@@ -549,15 +565,15 @@ function UsuariosPage() {
           if (error) throw error
 
           // Update local state
-          setUsers(prev => prev.map(user =>
-            userIds.includes(user.id) ? { ...user, activo: true } : user
-          ))
+          setUsers((prev) =>
+            prev.map((user) => (userIds.includes(user.id) ? { ...user, activo: true } : user))
+          )
           console.log('Usuarios activados:', selectedUsers.length)
         } catch (err) {
           console.error('Error activating users:', err)
         }
       },
-      disabled: (selectedUsers) => selectedUsers.every(user => user.activo),
+      disabled: (selectedUsers) => selectedUsers.every((user) => user.activo),
       minSelection: 1,
     },
     {
@@ -567,7 +583,7 @@ function UsuariosPage() {
       variant: 'secondary',
       onClick: async (selectedUsers) => {
         try {
-          const userIds = selectedUsers.map(user => user.id)
+          const userIds = selectedUsers.map((user) => user.id)
           const { error } = await supabase
             .from('user_profiles')
             .update({ activo: false })
@@ -576,15 +592,15 @@ function UsuariosPage() {
           if (error) throw error
 
           // Update local state
-          setUsers(prev => prev.map(user =>
-            userIds.includes(user.id) ? { ...user, activo: false } : user
-          ))
+          setUsers((prev) =>
+            prev.map((user) => (userIds.includes(user.id) ? { ...user, activo: false } : user))
+          )
           console.log('Usuarios desactivados:', selectedUsers.length)
         } catch (err) {
           console.error('Error deactivating users:', err)
         }
       },
-      disabled: (selectedUsers) => selectedUsers.every(user => !user.activo),
+      disabled: (selectedUsers) => selectedUsers.every((user) => !user.activo),
       minSelection: 1,
     },
     {
@@ -595,9 +611,10 @@ function UsuariosPage() {
       onClick: (selectedUsers) => {
         const csvContent = [
           'Nombre,Apellido,Email,Rol,Estado,Fecha de Registro',
-          ...selectedUsers.map(user =>
-            `${user.nombre},${user.apellido},${user.email},${user.rol},${user.activo ? 'Activo' : 'Inactivo'},${new Date(user.created_at).toLocaleDateString()}`
-          )
+          ...selectedUsers.map(
+            (user) =>
+              `${user.nombre},${user.apellido},${user.email},${user.rol},${user.activo ? 'Activo' : 'Inactivo'},${new Date(user.created_at).toLocaleDateString()}`
+          ),
         ].join('\n')
 
         const blob = new Blob([csvContent], { type: 'text/csv' })
@@ -621,23 +638,21 @@ function UsuariosPage() {
       variant: 'danger',
       onClick: async (selectedUsers) => {
         try {
-          const userIds = selectedUsers.map(user => user.id)
-          const { error } = await supabase
-            .from('user_profiles')
-            .delete()
-            .in('id', userIds)
+          const userIds = selectedUsers.map((user) => user.id)
+          const { error } = await supabase.from('user_profiles').delete().in('id', userIds)
 
           if (error) throw error
 
           // Update local state
-          setUsers(prev => prev.filter(user => !userIds.includes(user.id)))
+          setUsers((prev) => prev.filter((user) => !userIds.includes(user.id)))
           console.log('Usuarios eliminados:', selectedUsers.length)
         } catch (err) {
           console.error('Error deleting users:', err)
         }
       },
-      disabled: (selectedUsers) => selectedUsers.some(user => user.rol === 'admin'),
-      confirmMessage: '¿Estás seguro de que quieres eliminar los usuarios seleccionados? Esta acción no se puede deshacer.',
+      disabled: (selectedUsers) => selectedUsers.some((user) => user.rol === 'admin'),
+      confirmMessage:
+        '¿Estás seguro de que quieres eliminar los usuarios seleccionados? Esta acción no se puede deshacer.',
       confirmTitle: 'Confirmar eliminación masiva',
       minSelection: 1,
       maxSelection: 10, // Limit bulk delete to 10 users at a time
@@ -661,8 +676,6 @@ function UsuariosPage() {
     // TODO: Implement delete functionality
   }
 
-
-
   return (
     <div>
       <PageHeader
@@ -675,11 +688,7 @@ function UsuariosPage() {
             <Button variant="outline" size="sm">
               Exportar
             </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => setIsCreateModalOpen(true)}
-            >
+            <Button variant="primary" size="sm" onClick={() => setIsCreateModalOpen(true)}>
               Nuevo Usuario
             </Button>
           </div>
@@ -693,9 +702,7 @@ function UsuariosPage() {
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-sm font-medium text-blue-800">
-                    Ordenado por:
-                  </span>
+                  <span className="text-sm font-medium text-blue-800">Ordenado por:</span>
                   <span className="text-sm text-blue-700 ml-2">
                     {sortConfig.map((sort, index) => (
                       <span key={sort.key}>
@@ -816,7 +823,6 @@ function UsuariosPage() {
               onChange: handlePaginationChange,
               onShowSizeChange: handlePaginationChange,
             }}
-
             onRowClick={(record) => console.log('Row clicked:', record)}
             size="medium"
             bordered={true}

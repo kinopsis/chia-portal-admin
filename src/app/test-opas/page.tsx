@@ -104,9 +104,7 @@ export default function TestOPAsPage() {
       sortable: true,
       width: '140px',
       render: (value, record) => (
-        <div className="font-mono text-sm">
-          {record?.codigo_opa || 'N/A'}
-        </div>
+        <div className="font-mono text-sm">{record?.codigo_opa || 'N/A'}</div>
       ),
     },
     {
@@ -161,12 +159,7 @@ export default function TestOPAsPage() {
       width: '120px',
       render: (value, record) => (
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleEdit(record)}
-            aria-label="Editar"
-          >
+          <Button variant="ghost" size="sm" onClick={() => handleEdit(record)} aria-label="Editar">
             ✏️
           </Button>
           <Button
@@ -187,9 +180,9 @@ export default function TestOPAsPage() {
     console.log('handleDependenciaChange called with:', dependenciaValue)
 
     // Find the dependencia by ID (if it's an ID) or by name (if it's a name)
-    let dependencia = dependencias.find(dep => dep.id === dependenciaValue)
+    let dependencia = dependencias.find((dep) => dep.id === dependenciaValue)
     if (!dependencia) {
-      dependencia = dependencias.find(dep => dep.nombre === dependenciaValue)
+      dependencia = dependencias.find((dep) => dep.nombre === dependenciaValue)
     }
 
     if (dependencia) {
@@ -199,8 +192,10 @@ export default function TestOPAsPage() {
       console.log('Looking for dependencia_id:', dependencia.id)
 
       setSelectedDependenciaId(dependencia.id)
-      const filtered = subdependencias.filter(sub => {
-        console.log(`Checking subdependencia ${sub.nombre}: dependencia_id=${sub.dependencia_id} vs target=${dependencia.id}`)
+      const filtered = subdependencias.filter((sub) => {
+        console.log(
+          `Checking subdependencia ${sub.nombre}: dependencia_id=${sub.dependencia_id} vs target=${dependencia.id}`
+        )
         return sub.dependencia_id === dependencia.id
       })
       console.log('Filtered subdependencias:', filtered)
@@ -237,7 +232,7 @@ export default function TestOPAsPage() {
       required: true,
       options: [
         { value: '', label: 'Seleccionar dependencia', disabled: true },
-        ...dependencias.map(dep => ({
+        ...dependencias.map((dep) => ({
           value: dep.id,
           label: dep.nombre,
         })),
@@ -251,8 +246,14 @@ export default function TestOPAsPage() {
       required: true,
       disabled: !selectedDependenciaId,
       options: [
-        { value: '', label: selectedDependenciaId ? 'Seleccionar subdependencia' : 'Primero seleccione una dependencia', disabled: true },
-        ...filteredSubdependencias.map(sub => ({
+        {
+          value: '',
+          label: selectedDependenciaId
+            ? 'Seleccionar subdependencia'
+            : 'Primero seleccione una dependencia',
+          disabled: true,
+        },
+        ...filteredSubdependencias.map((sub) => ({
           value: sub.id,
           label: sub.nombre,
         })),
@@ -280,7 +281,9 @@ export default function TestOPAsPage() {
     // Set dependencia for edit mode
     if (opa.subdependencias?.dependencia_id) {
       setSelectedDependenciaId(opa.subdependencias.dependencia_id)
-      const filtered = subdependencias.filter(sub => sub.dependencia_id === opa.subdependencias?.dependencia_id)
+      const filtered = subdependencias.filter(
+        (sub) => sub.dependencia_id === opa.subdependencias?.dependencia_id
+      )
       setFilteredSubdependencias(filtered)
     }
     setIsEditModalOpen(true)
@@ -353,7 +356,7 @@ export default function TestOPAsPage() {
     try {
       setIsSubmitting(true)
       console.log('Deleting OPA:', selectedOPA)
-      
+
       await opasClientService.delete(selectedOPA.id)
       await loadOpas()
       setIsDeleteDialogOpen(false)
@@ -366,11 +369,12 @@ export default function TestOPAsPage() {
   }
 
   // Filter data based on search
-  const filteredOpas = opas.filter(opa =>
-    opa.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    opa.codigo_opa.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    opa.subdependencias?.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    opa.subdependencias?.dependencias?.nombre.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredOpas = opas.filter(
+    (opa) =>
+      opa.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      opa.codigo_opa.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      opa.subdependencias?.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      opa.subdependencias?.dependencias?.nombre.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   return (
@@ -380,12 +384,8 @@ export default function TestOPAsPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Gestión de OPAs (Test)
-              </h1>
-              <p className="mt-2 text-gray-600">
-                Prueba de la interfaz CRUD de OPAs
-              </p>
+              <h1 className="text-3xl font-bold text-gray-900">Gestión de OPAs (Test)</h1>
+              <p className="mt-2 text-gray-600">Prueba de la interfaz CRUD de OPAs</p>
             </div>
             <Button onClick={handleCreate} className="flex items-center gap-2">
               <span>➕</span>
@@ -459,12 +459,7 @@ export default function TestOPAsPage() {
               >
                 Cancelar
               </Button>
-              <Button
-                type="submit"
-                form="edit-opa-form"
-                variant="primary"
-                isLoading={isSubmitting}
-              >
+              <Button type="submit" form="edit-opa-form" variant="primary" isLoading={isSubmitting}>
                 Guardar Cambios
               </Button>
             </>
@@ -502,12 +497,9 @@ export default function TestOPAsPage() {
           {selectedOPA && (
             <>
               <p className="text-gray-600">
-                ¿Estás seguro de que deseas eliminar la OPA{' '}
-                <strong>{selectedOPA.nombre}</strong>?
+                ¿Estás seguro de que deseas eliminar la OPA <strong>{selectedOPA.nombre}</strong>?
               </p>
-              <p className="text-sm text-red-600 mt-2">
-                Esta acción no se puede deshacer.
-              </p>
+              <p className="text-sm text-red-600 mt-2">Esta acción no se puede deshacer.</p>
             </>
           )}
         </ConfirmDialog>

@@ -19,7 +19,7 @@ const Skeleton: React.FC<SkeletonProps> = ({
   lines = 1,
 }) => {
   const baseClasses = 'bg-gray-200 rounded'
-  
+
   const animationClasses = {
     pulse: 'animate-pulse',
     wave: 'animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]',
@@ -60,12 +60,7 @@ const Skeleton: React.FC<SkeletonProps> = ({
 
   return (
     <div
-      className={clsx(
-        baseClasses,
-        animationClasses[animation],
-        variantClasses[variant],
-        className
-      )}
+      className={clsx(baseClasses, animationClasses[animation], variantClasses[variant], className)}
       style={skeletonStyle}
       role="status"
       aria-label="Cargando contenido"

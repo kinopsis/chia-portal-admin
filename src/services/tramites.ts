@@ -28,7 +28,8 @@ export class TramitesClientService {
   async getAll(filters?: SearchFilters & { page?: number; limit?: number }) {
     let query = supabase
       .from('tramites')
-      .select(`
+      .select(
+        `
         *,
         subdependencias (
           id,
@@ -38,7 +39,9 @@ export class TramitesClientService {
             nombre
           )
         )
-      `, { count: 'exact' })
+      `,
+        { count: 'exact' }
+      )
       .order('nombre', { ascending: true })
 
     // Apply filters
@@ -83,7 +86,8 @@ export class TramitesClientService {
   async getById(id: string) {
     const { data, error } = await supabase
       .from('tramites')
-      .select(`
+      .select(
+        `
         *,
         subdependencias (
           id,
@@ -93,7 +97,8 @@ export class TramitesClientService {
             nombre
           )
         )
-      `)
+      `
+      )
       .eq('id', id)
       .single()
 
@@ -107,7 +112,8 @@ export class TramitesClientService {
   async getActive() {
     const { data, error } = await supabase
       .from('tramites')
-      .select(`
+      .select(
+        `
         *,
         subdependencias (
           nombre,
@@ -115,7 +121,8 @@ export class TramitesClientService {
             nombre
           )
         )
-      `)
+      `
+      )
       .eq('activo', true)
       .order('nombre', { ascending: true })
 
@@ -129,7 +136,8 @@ export class TramitesClientService {
   async search(query: string, limit = 10) {
     const { data, error } = await supabase
       .from('tramites')
-      .select(`
+      .select(
+        `
         *,
         subdependencias (
           nombre,
@@ -137,7 +145,8 @@ export class TramitesClientService {
             nombre
           )
         )
-      `)
+      `
+      )
       .or(`nombre.ilike.%${query}%,descripcion.ilike.%${query}%`)
       .eq('activo', true)
       .limit(limit)
@@ -150,11 +159,7 @@ export class TramitesClientService {
   }
 
   async create(tramite: Omit<Tramite, 'id' | 'created_at' | 'updated_at'>) {
-    const { data, error } = await supabase
-      .from('tramites')
-      .insert(tramite)
-      .select()
-      .single()
+    const { data, error } = await supabase.from('tramites').insert(tramite).select().single()
 
     if (error) {
       throw new Error(`Error creating tramite: ${error.message}`)
@@ -179,10 +184,7 @@ export class TramitesClientService {
   }
 
   async delete(id: string) {
-    const { error } = await supabase
-      .from('tramites')
-      .delete()
-      .eq('id', id)
+    const { error } = await supabase.from('tramites').delete().eq('id', id)
 
     if (error) {
       throw new Error(`Error deleting tramite: ${error.message}`)

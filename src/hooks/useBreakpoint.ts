@@ -53,7 +53,7 @@ const useBreakpoint = (breakpoints: BreakpointConfig = defaultBreakpoints): UseB
     }
 
     window.addEventListener('resize', handleResize)
-    
+
     // Set initial size
     handleResize()
 

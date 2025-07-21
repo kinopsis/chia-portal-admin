@@ -42,36 +42,39 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
     gray: 'bg-gray-500 text-white',
   }
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (disabled) return
-    
-    setIsDragging(true)
-    setStartX(e.touches[0].clientX)
-  }, [disabled])
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if (disabled) return
 
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!isDragging || disabled) return
+      setIsDragging(true)
+      setStartX(e.touches[0].clientX)
+    },
+    [disabled]
+  )
 
-    const currentX = e.touches[0].clientX
-    const deltaX = currentX - startX
-    
-    // Limit swipe distance
-    const limitedDeltaX = Math.max(
-      -maxSwipeDistance, 
-      Math.min(maxSwipeDistance, deltaX)
-    )
-    
-    setTranslateX(limitedDeltaX)
-  }, [isDragging, startX, disabled, maxSwipeDistance])
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      if (!isDragging || disabled) return
+
+      const currentX = e.touches[0].clientX
+      const deltaX = currentX - startX
+
+      // Limit swipe distance
+      const limitedDeltaX = Math.max(-maxSwipeDistance, Math.min(maxSwipeDistance, deltaX))
+
+      setTranslateX(limitedDeltaX)
+    },
+    [isDragging, startX, disabled, maxSwipeDistance]
+  )
 
   const handleTouchEnd = useCallback(() => {
     if (!isDragging || disabled) return
 
     setIsDragging(false)
-    
+
     // Check if swipe threshold was reached
     const absTranslateX = Math.abs(translateX)
-    
+
     if (absTranslateX >= threshold) {
       // Execute action if available
       if (translateX > 0 && leftActions.length > 0) {
@@ -80,37 +83,40 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
         rightActions[0].onClick()
       }
     }
-    
+
     // Reset position
     setTranslateX(0)
   }, [isDragging, translateX, threshold, leftActions, rightActions, disabled])
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (disabled) return
-    
-    setIsDragging(true)
-    setStartX(e.clientX)
-  }, [disabled])
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      if (disabled) return
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!isDragging || disabled) return
+      setIsDragging(true)
+      setStartX(e.clientX)
+    },
+    [disabled]
+  )
 
-    const deltaX = e.clientX - startX
-    const limitedDeltaX = Math.max(
-      -maxSwipeDistance, 
-      Math.min(maxSwipeDistance, deltaX)
-    )
-    
-    setTranslateX(limitedDeltaX)
-  }, [isDragging, startX, disabled, maxSwipeDistance])
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!isDragging || disabled) return
+
+      const deltaX = e.clientX - startX
+      const limitedDeltaX = Math.max(-maxSwipeDistance, Math.min(maxSwipeDistance, deltaX))
+
+      setTranslateX(limitedDeltaX)
+    },
+    [isDragging, startX, disabled, maxSwipeDistance]
+  )
 
   const handleMouseUp = useCallback(() => {
     if (!isDragging || disabled) return
 
     setIsDragging(false)
-    
+
     const absTranslateX = Math.abs(translateX)
-    
+
     if (absTranslateX >= threshold) {
       if (translateX > 0 && leftActions.length > 0) {
         leftActions[0].onClick()
@@ -118,7 +124,7 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
         rightActions[0].onClick()
       }
     }
-    
+
     setTranslateX(0)
   }, [isDragging, translateX, threshold, leftActions, rightActions, disabled])
 
@@ -126,7 +132,7 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove)
       document.addEventListener('mouseup', handleMouseUp)
-      
+
       return () => {
         document.removeEventListener('mousemove', handleMouseMove)
         document.removeEventListener('mouseup', handleMouseUp)
@@ -145,10 +151,10 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
         )}
         style={{
           width: maxSwipeDistance,
-          [side === 'left' ? 'transform' : 'transform']: 
-            side === 'left' 
-              ? `translateX(-${maxSwipeDistance}px)` 
-              : `translateX(${maxSwipeDistance}px)`
+          [side === 'left' ? 'transform' : 'transform']:
+            side === 'left'
+              ? `translateX(-${maxSwipeDistance}px)`
+              : `translateX(${maxSwipeDistance}px)`,
         }}
       >
         {actions.map((action, index) => (
@@ -165,11 +171,7 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
             }}
             aria-label={action.label}
           >
-            {action.icon && (
-              <div className="mb-1 text-lg">
-                {action.icon}
-              </div>
-            )}
+            {action.icon && <div className="mb-1 text-lg">{action.icon}</div>}
             <span className="text-xs">{action.label}</span>
           </button>
         ))}
@@ -188,10 +190,10 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
     >
       {/* Left actions */}
       {renderActions(leftActions, 'left')}
-      
+
       {/* Right actions */}
       {renderActions(rightActions, 'right')}
-      
+
       {/* Main content */}
       <div
         className={clsx(
@@ -204,7 +206,7 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
       >
         {children}
       </div>
-      
+
       {/* Swipe hint overlay */}
       {Math.abs(translateX) > 20 && (
         <div
@@ -214,12 +216,8 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
           )}
         >
           <div className="text-white text-sm font-medium bg-black bg-opacity-50 px-3 py-1 rounded">
-            {translateX > 0 && leftActions.length > 0 && (
-              <span>← {leftActions[0].label}</span>
-            )}
-            {translateX < 0 && rightActions.length > 0 && (
-              <span>{rightActions[0].label} →</span>
-            )}
+            {translateX > 0 && leftActions.length > 0 && <span>← {leftActions[0].label}</span>}
+            {translateX < 0 && rightActions.length > 0 && <span>{rightActions[0].label} →</span>}
           </div>
         </div>
       )}

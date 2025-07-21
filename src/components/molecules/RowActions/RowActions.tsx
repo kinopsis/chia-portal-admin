@@ -53,7 +53,7 @@ const RowActions = <T extends Record<string, any>>({
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Filter visible actions
-  const visibleActions = actions.filter(action => {
+  const visibleActions = actions.filter((action) => {
     if (typeof action.hidden === 'function') {
       return !action.hidden(record, index)
     }
@@ -61,13 +61,10 @@ const RowActions = <T extends Record<string, any>>({
   })
 
   // Split actions for dropdown variant
-  const primaryActions = variant === 'dropdown' 
-    ? visibleActions.slice(0, maxVisibleActions)
-    : visibleActions
+  const primaryActions =
+    variant === 'dropdown' ? visibleActions.slice(0, maxVisibleActions) : visibleActions
 
-  const dropdownActions = variant === 'dropdown' 
-    ? visibleActions.slice(maxVisibleActions)
-    : []
+  const dropdownActions = variant === 'dropdown' ? visibleActions.slice(maxVisibleActions) : []
 
   // Handle click outside dropdown
   useEffect(() => {
@@ -89,10 +86,10 @@ const RowActions = <T extends Record<string, any>>({
       // Only handle shortcuts when this row is focused or selected
       const target = event.target as HTMLElement
       const isInThisRow = target.closest('tr')?.contains(dropdownRef.current)
-      
+
       if (!isInThisRow) return
 
-      visibleActions.forEach(action => {
+      visibleActions.forEach((action) => {
         if (action.shortcut && event.key === action.shortcut) {
           event.preventDefault()
           handleActionClick(action)
@@ -106,9 +103,8 @@ const RowActions = <T extends Record<string, any>>({
 
   const handleActionClick = async (action: RowAction<T>) => {
     // Check if action is disabled
-    const isDisabled = typeof action.disabled === 'function' 
-      ? action.disabled(record, index)
-      : action.disabled
+    const isDisabled =
+      typeof action.disabled === 'function' ? action.disabled(record, index) : action.disabled
 
     if (isDisabled || loadingActions.has(action.key)) return
 
@@ -123,17 +119,17 @@ const RowActions = <T extends Record<string, any>>({
 
   const executeAction = async (action: RowAction<T>) => {
     try {
-      setLoadingActions(prev => new Set(prev).add(action.key))
+      setLoadingActions((prev) => new Set(prev).add(action.key))
       onActionStart?.(action, record)
 
       const result = await action.onClick(record, index)
-      
+
       onActionComplete?.(action, record, result)
     } catch (error) {
       console.error(`Error executing action ${action.key}:`, error)
       onActionError?.(action, record, error as Error)
     } finally {
-      setLoadingActions(prev => {
+      setLoadingActions((prev) => {
         const newSet = new Set(prev)
         newSet.delete(action.key)
         return newSet
@@ -149,9 +145,8 @@ const RowActions = <T extends Record<string, any>>({
   }
 
   const renderActionButton = (action: RowAction<T>, isInDropdown = false) => {
-    const isDisabled = typeof action.disabled === 'function' 
-      ? action.disabled(record, index)
-      : action.disabled
+    const isDisabled =
+      typeof action.disabled === 'function' ? action.disabled(record, index) : action.disabled
 
     const isLoading = loadingActions.has(action.key) || action.loading
 
@@ -182,9 +177,7 @@ const RowActions = <T extends Record<string, any>>({
           {action.icon && <span className="flex-shrink-0">{action.icon}</span>}
           <span>{action.label}</span>
           {action.shortcut && (
-            <span className="ml-auto text-xs text-gray-400">
-              {action.shortcut}
-            </span>
+            <span className="ml-auto text-xs text-gray-400">{action.shortcut}</span>
           )}
         </button>
       )
@@ -192,11 +185,7 @@ const RowActions = <T extends Record<string, any>>({
 
     return (
       <Button key={action.key} {...buttonProps}>
-        {isLoading ? (
-          <span className="animate-spin">⟳</span>
-        ) : (
-          action.icon || action.label
-        )}
+        {isLoading ? <span className="animate-spin">⟳</span> : action.icon || action.label}
       </Button>
     )
   }
@@ -218,7 +207,7 @@ const RowActions = <T extends Record<string, any>>({
         {isDropdownOpen && (
           <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
             <div className="py-1" role="menu">
-              {visibleActions.map(action => renderActionButton(action, true))}
+              {visibleActions.map((action) => renderActionButton(action, true))}
             </div>
           </div>
         )}
@@ -230,20 +219,17 @@ const RowActions = <T extends Record<string, any>>({
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 {showConfirm.action.confirmTitle || 'Confirmar acción'}
               </h3>
-              <p className="text-gray-600 mb-6">
-                {showConfirm.action.confirmMessage}
-              </p>
+              <p className="text-gray-600 mb-6">{showConfirm.action.confirmMessage}</p>
               <div className="flex justify-end space-x-3">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowConfirm(null)}
-                >
+                <Button variant="outline" onClick={() => setShowConfirm(null)}>
                   Cancelar
                 </Button>
                 <Button
                   variant={showConfirm.action.variant === 'danger' ? 'primary' : 'primary'}
                   onClick={handleConfirmAction}
-                  className={showConfirm.action.variant === 'danger' ? 'bg-red-600 hover:bg-red-700' : ''}
+                  className={
+                    showConfirm.action.variant === 'danger' ? 'bg-red-600 hover:bg-red-700' : ''
+                  }
                 >
                   Confirmar
                 </Button>
@@ -259,7 +245,7 @@ const RowActions = <T extends Record<string, any>>({
     return (
       <div className={clsx('flex items-center space-x-1', className)} ref={dropdownRef}>
         {/* Primary actions */}
-        {primaryActions.map(action => renderActionButton(action))}
+        {primaryActions.map((action) => renderActionButton(action))}
 
         {/* Dropdown for additional actions */}
         <div className="relative">
@@ -277,7 +263,7 @@ const RowActions = <T extends Record<string, any>>({
           {isDropdownOpen && (
             <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
               <div className="py-1" role="menu">
-                {dropdownActions.map(action => renderActionButton(action, true))}
+                {dropdownActions.map((action) => renderActionButton(action, true))}
               </div>
             </div>
           )}
@@ -290,20 +276,17 @@ const RowActions = <T extends Record<string, any>>({
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 {showConfirm.action.confirmTitle || 'Confirmar acción'}
               </h3>
-              <p className="text-gray-600 mb-6">
-                {showConfirm.action.confirmMessage}
-              </p>
+              <p className="text-gray-600 mb-6">{showConfirm.action.confirmMessage}</p>
               <div className="flex justify-end space-x-3">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowConfirm(null)}
-                >
+                <Button variant="outline" onClick={() => setShowConfirm(null)}>
                   Cancelar
                 </Button>
                 <Button
                   variant={showConfirm.action.variant === 'danger' ? 'primary' : 'primary'}
                   onClick={handleConfirmAction}
-                  className={showConfirm.action.variant === 'danger' ? 'bg-red-600 hover:bg-red-700' : ''}
+                  className={
+                    showConfirm.action.variant === 'danger' ? 'bg-red-600 hover:bg-red-700' : ''
+                  }
                 >
                   Confirmar
                 </Button>
@@ -318,7 +301,7 @@ const RowActions = <T extends Record<string, any>>({
   // Default buttons variant
   return (
     <div className={clsx('flex items-center space-x-1', className)}>
-      {visibleActions.map(action => renderActionButton(action))}
+      {visibleActions.map((action) => renderActionButton(action))}
 
       {/* Confirmation Dialog */}
       {showConfirm?.show && (
@@ -327,20 +310,17 @@ const RowActions = <T extends Record<string, any>>({
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
               {showConfirm.action.confirmTitle || 'Confirmar acción'}
             </h3>
-            <p className="text-gray-600 mb-6">
-              {showConfirm.action.confirmMessage}
-            </p>
+            <p className="text-gray-600 mb-6">{showConfirm.action.confirmMessage}</p>
             <div className="flex justify-end space-x-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowConfirm(null)}
-              >
+              <Button variant="outline" onClick={() => setShowConfirm(null)}>
                 Cancelar
               </Button>
               <Button
                 variant={showConfirm.action.variant === 'danger' ? 'primary' : 'primary'}
                 onClick={handleConfirmAction}
-                className={showConfirm.action.variant === 'danger' ? 'bg-red-600 hover:bg-red-700' : ''}
+                className={
+                  showConfirm.action.variant === 'danger' ? 'bg-red-600 hover:bg-red-700' : ''
+                }
               >
                 Confirmar
               </Button>

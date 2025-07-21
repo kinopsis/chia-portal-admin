@@ -24,13 +24,13 @@ export class OPAsServerService {
   }
 }
 
-
 // Client-side service functions
 export class OPAsClientService {
   async getAll(filters?: SearchFilters & { page?: number; limit?: number }) {
     let query = supabase
       .from('opas')
-      .select(`
+      .select(
+        `
         *,
         subdependencias (
           id,
@@ -43,7 +43,9 @@ export class OPAsClientService {
             nombre
           )
         )
-      `, { count: 'exact' })
+      `,
+        { count: 'exact' }
+      )
       .order('nombre', { ascending: true })
 
     // Apply filters
@@ -88,7 +90,8 @@ export class OPAsClientService {
   async getById(id: string) {
     const { data, error } = await supabase
       .from('opas')
-      .select(`
+      .select(
+        `
         *,
         subdependencias (
           id,
@@ -101,7 +104,8 @@ export class OPAsClientService {
             nombre
           )
         )
-      `)
+      `
+      )
       .eq('id', id)
       .single()
 
@@ -115,7 +119,8 @@ export class OPAsClientService {
   async getActive() {
     const { data, error } = await supabase
       .from('opas')
-      .select(`
+      .select(
+        `
         *,
         subdependencias (
           nombre,
@@ -123,7 +128,8 @@ export class OPAsClientService {
             nombre
           )
         )
-      `)
+      `
+      )
       .eq('activa', true)
       .order('nombre', { ascending: true })
 
@@ -137,7 +143,8 @@ export class OPAsClientService {
   async search(query: string, limit = 10) {
     const { data, error } = await supabase
       .from('opas')
-      .select(`
+      .select(
+        `
         *,
         subdependencias (
           nombre,
@@ -145,7 +152,8 @@ export class OPAsClientService {
             nombre
           )
         )
-      `)
+      `
+      )
       .or(`nombre.ilike.%${query}%,descripcion.ilike.%${query}%`)
       .eq('activa', true)
       .limit(limit)
@@ -161,7 +169,8 @@ export class OPAsClientService {
     const { data, error } = await supabase
       .from('opas')
       .insert(opa)
-      .select(`
+      .select(
+        `
         *,
         subdependencias (
           id,
@@ -171,7 +180,8 @@ export class OPAsClientService {
             nombre
           )
         )
-      `)
+      `
+      )
       .single()
 
     if (error) {
@@ -186,7 +196,8 @@ export class OPAsClientService {
       .from('opas')
       .update({ ...updates, updated_at: new Date().toISOString() })
       .eq('id', id)
-      .select(`
+      .select(
+        `
         *,
         subdependencias (
           id,
@@ -196,7 +207,8 @@ export class OPAsClientService {
             nombre
           )
         )
-      `)
+      `
+      )
       .single()
 
     if (error) {
@@ -207,10 +219,7 @@ export class OPAsClientService {
   }
 
   async delete(id: string) {
-    const { error } = await supabase
-      .from('opas')
-      .delete()
-      .eq('id', id)
+    const { error } = await supabase.from('opas').delete().eq('id', id)
 
     if (error) {
       throw new Error(`Error deleting OPA: ${error.message}`)

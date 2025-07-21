@@ -57,10 +57,10 @@ export function useBreadcrumbs(customItems?: BreadcrumbItem[]): BreadcrumbItem[]
     pathSegments.forEach((segment, index) => {
       currentPath += `/${segment}`
       const isLast = index === pathSegments.length - 1
-      
+
       // Get configuration for this segment
       const config = breadcrumbConfig[segment]
-      
+
       breadcrumbs.push({
         label: config?.label || segment.charAt(0).toUpperCase() + segment.slice(1),
         href: isLast ? undefined : currentPath,
@@ -75,7 +75,7 @@ export function useBreadcrumbs(customItems?: BreadcrumbItem[]): BreadcrumbItem[]
 
 // Hook for specific admin breadcrumbs
 export function useAdminBreadcrumbs(
-  section?: string, 
+  section?: string,
   subsection?: string,
   customLabel?: string
 ): BreadcrumbItem[] {
@@ -103,7 +103,8 @@ export function useAdminBreadcrumbs(
     if (subsection) {
       const config = breadcrumbConfig[subsection]
       breadcrumbs.push({
-        label: customLabel || config?.label || subsection.charAt(0).toUpperCase() + subsection.slice(1),
+        label:
+          customLabel || config?.label || subsection.charAt(0).toUpperCase() + subsection.slice(1),
         href: undefined,
         icon: config?.icon,
         current: true,
@@ -141,7 +142,7 @@ export function useUserBreadcrumbs(section?: string): BreadcrumbItem[] {
 
 // Hook for public page breadcrumbs
 export function usePublicBreadcrumbs(
-  section?: string, 
+  section?: string,
   subsection?: string,
   customLabel?: string
 ): BreadcrumbItem[] {
@@ -161,7 +162,8 @@ export function usePublicBreadcrumbs(
     if (subsection) {
       const config = breadcrumbConfig[subsection]
       breadcrumbs.push({
-        label: customLabel || config?.label || subsection.charAt(0).toUpperCase() + subsection.slice(1),
+        label:
+          customLabel || config?.label || subsection.charAt(0).toUpperCase() + subsection.slice(1),
         href: undefined,
         icon: config?.icon,
         current: true,

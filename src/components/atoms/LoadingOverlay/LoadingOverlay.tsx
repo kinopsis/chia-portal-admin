@@ -42,7 +42,7 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
   return (
     <div className={clsx('relative', className)}>
       {children}
-      
+
       {/* Overlay */}
       <div
         className={clsx(
@@ -56,12 +56,12 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
         <div className="flex flex-col items-center space-y-3 p-6">
           {/* Spinner */}
           <Spinner size={spinnerSizes[size]} />
-          
+
           {/* Message */}
           <div className={clsx('text-gray-700 font-medium text-center', sizeClasses[size])}>
             {message}
           </div>
-          
+
           {/* Progress bar */}
           {showProgress && typeof progress === 'number' && (
             <div className="w-48 bg-gray-200 rounded-full h-2">
@@ -74,9 +74,7 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
                 aria-valuemax={100}
                 aria-label={`Progreso: ${progress}%`}
               />
-              <div className="text-xs text-gray-600 mt-1 text-center">
-                {Math.round(progress)}%
-              </div>
+              <div className="text-xs text-gray-600 mt-1 text-center">{Math.round(progress)}%</div>
             </div>
           )}
         </div>

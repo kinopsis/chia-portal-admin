@@ -25,9 +25,7 @@ export interface UseAsyncOperationReturn<T = any> {
   setProgress: (progress: number) => void
 }
 
-const useAsyncOperation = <T = any>(
-  initialData: T | null = null
-): UseAsyncOperationReturn<T> => {
+const useAsyncOperation = <T = any>(initialData: T | null = null): UseAsyncOperationReturn<T> => {
   const [state, setState] = useState<AsyncOperationState<T>>({
     data: initialData,
     loading: false,
@@ -41,88 +39,80 @@ const useAsyncOperation = <T = any>(
   } | null>(null)
 
   const setProgress = useCallback((progress: number) => {
-    setState(prev => ({ ...prev, progress }))
+    setState((prev) => ({ ...prev, progress }))
   }, [])
 
-  const execute = useCallback(async (
-    operation: () => Promise<T>,
-    options: AsyncOperationOptions = {}
-  ): Promise<T | null> => {
-    const {
-      retryAttempts = 0,
-      retryDelay = 1000,
-      onSuccess,
-      onError,
-      onProgress,
-    } = options
+  const execute = useCallback(
+    async (operation: () => Promise<T>, options: AsyncOperationOptions = {}): Promise<T | null> => {
+      const { retryAttempts = 0, retryDelay = 1000, onSuccess, onError, onProgress } = options
 
-    // Store the operation for retry functionality
-    lastOperationRef.current = { operation, options }
+      // Store the operation for retry functionality
+      lastOperationRef.current = { operation, options }
 
-    setState(prev => ({
-      ...prev,
-      loading: true,
-      error: null,
-      progress: onProgress ? 0 : undefined,
-    }))
+      setState((prev) => ({
+        ...prev,
+        loading: true,
+        error: null,
+        progress: onProgress ? 0 : undefined,
+      }))
 
-    let lastError: Error | null = null
-    let attempt = 0
+      let lastError: Error | null = null
+      let attempt = 0
 
-    while (attempt <= retryAttempts) {
-      try {
-        if (onProgress) {
-          onProgress(0)
-          setState(prev => ({ ...prev, progress: 0 }))
-        }
+      while (attempt <= retryAttempts) {
+        try {
+          if (onProgress) {
+            onProgress(0)
+            setState((prev) => ({ ...prev, progress: 0 }))
+          }
 
-        const result = await operation()
+          const result = await operation()
 
-        if (onProgress) {
-          onProgress(100)
-          setState(prev => ({ ...prev, progress: 100 }))
-        }
+          if (onProgress) {
+            onProgress(100)
+            setState((prev) => ({ ...prev, progress: 100 }))
+          }
 
-        setState(prev => ({
-          ...prev,
-          data: result,
-          loading: false,
-          error: null,
-          progress: undefined,
-        }))
+          setState((prev) => ({
+            ...prev,
+            data: result,
+            loading: false,
+            error: null,
+            progress: undefined,
+          }))
 
-        onSuccess?.(result)
-        return result
+          onSuccess?.(result)
+          return result
+        } catch (error) {
+          lastError = error instanceof Error ? error : new Error(String(error))
 
-      } catch (error) {
-        lastError = error instanceof Error ? error : new Error(String(error))
-        
-        if (attempt < retryAttempts) {
-          attempt++
-          console.warn(`Operation failed, retrying (${attempt}/${retryAttempts})...`, lastError)
-          
-          // Wait before retrying
-          await new Promise(resolve => setTimeout(resolve, retryDelay * attempt))
-        } else {
-          break
+          if (attempt < retryAttempts) {
+            attempt++
+            console.warn(`Operation failed, retrying (${attempt}/${retryAttempts})...`, lastError)
+
+            // Wait before retrying
+            await new Promise((resolve) => setTimeout(resolve, retryDelay * attempt))
+          } else {
+            break
+          }
         }
       }
-    }
 
-    // All attempts failed
-    const errorMessage = lastError?.message || 'Operación fallida'
-    
-    setState(prev => ({
-      ...prev,
-      loading: false,
-      error: errorMessage,
-      progress: undefined,
-    }))
+      // All attempts failed
+      const errorMessage = lastError?.message || 'Operación fallida'
 
-    onError?.(lastError!)
-    return null
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: errorMessage,
+        progress: undefined,
+      }))
 
-  }, [])
+      onError?.(lastError!)
+      return null
+    },
+    []
+  )
 
   const retry = useCallback(async (): Promise<T | null> => {
     if (!lastOperationRef.current) {

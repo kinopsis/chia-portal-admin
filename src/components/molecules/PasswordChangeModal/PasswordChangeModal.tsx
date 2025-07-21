@@ -15,7 +15,7 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
   isOpen,
   onClose,
   user,
-  onSuccess
+  onSuccess,
 }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -53,7 +53,6 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
         setNewPassword('')
         setConfirmPassword('')
       }, 2000)
-
     } catch (err) {
       console.error('Error changing password:', err)
       setError(err instanceof Error ? err.message : 'Error al cambiar la contraseña')
@@ -131,9 +130,7 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
                     <span className="text-green-400">✅</span>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm text-green-800">
-                      Contraseña cambiada exitosamente
-                    </p>
+                    <p className="text-sm text-green-800">Contraseña cambiada exitosamente</p>
                   </div>
                 </div>
               </div>
@@ -204,7 +201,11 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
               disabled={isLoading || success}
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
             >
-              {isLoading ? 'Cambiando...' : success ? '✅ Contraseña Cambiada' : 'Cambiar Contraseña'}
+              {isLoading
+                ? 'Cambiando...'
+                : success
+                  ? '✅ Contraseña Cambiada'
+                  : 'Cambiar Contraseña'}
             </button>
           </div>
         </div>

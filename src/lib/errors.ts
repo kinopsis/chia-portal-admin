@@ -27,39 +27,39 @@ export interface NetworkErrorInfo {
  */
 export function formatSupabaseError(error: any): string {
   if (!error) return 'Error desconocido'
-  
+
   // Handle different error types
   if (typeof error === 'string') {
     return error
   }
-  
+
   if (error instanceof Error) {
     return error.message
   }
-  
+
   // Handle Supabase error objects
   if (error.code || error.message) {
     const parts: string[] = []
-    
+
     if (error.message) {
       parts.push(error.message)
     }
-    
+
     if (error.code) {
       parts.push(`(Código: ${error.code})`)
     }
-    
+
     if (error.details) {
       parts.push(`Detalles: ${error.details}`)
     }
-    
+
     if (error.hint) {
       parts.push(`Sugerencia: ${error.hint}`)
     }
-    
+
     return parts.join(' - ')
   }
-  
+
   // Fallback for unknown error types
   try {
     return JSON.stringify(error)
@@ -74,7 +74,7 @@ export function formatSupabaseError(error: any): string {
 export function logSupabaseError(context: string, error: any): void {
   const formattedError = formatSupabaseError(error)
   console.error(`${context}:`, formattedError)
-  
+
   // Also log the raw error for debugging
   if (process.env.NODE_ENV === 'development') {
     console.error('Raw error object:', error)
@@ -85,16 +85,17 @@ export function logSupabaseError(context: string, error: any): void {
  * Checks if an error indicates a missing table/relation
  */
 export function isMissingTableError(error: any): boolean {
-  return error?.code === '42P01' || 
-         error?.message?.includes('relation') && error?.message?.includes('does not exist')
+  return (
+    error?.code === '42P01' ||
+    (error?.message?.includes('relation') && error?.message?.includes('does not exist'))
+  )
 }
 
 /**
  * Checks if an error indicates a missing foreign key relationship
  */
 export function isMissingForeignKeyError(error: any): boolean {
-  return error?.code === 'PGRST200' || 
-         error?.message?.includes('foreign key relationship')
+  return error?.code === 'PGRST200' || error?.message?.includes('foreign key relationship')
 }
 
 /**
@@ -105,39 +106,45 @@ export function analyzeNetworkError(error: any): NetworkErrorInfo {
   const errorString = String(error).toLowerCase()
 
   // Check for network connection errors
-  if (errorMessage.includes('failed to fetch') ||
-      errorMessage.includes('network error') ||
-      errorMessage.includes('connection refused') ||
-      errorMessage.includes('connection closed') ||
-      errorString.includes('err_connection_closed') ||
-      errorString.includes('err_connection_refused') ||
-      errorString.includes('err_network_changed')) {
+  if (
+    errorMessage.includes('failed to fetch') ||
+    errorMessage.includes('network error') ||
+    errorMessage.includes('connection refused') ||
+    errorMessage.includes('connection closed') ||
+    errorString.includes('err_connection_closed') ||
+    errorString.includes('err_connection_refused') ||
+    errorString.includes('err_network_changed')
+  ) {
     return {
       isNetworkError: true,
       isRetryable: true,
-      errorType: 'connection'
+      errorType: 'connection',
     }
   }
 
   // Check for timeout errors
-  if (errorMessage.includes('timeout') ||
-      errorMessage.includes('timed out') ||
-      errorString.includes('err_timed_out')) {
+  if (
+    errorMessage.includes('timeout') ||
+    errorMessage.includes('timed out') ||
+    errorString.includes('err_timed_out')
+  ) {
     return {
       isNetworkError: true,
       isRetryable: true,
-      errorType: 'timeout'
+      errorType: 'timeout',
     }
   }
 
   // Check for CORS errors
-  if (errorMessage.includes('cors') ||
-      errorMessage.includes('cross-origin') ||
-      errorString.includes('cors')) {
+  if (
+    errorMessage.includes('cors') ||
+    errorMessage.includes('cross-origin') ||
+    errorString.includes('cors')
+  ) {
     return {
       isNetworkError: true,
       isRetryable: false,
-      errorType: 'cors'
+      errorType: 'cors',
     }
   }
 
@@ -146,14 +153,14 @@ export function analyzeNetworkError(error: any): NetworkErrorInfo {
     return {
       isNetworkError: true,
       isRetryable: true,
-      errorType: 'server'
+      errorType: 'server',
     }
   }
 
   return {
     isNetworkError: false,
     isRetryable: false,
-    errorType: 'unknown'
+    errorType: 'unknown',
   }
 }
 
@@ -164,12 +171,7 @@ export async function withRetry<T>(
   operation: () => Promise<T>,
   options: Partial<RetryOptions> = {}
 ): Promise<T> {
-  const {
-    maxRetries = 3,
-    baseDelay = 1000,
-    maxDelay = 10000,
-    backoffFactor = 2
-  } = options
+  const { maxRetries = 3, baseDelay = 1000, maxDelay = 10000, backoffFactor = 2 } = options
 
   let lastError: any
 
@@ -191,13 +193,10 @@ export async function withRetry<T>(
       }
 
       // Calculate delay with exponential backoff
-      const delay = Math.min(
-        baseDelay * Math.pow(backoffFactor, attempt),
-        maxDelay
-      )
+      const delay = Math.min(baseDelay * Math.pow(backoffFactor, attempt), maxDelay)
 
       console.warn(`Attempt ${attempt + 1} failed, retrying in ${delay}ms...`, error)
-      await new Promise(resolve => setTimeout(resolve, delay))
+      await new Promise((resolve) => setTimeout(resolve, delay))
     }
   }
 

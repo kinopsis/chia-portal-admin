@@ -49,28 +49,28 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         {/* Header Content */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div className="flex-1 min-w-0">
-            <h1 className={clsx(
-              'font-bold text-gray-900 truncate',
-              variant === 'minimal' ? 'text-2xl' : 'text-3xl'
-            )}>
+            <h1
+              className={clsx(
+                'font-bold text-gray-900 truncate',
+                variant === 'minimal' ? 'text-2xl' : 'text-3xl'
+              )}
+            >
               {title}
             </h1>
             {description && (
-              <p className={clsx(
-                'text-gray-600 mt-2',
-                variant === 'minimal' ? 'text-sm' : 'text-base'
-              )}>
+              <p
+                className={clsx(
+                  'text-gray-600 mt-2',
+                  variant === 'minimal' ? 'text-sm' : 'text-base'
+                )}
+              >
                 {description}
               </p>
             )}
           </div>
 
           {/* Actions */}
-          {actions && (
-            <div className="mt-4 sm:mt-0 sm:ml-6 flex-shrink-0">
-              {actions}
-            </div>
-          )}
+          {actions && <div className="mt-4 sm:mt-0 sm:ml-6 flex-shrink-0">{actions}</div>}
         </div>
       </div>
     </div>

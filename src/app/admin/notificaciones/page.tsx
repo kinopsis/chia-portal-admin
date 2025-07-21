@@ -172,10 +172,10 @@ export default function NotificacionesAdminPage() {
 
       // TODO: Implement notification creation
       console.log('Creating notification:', formData)
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
       setIsCreateModalOpen(false)
       alert('Notificación creada exitosamente')
     } catch (err) {
@@ -189,13 +189,13 @@ export default function NotificacionesAdminPage() {
   const handleSendNotification = async (id: string) => {
     try {
       setLoading(true)
-      
+
       // TODO: Implement send notification
       console.log('Sending notification:', id)
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
       alert('Notificación enviada exitosamente')
     } catch (error) {
       console.error('Error sending notification:', error)
@@ -214,11 +214,7 @@ export default function NotificacionesAdminPage() {
             <h1 className="text-2xl font-bold text-gray-900">Notificaciones</h1>
             <p className="text-gray-600">Gestionar notificaciones del sistema</p>
           </div>
-          <Button
-            variant="primary"
-            onClick={handleCreate}
-            className="flex items-center space-x-2"
-          >
+          <Button variant="primary" onClick={handleCreate} className="flex items-center space-x-2">
             <span>➕</span>
             <span>Nueva Notificación</span>
           </Button>
@@ -250,7 +246,7 @@ export default function NotificacionesAdminPage() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500">Enviadas</p>
                 <p className="text-2xl font-semibold text-gray-900">
-                  {notifications.filter(n => n.status === 'sent').length}
+                  {notifications.filter((n) => n.status === 'sent').length}
                 </p>
               </div>
             </div>
@@ -266,7 +262,7 @@ export default function NotificacionesAdminPage() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500">Programadas</p>
                 <p className="text-2xl font-semibold text-gray-900">
-                  {notifications.filter(n => n.status === 'scheduled').length}
+                  {notifications.filter((n) => n.status === 'scheduled').length}
                 </p>
               </div>
             </div>
@@ -282,7 +278,7 @@ export default function NotificacionesAdminPage() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500">Borradores</p>
                 <p className="text-2xl font-semibold text-gray-900">
-                  {notifications.filter(n => n.status === 'draft').length}
+                  {notifications.filter((n) => n.status === 'draft').length}
                 </p>
               </div>
             </div>
@@ -302,21 +298,25 @@ export default function NotificacionesAdminPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
-                        <h4 className="text-sm font-medium text-gray-900">
-                          {notification.title}
-                        </h4>
+                        <h4 className="text-sm font-medium text-gray-900">{notification.title}</h4>
                         {getTypeBadge(notification.type)}
                         {getStatusBadge(notification.status)}
                       </div>
                       <p className="text-sm text-gray-600 mb-2">{notification.message}</p>
                       <div className="flex items-center space-x-4 text-xs text-gray-500">
                         <span>Destinatarios: {getTargetLabel(notification.target)}</span>
-                        <span>Creada: {new Date(notification.created_at).toLocaleDateString()}</span>
+                        <span>
+                          Creada: {new Date(notification.created_at).toLocaleDateString()}
+                        </span>
                         {notification.sent_at && (
-                          <span>Enviada: {new Date(notification.sent_at).toLocaleDateString()}</span>
+                          <span>
+                            Enviada: {new Date(notification.sent_at).toLocaleDateString()}
+                          </span>
                         )}
                         {notification.scheduled_for && (
-                          <span>Programada: {new Date(notification.scheduled_for).toLocaleDateString()}</span>
+                          <span>
+                            Programada: {new Date(notification.scheduled_for).toLocaleDateString()}
+                          </span>
                         )}
                       </div>
                     </div>

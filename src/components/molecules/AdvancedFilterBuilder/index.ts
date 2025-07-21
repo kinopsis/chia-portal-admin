@@ -1,9 +1,9 @@
 export { default, applyAdvancedFilters } from './AdvancedFilterBuilder'
-export type { 
+export type {
   AdvancedFilterBuilderProps,
   AdvancedFilterConfig,
   FilterCondition,
   FilterGroup,
   FilterOperator,
-  LogicalOperator
+  LogicalOperator,
 } from './AdvancedFilterBuilder'

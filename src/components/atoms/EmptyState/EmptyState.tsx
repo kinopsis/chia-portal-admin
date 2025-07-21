@@ -79,30 +79,21 @@ const EmptyState: React.FC<EmptyStateProps> = ({
       aria-label="Estado vacío"
     >
       {/* Icon */}
-      <div className="mb-4">
-        {icon || defaultIcon}
-      </div>
+      <div className="mb-4">{icon || defaultIcon}</div>
 
       {/* Title */}
-      <h3 className={clsx('font-semibold text-gray-900 mb-2', classes.title)}>
-        {title}
-      </h3>
+      <h3 className={clsx('font-semibold text-gray-900 mb-2', classes.title)}>{title}</h3>
 
       {/* Description */}
       {description && (
-        <p className={clsx('text-gray-600 mb-6 max-w-md', classes.description)}>
-          {description}
-        </p>
+        <p className={clsx('text-gray-600 mb-6 max-w-md', classes.description)}>{description}</p>
       )}
 
       {/* Actions */}
       {(action || secondaryAction) && (
         <div className="flex flex-col sm:flex-row gap-3">
           {action && (
-            <Button
-              variant={action.variant || 'primary'}
-              onClick={action.onClick}
-            >
+            <Button variant={action.variant || 'primary'} onClick={action.onClick}>
               {action.label}
             </Button>
           )}

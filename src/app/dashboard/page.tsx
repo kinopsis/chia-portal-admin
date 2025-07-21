@@ -10,9 +10,7 @@ function DashboardContent() {
     <div className="container-custom py-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            ¡Bienvenido, {userProfile.nombre}!
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900">¡Bienvenido, {userProfile.nombre}!</h1>
           <p className="text-gray-600 mt-2">
             Panel de control del Portal de Atención Ciudadana de Chía
           </p>
@@ -71,7 +69,9 @@ function DashboardContent() {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-600">Nombre:</span>
-                <span className="font-medium">{userProfile.nombre} {userProfile.apellido}</span>
+                <span className="font-medium">
+                  {userProfile.nombre} {userProfile.apellido}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Email:</span>
@@ -83,7 +83,9 @@ function DashboardContent() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Estado:</span>
-                <span className={`font-medium ${userProfile.activo ? 'text-green-600' : 'text-red-600'}`}>
+                <span
+                  className={`font-medium ${userProfile.activo ? 'text-green-600' : 'text-red-600'}`}
+                >
                   {userProfile.activo ? 'Activo' : 'Inactivo'}
                 </span>
               </div>

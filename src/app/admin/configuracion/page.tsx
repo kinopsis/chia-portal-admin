@@ -192,10 +192,10 @@ export default function ConfiguracionAdminPage() {
     )
   }
 
-  const activeConfig = configSections.find(section => section.id === activeSection)
+  const activeConfig = configSections.find((section) => section.id === activeSection)
 
   const getFormFields = (settings: ConfigSetting[]): FormField[] => {
-    return settings.map(setting => ({
+    return settings.map((setting) => ({
       name: setting.key,
       label: setting.label,
       type: setting.type,
@@ -214,10 +214,10 @@ export default function ConfiguracionAdminPage() {
 
       // TODO: Implement configuration save
       console.log('Saving configuration:', formData)
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
       alert('Configuración guardada exitosamente')
     } catch (err) {
       console.error('Error saving configuration:', err)
@@ -296,10 +296,13 @@ export default function ConfiguracionAdminPage() {
                   <Form
                     fields={getFormFields(activeConfig.settings)}
                     onSubmit={handleSaveConfig}
-                    initialData={activeConfig.settings.reduce((acc, setting) => {
-                      acc[setting.key] = setting.value
-                      return acc
-                    }, {} as Record<string, any>)}
+                    initialData={activeConfig.settings.reduce(
+                      (acc, setting) => {
+                        acc[setting.key] = setting.value
+                        return acc
+                      },
+                      {} as Record<string, any>
+                    )}
                     validateOnChange
                     validateOnBlur
                     submitButton={

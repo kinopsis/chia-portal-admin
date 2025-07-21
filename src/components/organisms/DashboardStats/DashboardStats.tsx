@@ -15,8 +15,6 @@ export interface DashboardStatsProps {
   showRoleFilter?: boolean
 }
 
-
-
 const DashboardStats: React.FC<DashboardStatsProps> = ({
   className,
   showRefreshButton = true,
@@ -25,11 +23,12 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
   showRoleFilter = true,
 }) => {
   const { userProfile } = useAuth()
-  const [selectedRoles, setSelectedRoles] = useState<string[]>(['ciudadano', 'funcionario', 'admin'])
-  const { metrics, loading, error, refreshMetrics } = useSystemMetrics(
-    autoRefresh,
-    refreshInterval
-  )
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([
+    'ciudadano',
+    'funcionario',
+    'admin',
+  ])
+  const { metrics, loading, error, refreshMetrics } = useSystemMetrics(autoRefresh, refreshInterval)
 
   // Memoize visible stats calculation for performance - must be before conditional returns
   const visibleStats = useMemo(() => {
@@ -52,8 +51,8 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
         trend: {
           value: Math.round((filteredUserCount / metrics.users.total) * 100),
           isPositive: filteredUserCount > 0,
-          label: 'del total'
-        }
+          label: 'del total',
+        },
       })
     } else {
       baseStats.push({
@@ -65,8 +64,8 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
         trend: {
           value: Math.round((metrics.users.newThisMonth / metrics.users.total) * 100),
           isPositive: metrics.users.newThisMonth > 0,
-          label: 'este mes'
-        }
+          label: 'este mes',
+        },
       })
     }
 
@@ -79,8 +78,8 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
       trend: {
         value: Math.round((metrics.tramites.thisMonth / metrics.tramites.total) * 100),
         isPositive: metrics.tramites.thisMonth > 0,
-        label: 'este mes'
-      }
+        label: 'este mes',
+      },
     })
 
     baseStats.push({
@@ -92,8 +91,8 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
       trend: {
         value: Math.round((metrics.opas.thisMonth / metrics.opas.total) * 100),
         isPositive: metrics.opas.thisMonth > 0,
-        label: 'este mes'
-      }
+        label: 'este mes',
+      },
     })
 
     baseStats.push({
@@ -105,8 +104,8 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
       trend: {
         value: Math.round((metrics.faqs.thisMonth / metrics.faqs.total) * 100),
         isPositive: metrics.faqs.thisMonth > 0,
-        label: 'este mes'
-      }
+        label: 'este mes',
+      },
     })
 
     // Add admin-only stats
@@ -128,8 +127,8 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
         trend: {
           value: Math.round((metrics.activity.todayActions / metrics.activity.weekActions) * 100),
           isPositive: metrics.activity.todayActions > 0,
-          label: 'del total semanal'
-        }
+          label: 'del total semanal',
+        },
       })
     }
 
@@ -153,9 +152,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
         <div className="text-red-600 mb-4">
           <span className="text-4xl">!</span>
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          Error al cargar métricas
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Error al cargar métricas</h3>
         <p className="text-gray-600 mb-4">{error}</p>
         <Button onClick={refreshMetrics} variant="primary">
           Reintentar
@@ -185,12 +182,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
           {showRefreshButton && (
             <div className="flex items-center space-x-2">
               {loading && <Spinner size="sm" />}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={refreshMetrics}
-                disabled={loading}
-              >
+              <Button variant="outline" size="sm" onClick={refreshMetrics} disabled={loading}>
                 Actualizar
               </Button>
             </div>

@@ -53,7 +53,7 @@ const BulkActions = <T extends Record<string, any>>({
   const selectedCount = selectedRecords.length
 
   // Filter visible actions
-  const visibleActions = actions.filter(action => {
+  const visibleActions = actions.filter((action) => {
     // Check if action should be hidden
     if (typeof action.hidden === 'function') {
       if (action.hidden(selectedRecords, selectedKeys)) return false
@@ -70,9 +70,10 @@ const BulkActions = <T extends Record<string, any>>({
 
   const handleActionClick = async (action: BulkAction<T>) => {
     // Check if action is disabled
-    const isDisabled = typeof action.disabled === 'function' 
-      ? action.disabled(selectedRecords, selectedKeys)
-      : action.disabled
+    const isDisabled =
+      typeof action.disabled === 'function'
+        ? action.disabled(selectedRecords, selectedKeys)
+        : action.disabled
 
     if (isDisabled || loadingActions.has(action.key)) return
 
@@ -87,17 +88,17 @@ const BulkActions = <T extends Record<string, any>>({
 
   const executeAction = async (action: BulkAction<T>) => {
     try {
-      setLoadingActions(prev => new Set(prev).add(action.key))
+      setLoadingActions((prev) => new Set(prev).add(action.key))
       onActionStart?.(action, selectedRecords)
 
       const result = await action.onClick(selectedRecords, selectedKeys)
-      
+
       onActionComplete?.(action, selectedRecords, result)
     } catch (error) {
       console.error(`Error executing bulk action ${action.key}:`, error)
       onActionError?.(action, selectedRecords, error as Error)
     } finally {
-      setLoadingActions(prev => {
+      setLoadingActions((prev) => {
         const newSet = new Set(prev)
         newSet.delete(action.key)
         return newSet
@@ -113,9 +114,10 @@ const BulkActions = <T extends Record<string, any>>({
   }
 
   const renderActionButton = (action: BulkAction<T>) => {
-    const isDisabled = typeof action.disabled === 'function' 
-      ? action.disabled(selectedRecords, selectedKeys)
-      : action.disabled
+    const isDisabled =
+      typeof action.disabled === 'function'
+        ? action.disabled(selectedRecords, selectedKeys)
+        : action.disabled
 
     const isLoading = loadingActions.has(action.key) || action.loading
 
@@ -156,12 +158,13 @@ const BulkActions = <T extends Record<string, any>>({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="text-sm font-medium text-blue-800">
-              {selectedCount} elemento{selectedCount !== 1 ? 's' : ''} seleccionado{selectedCount !== 1 ? 's' : ''}
+              {selectedCount} elemento{selectedCount !== 1 ? 's' : ''} seleccionado
+              {selectedCount !== 1 ? 's' : ''}
             </div>
-            
+
             {variant === 'bar' && (
               <div className="flex items-center space-x-2">
-                {visibleActions.map(action => renderActionButton(action))}
+                {visibleActions.map((action) => renderActionButton(action))}
               </div>
             )}
           </div>
@@ -169,10 +172,10 @@ const BulkActions = <T extends Record<string, any>>({
           <div className="flex items-center space-x-2">
             {variant === 'dropdown' && visibleActions.length > 0 && (
               <div className="flex items-center space-x-2">
-                {visibleActions.map(action => renderActionButton(action))}
+                {visibleActions.map((action) => renderActionButton(action))}
               </div>
             )}
-            
+
             {onClearSelection && (
               <Button
                 variant="ghost"
@@ -194,23 +197,20 @@ const BulkActions = <T extends Record<string, any>>({
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
               {showConfirm.action.confirmTitle || 'Confirmar acción masiva'}
             </h3>
-            <p className="text-gray-600 mb-4">
-              {showConfirm.action.confirmMessage}
-            </p>
+            <p className="text-gray-600 mb-4">{showConfirm.action.confirmMessage}</p>
             <p className="text-sm text-gray-500 mb-6">
               Esta acción afectará a {selectedCount} elemento{selectedCount !== 1 ? 's' : ''}.
             </p>
             <div className="flex justify-end space-x-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowConfirm(null)}
-              >
+              <Button variant="outline" onClick={() => setShowConfirm(null)}>
                 Cancelar
               </Button>
               <Button
                 variant={showConfirm.action.variant === 'danger' ? 'primary' : 'primary'}
                 onClick={handleConfirmAction}
-                className={showConfirm.action.variant === 'danger' ? 'bg-red-600 hover:bg-red-700' : ''}
+                className={
+                  showConfirm.action.variant === 'danger' ? 'bg-red-600 hover:bg-red-700' : ''
+                }
               >
                 Confirmar
               </Button>

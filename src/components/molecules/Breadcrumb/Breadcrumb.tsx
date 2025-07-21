@@ -66,7 +66,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   showHome = true,
   className,
   maxItems = 5,
-  separator
+  separator,
 }) => {
   const pathname = usePathname()
 
@@ -78,13 +78,14 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
     : breadcrumbItems
 
   // Truncate items if they exceed maxItems
-  const displayItems = allItems.length > maxItems
-    ? [
-        allItems[0], // Always show home
-        { label: '...', href: undefined, icon: null },
-        ...allItems.slice(-maxItems + 2) // Show last few items
-      ]
-    : allItems
+  const displayItems =
+    allItems.length > maxItems
+      ? [
+          allItems[0], // Always show home
+          { label: '...', href: undefined, icon: null },
+          ...allItems.slice(-maxItems + 2), // Show last few items
+        ]
+      : allItems
 
   const separatorElement = separator || <ChevronRightIcon className="w-4 h-4 text-gray-400 mx-1" />
 

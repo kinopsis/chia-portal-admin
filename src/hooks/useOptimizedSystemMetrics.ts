@@ -33,7 +33,7 @@ export function useOptimizedSystemMetrics(
     return JSON.stringify({
       filters,
       userRole: userProfile?.rol,
-      timestamp: Math.floor(Date.now() / CACHE_DURATION) // Round to cache duration
+      timestamp: Math.floor(Date.now() / CACHE_DURATION), // Round to cache duration
     })
   }, [filters, userProfile?.rol])
 
@@ -58,61 +58,55 @@ export function useOptimizedSystemMetrics(
       const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
       // Use Promise.allSettled for better error handling and parallel execution
-      const [
-        usersResult,
-        tramitesResult,
-        opasResult,
-        faqsResult,
-        dependenciasResult
-      ] = await Promise.allSettled([
-        // Optimized user query - only fetch necessary fields
-        supabase
-          .from('user_profiles')
-          .select('rol, activo, created_at')
-          .order('created_at', { ascending: false }),
+      const [usersResult, tramitesResult, opasResult, faqsResult, dependenciasResult] =
+        await Promise.allSettled([
+          // Optimized user query - only fetch necessary fields
+          supabase
+            .from('user_profiles')
+            .select('rol, activo, created_at')
+            .order('created_at', { ascending: false }),
 
-        // Optimized tramites query with date filtering
-        supabase
-          .from('tramites')
-          .select('estado, created_at, updated_at')
-          .gte('created_at', startOfWeek.toISOString())
-          .order('updated_at', { ascending: false }),
+          // Optimized tramites query with date filtering
+          supabase
+            .from('tramites')
+            .select('estado, created_at, updated_at')
+            .gte('created_at', startOfWeek.toISOString())
+            .order('updated_at', { ascending: false }),
 
-        // Optimized OPAs query with date filtering
-        supabase
-          .from('opas')
-          .select('estado, created_at, updated_at')
-          .gte('created_at', startOfWeek.toISOString())
-          .order('updated_at', { ascending: false }),
+          // Optimized OPAs query with date filtering
+          supabase
+            .from('opas')
+            .select('estado, created_at, updated_at')
+            .gte('created_at', startOfWeek.toISOString())
+            .order('updated_at', { ascending: false }),
 
-        // FAQs query - only for admin users
-        userProfile?.rol === 'admin' 
-          ? supabase
-              .from('faqs')
-              .select('activa, created_at, updated_at')
-              .order('updated_at', { ascending: false })
-              .limit(100)
-          : Promise.resolve({ data: [], error: null }),
+          // FAQs query - only for admin users
+          userProfile?.rol === 'admin'
+            ? supabase
+                .from('faqs')
+                .select('activa, created_at, updated_at')
+                .order('updated_at', { ascending: false })
+                .limit(100)
+            : Promise.resolve({ data: [], error: null }),
 
-        // Dependencias query - only for admin/funcionario
-        ['admin', 'funcionario'].includes(userProfile?.rol || '')
-          ? supabase
-              .from('dependencias')
-              .select('activa')
-          : Promise.resolve({ data: [], error: null })
-      ])
+          // Dependencias query - only for admin/funcionario
+          ['admin', 'funcionario'].includes(userProfile?.rol || '')
+            ? supabase.from('dependencias').select('activa')
+            : Promise.resolve({ data: [], error: null }),
+        ])
 
       // Process results and handle errors
       const usersData = usersResult.status === 'fulfilled' ? usersResult.value.data : []
       const tramitesData = tramitesResult.status === 'fulfilled' ? tramitesResult.value.data : []
       const opasData = opasResult.status === 'fulfilled' ? opasResult.value.data : []
       const faqsData = faqsResult.status === 'fulfilled' ? faqsResult.value.data : []
-      const dependenciasData = dependenciasResult.status === 'fulfilled' ? dependenciasResult.value.data : []
+      const dependenciasData =
+        dependenciasResult.status === 'fulfilled' ? dependenciasResult.value.data : []
 
       // Check for errors
       const errors = [usersResult, tramitesResult, opasResult, faqsResult, dependenciasResult]
-        .filter(result => result.status === 'rejected')
-        .map(result => (result as PromiseRejectedResult).reason)
+        .filter((result) => result.status === 'rejected')
+        .map((result) => (result as PromiseRejectedResult).reason)
 
       if (errors.length > 0) {
         throw new Error(`Failed to fetch some metrics: ${errors.join(', ')}`)
@@ -133,7 +127,7 @@ export function useOptimizedSystemMetrics(
       // Cache the results
       metricsCache.set(cacheKey, {
         data: processedMetrics,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       })
 
       setMetrics(processedMetrics)
@@ -214,63 +208,53 @@ function processMetricsData({
   // Process users metrics
   const usersMetrics = {
     total: usersData.length,
-    active: usersData.filter(u => u.activo).length,
-    newThisMonth: usersData.filter(u => 
-      new Date(u.created_at) >= startOfMonth
-    ).length,
+    active: usersData.filter((u) => u.activo).length,
+    newThisMonth: usersData.filter((u) => new Date(u.created_at) >= startOfMonth).length,
     byRole: {
-      ciudadano: usersData.filter(u => u.rol === 'ciudadano').length,
-      funcionario: usersData.filter(u => u.rol === 'funcionario').length,
-      admin: usersData.filter(u => u.rol === 'admin').length,
-    }
+      ciudadano: usersData.filter((u) => u.rol === 'ciudadano').length,
+      funcionario: usersData.filter((u) => u.rol === 'funcionario').length,
+      admin: usersData.filter((u) => u.rol === 'admin').length,
+    },
   }
 
   // Process tramites metrics
   const tramitesMetrics = {
     total: tramitesData.length,
-    pending: tramitesData.filter(t => t.estado === 'pendiente').length,
-    completed: tramitesData.filter(t => t.estado === 'completado').length,
-    thisMonth: tramitesData.filter(t => 
-      new Date(t.created_at) >= startOfMonth
-    ).length,
+    pending: tramitesData.filter((t) => t.estado === 'pendiente').length,
+    completed: tramitesData.filter((t) => t.estado === 'completado').length,
+    thisMonth: tramitesData.filter((t) => new Date(t.created_at) >= startOfMonth).length,
   }
 
   // Process OPAs metrics
   const opasMetrics = {
     total: opasData.length,
-    pending: opasData.filter(o => o.estado === 'pendiente').length,
-    approved: opasData.filter(o => o.estado === 'aprobada').length,
-    thisMonth: opasData.filter(o => 
-      new Date(o.created_at) >= startOfMonth
-    ).length,
+    pending: opasData.filter((o) => o.estado === 'pendiente').length,
+    approved: opasData.filter((o) => o.estado === 'aprobada').length,
+    thisMonth: opasData.filter((o) => new Date(o.created_at) >= startOfMonth).length,
   }
 
   // Process FAQs metrics
   const faqsMetrics = {
     total: faqsData.length,
-    published: faqsData.filter(f => f.activa).length,
-    thisMonth: faqsData.filter(f => 
-      new Date(f.created_at) >= startOfMonth
-    ).length,
+    published: faqsData.filter((f) => f.activa).length,
+    thisMonth: faqsData.filter((f) => new Date(f.created_at) >= startOfMonth).length,
   }
 
   // Process dependencias metrics
   const dependenciasMetrics = {
     total: dependenciasData.length,
-    active: dependenciasData.filter(d => d.activa).length,
+    active: dependenciasData.filter((d) => d.activa).length,
   }
 
   // Calculate activity metrics
   const totalActions = tramitesData.length + opasData.length
-  const todayActions = [
-    ...tramitesData,
-    ...opasData
-  ].filter(item => new Date(item.created_at) >= startOfToday).length
+  const todayActions = [...tramitesData, ...opasData].filter(
+    (item) => new Date(item.created_at) >= startOfToday
+  ).length
 
-  const weekActions = [
-    ...tramitesData,
-    ...opasData
-  ].filter(item => new Date(item.created_at) >= startOfWeek).length
+  const weekActions = [...tramitesData, ...opasData].filter(
+    (item) => new Date(item.created_at) >= startOfWeek
+  ).length
 
   const activityMetrics = {
     totalActions,

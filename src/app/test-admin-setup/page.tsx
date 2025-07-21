@@ -17,7 +17,7 @@ export default function TestAdminSetup() {
       const { data, error } = await supabase
         .from('users')
         .update({
-          rol: 'admin'
+          rol: 'admin',
           // apellido: 'Pérez' // Commented out due to missing column in database
         })
         .eq('email', 'juan.perez.test@chia.gov.co')
@@ -43,7 +43,7 @@ export default function TestAdminSetup() {
   const checkUsers = async () => {
     setLoading(true)
     setMessage('')
-    
+
     try {
       const { data, error } = await supabase
         .from('users')
@@ -56,9 +56,9 @@ export default function TestAdminSetup() {
 
       console.log('Users in database:', data)
       setMessage(`📊 Usuarios encontrados: ${data?.length || 0}`)
-      
+
       if (data && data.length > 0) {
-        data.forEach(user => {
+        data.forEach((user) => {
           console.log(`- ${user.nombre} ${user.apellido || ''} (${user.email}) - Rol: ${user.rol}`)
         })
       }
@@ -74,7 +74,7 @@ export default function TestAdminSetup() {
     <div className="container mx-auto py-8 px-4">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">🔧 Admin Setup Tool</h1>
-        
+
         <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
           <div>
             <h2 className="text-xl font-semibold mb-4">User Management</h2>
@@ -84,37 +84,33 @@ export default function TestAdminSetup() {
           </div>
 
           <div className="space-y-4">
-            <Button 
-              onClick={checkUsers}
-              disabled={loading}
-              variant="outline"
-              fullWidth
-            >
+            <Button onClick={checkUsers} disabled={loading} variant="outline" fullWidth>
               {loading ? 'Checking...' : '📊 Check Users in Database'}
             </Button>
 
-            <Button 
-              onClick={updateUserToAdmin}
-              disabled={loading}
-              variant="primary"
-              fullWidth
-            >
+            <Button onClick={updateUserToAdmin} disabled={loading} variant="primary" fullWidth>
               {loading ? 'Updating...' : '👑 Make Juan Pérez Admin'}
             </Button>
           </div>
 
           {message && (
-            <div className={`p-4 rounded-lg ${
-              message.includes('✅') ? 'bg-green-50 text-green-800' :
-              message.includes('📊') ? 'bg-blue-50 text-blue-800' :
-              'bg-red-50 text-red-800'
-            }`}>
+            <div
+              className={`p-4 rounded-lg ${
+                message.includes('✅')
+                  ? 'bg-green-50 text-green-800'
+                  : message.includes('📊')
+                    ? 'bg-blue-50 text-blue-800'
+                    : 'bg-red-50 text-red-800'
+              }`}
+            >
               {message}
             </div>
           )}
 
           <div className="text-sm text-gray-500">
-            <p><strong>Note:</strong> This is a development tool for testing admin functionality.</p>
+            <p>
+              <strong>Note:</strong> This is a development tool for testing admin functionality.
+            </p>
             <p>After updating the role, refresh the page to see changes in the header.</p>
           </div>
         </div>

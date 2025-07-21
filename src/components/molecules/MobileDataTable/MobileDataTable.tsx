@@ -42,34 +42,37 @@ const MobileDataTable = <T extends Record<string, any>>({
   const [expandedRows, setExpandedRows] = useState<Set<string | number>>(new Set())
 
   // Get primary and secondary fields from columns if not specified
-  const primaryCol = primaryField ? columns.find(col => col.key === primaryField) : columns[0]
-  const secondaryCol = secondaryField ? columns.find(col => col.key === secondaryField) : columns[1]
+  const primaryCol = primaryField ? columns.find((col) => col.key === primaryField) : columns[0]
+  const secondaryCol = secondaryField
+    ? columns.find((col) => col.key === secondaryField)
+    : columns[1]
 
   // Get visible columns (excluding primary and secondary)
-  const detailColumns = columns.filter(col => 
-    col.key !== primaryCol?.key && 
-    col.key !== secondaryCol?.key &&
-    !col.hidden
+  const detailColumns = columns.filter(
+    (col) => col.key !== primaryCol?.key && col.key !== secondaryCol?.key && !col.hidden
   )
 
-  const handleRowSelection = useCallback((record: T, checked: boolean) => {
-    if (!onSelectionChange) return
+  const handleRowSelection = useCallback(
+    (record: T, checked: boolean) => {
+      if (!onSelectionChange) return
 
-    const recordKey = record[rowKey]
-    let newSelectedKeys: (string | number)[]
+      const recordKey = record[rowKey]
+      let newSelectedKeys: (string | number)[]
 
-    if (checked) {
-      newSelectedKeys = [...selectedRowKeys, recordKey]
-    } else {
-      newSelectedKeys = selectedRowKeys.filter(key => key !== recordKey)
-    }
+      if (checked) {
+        newSelectedKeys = [...selectedRowKeys, recordKey]
+      } else {
+        newSelectedKeys = selectedRowKeys.filter((key) => key !== recordKey)
+      }
 
-    const newSelectedRows = data.filter(item => newSelectedKeys.includes(item[rowKey]))
-    onSelectionChange(newSelectedKeys, newSelectedRows)
-  }, [data, rowKey, selectedRowKeys, onSelectionChange])
+      const newSelectedRows = data.filter((item) => newSelectedKeys.includes(item[rowKey]))
+      onSelectionChange(newSelectedKeys, newSelectedRows)
+    },
+    [data, rowKey, selectedRowKeys, onSelectionChange]
+  )
 
   const toggleRowExpansion = useCallback((recordKey: string | number) => {
-    setExpandedRows(prev => {
+    setExpandedRows((prev) => {
       const newSet = new Set(prev)
       if (newSet.has(recordKey)) {
         newSet.delete(recordKey)
@@ -84,20 +87,20 @@ const MobileDataTable = <T extends Record<string, any>>({
     if (column.render) {
       return column.render(record[column.key], record, data.indexOf(record))
     }
-    
+
     const value = record[column.key]
     if (value == null) return '-'
-    
+
     // Format dates
     if (column.dataType === 'date' && value) {
       return new Date(value).toLocaleDateString()
     }
-    
+
     // Format booleans
     if (typeof value === 'boolean') {
       return value ? '✓' : '✗'
     }
-    
+
     return String(value)
   }
 
@@ -132,15 +135,11 @@ const MobileDataTable = <T extends Record<string, any>>({
                   className="mt-1 h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
                 />
               )}
-              
+
               {showImages && record.image && (
-                <img
-                  src={record.image}
-                  alt=""
-                  className="w-12 h-12 rounded-full object-cover"
-                />
+                <img src={record.image} alt="" className="w-12 h-12 rounded-full object-cover" />
               )}
-              
+
               <div className="flex-1 min-w-0">
                 {primaryCol && (
                   <div className="font-semibold text-gray-900 truncate">
@@ -166,7 +165,7 @@ const MobileDataTable = <T extends Record<string, any>>({
                   size="sm"
                 />
               )}
-              
+
               {detailColumns.length > 0 && (
                 <Button
                   variant="ghost"
@@ -187,11 +186,9 @@ const MobileDataTable = <T extends Record<string, any>>({
           {isExpanded && detailColumns.length > 0 && (
             <div className="mt-3 pt-3 border-t border-gray-200">
               <div className="grid grid-cols-1 gap-2">
-                {detailColumns.map(column => (
+                {detailColumns.map((column) => (
                   <div key={column.key} className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-600">
-                      {column.title}:
-                    </span>
+                    <span className="text-sm font-medium text-gray-600">{column.title}:</span>
                     <span className="text-sm text-gray-900 text-right">
                       {renderFieldValue(record, column)}
                     </span>
@@ -232,15 +229,11 @@ const MobileDataTable = <T extends Record<string, any>>({
               className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
             />
           )}
-          
+
           {showImages && record.image && (
-            <img
-              src={record.image}
-              alt=""
-              className="w-10 h-10 rounded-full object-cover"
-            />
+            <img src={record.image} alt="" className="w-10 h-10 rounded-full object-cover" />
           )}
-          
+
           <div className="flex-1 min-w-0">
             {primaryCol && (
               <div className="font-medium text-gray-900 truncate">
@@ -256,13 +249,7 @@ const MobileDataTable = <T extends Record<string, any>>({
         </div>
 
         {rowActions.length > 0 && (
-          <RowActions
-            record={record}
-            index={index}
-            actions={rowActions}
-            variant="menu"
-            size="sm"
-          />
+          <RowActions record={record} index={index} actions={rowActions} variant="menu" size="sm" />
         )}
       </div>
     )
@@ -295,7 +282,7 @@ const MobileDataTable = <T extends Record<string, any>>({
               className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
             />
           )}
-          
+
           <div className="flex-1 min-w-0">
             {primaryCol && (
               <div className="text-sm font-medium text-gray-900 truncate">
@@ -344,9 +331,7 @@ const MobileDataTable = <T extends Record<string, any>>({
       {layout === 'card' ? (
         <div>{renderLayout()}</div>
       ) : (
-        <Card className="overflow-hidden">
-          {renderLayout()}
-        </Card>
+        <Card className="overflow-hidden">{renderLayout()}</Card>
       )}
     </div>
   )

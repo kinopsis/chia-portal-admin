@@ -14,7 +14,17 @@ export interface MetricCardProps {
     label: string
     period?: string
   }
-  color?: 'blue' | 'green' | 'yellow' | 'red' | 'purple' | 'indigo' | 'primary' | 'secondary' | 'success' | 'warning'
+  color?:
+    | 'blue'
+    | 'green'
+    | 'yellow'
+    | 'red'
+    | 'purple'
+    | 'indigo'
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
   size?: 'sm' | 'md' | 'lg'
   variant?: 'default' | 'gradient' | 'outlined' | 'minimal'
   onClick?: () => void
@@ -148,26 +158,13 @@ const MetricCard: React.FC<MetricCardProps> = ({
 
     switch (variant) {
       case 'gradient':
-        return clsx(
-          baseClasses,
-          `bg-gradient-to-br ${colors.gradient} text-white shadow-lg`
-        )
+        return clsx(baseClasses, `bg-gradient-to-br ${colors.gradient} text-white shadow-lg`)
       case 'outlined':
-        return clsx(
-          baseClasses,
-          `border-2 ${colors.border} ${colors.bg}`
-        )
+        return clsx(baseClasses, `border-2 ${colors.border} ${colors.bg}`)
       case 'minimal':
-        return clsx(
-          baseClasses,
-          'bg-white border border-gray-100'
-        )
+        return clsx(baseClasses, 'bg-white border border-gray-100')
       default:
-        return clsx(
-          baseClasses,
-          colors.bg,
-          'border border-gray-100'
-        )
+        return clsx(baseClasses, colors.bg, 'border border-gray-100')
     }
   }
 
@@ -198,59 +195,49 @@ const MetricCard: React.FC<MetricCardProps> = ({
   }
 
   return (
-    <Card
-      className={clsx(getCardClasses(), className)}
-      onClick={onClick}
-    >
+    <Card className={clsx(getCardClasses(), className)} onClick={onClick}>
       <div className="flex items-start justify-between">
         <div className="flex items-start space-x-4 flex-1">
           {/* Icon */}
-          <div className={clsx(
-            'rounded-lg flex items-center justify-center flex-shrink-0',
-            sizes.icon,
-            variant === 'gradient' ? 'bg-white/20' : colors.iconBg
-          )}>
-            <span className={clsx(
-              sizes.iconText,
-              variant === 'gradient' ? 'text-white' : colors.text
-            )}>
+          <div
+            className={clsx(
+              'rounded-lg flex items-center justify-center flex-shrink-0',
+              sizes.icon,
+              variant === 'gradient' ? 'bg-white/20' : colors.iconBg
+            )}
+          >
+            <span
+              className={clsx(sizes.iconText, variant === 'gradient' ? 'text-white' : colors.text)}
+            >
               {icon}
             </span>
           </div>
 
           {/* Content */}
           <div className="flex-1 min-w-0">
-            <p className={clsx(
-              'font-medium truncate',
-              sizes.title,
-              getTextColor()
-            )}>
-              {title}
-            </p>
+            <p className={clsx('font-medium truncate', sizes.title, getTextColor())}>{title}</p>
 
-            <p className={clsx(
-              'font-bold truncate',
-              sizes.value,
-              getValueColor()
-            )}>
-              {value}
-            </p>
+            <p className={clsx('font-bold truncate', sizes.value, getValueColor())}>{value}</p>
 
             {subtitle && (
-              <p className={clsx(
-                'truncate mt-1',
-                sizes.subtitle,
-                variant === 'gradient' ? 'text-white/80' : 'text-gray-500'
-              )}>
+              <p
+                className={clsx(
+                  'truncate mt-1',
+                  sizes.subtitle,
+                  variant === 'gradient' ? 'text-white/80' : 'text-gray-500'
+                )}
+              >
                 {subtitle}
               </p>
             )}
 
             {description && (
-              <p className={clsx(
-                'mt-2 text-xs leading-relaxed',
-                variant === 'gradient' ? 'text-white/70' : 'text-gray-400'
-              )}>
+              <p
+                className={clsx(
+                  'mt-2 text-xs leading-relaxed',
+                  variant === 'gradient' ? 'text-white/70' : 'text-gray-400'
+                )}
+              >
                 {description}
               </p>
             )}
@@ -260,24 +247,26 @@ const MetricCard: React.FC<MetricCardProps> = ({
         {/* Trend */}
         {trend && (
           <div className="flex-shrink-0 ml-4">
-            <div className={clsx(
-              'px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1',
-              variant === 'gradient'
-                ? 'bg-white/20 text-white'
-                : trend.isPositive
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-red-100 text-red-800'
-            )}>
-              <span>
-                {trend.isPositive ? '↗' : '↘'}
-              </span>
+            <div
+              className={clsx(
+                'px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1',
+                variant === 'gradient'
+                  ? 'bg-white/20 text-white'
+                  : trend.isPositive
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-red-100 text-red-800'
+              )}
+            >
+              <span>{trend.isPositive ? '↗' : '↘'}</span>
               <span>{trend.value}%</span>
             </div>
             {trend.label && (
-              <p className={clsx(
-                'text-xs mt-1 text-center',
-                variant === 'gradient' ? 'text-white/70' : 'text-gray-500'
-              )}>
+              <p
+                className={clsx(
+                  'text-xs mt-1 text-center',
+                  variant === 'gradient' ? 'text-white/70' : 'text-gray-500'
+                )}
+              >
                 {trend.label}
               </p>
             )}

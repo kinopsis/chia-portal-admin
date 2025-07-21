@@ -17,7 +17,7 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
   className = '',
   showWhenOnline = false,
   autoHide = true,
-  autoHideDelay = 3000
+  autoHideDelay = 3000,
 }) => {
   const [connectionState, setConnectionState] = useState<ConnectionState>('checking')
   const [lastError, setLastError] = useState<string | null>(null)
@@ -27,12 +27,9 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
   const checkConnection = async () => {
     try {
       setConnectionState('checking')
-      
+
       // Simple ping to Supabase
-      const { error } = await supabase
-        .from('users')
-        .select('id')
-        .limit(1)
+      const { error } = await supabase.from('users').select('id').limit(1)
 
       if (error) {
         const networkInfo = analyzeNetworkError(error)
@@ -74,20 +71,20 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
   // Check connection on mount and periodically
   useEffect(() => {
     checkConnection()
-    
+
     // Check every 30 seconds
     const interval = setInterval(checkConnection, 30000)
-    
+
     // Listen to online/offline events
     const handleOnline = () => checkConnection()
     const handleOffline = () => {
       setConnectionState('offline')
       setLastError('No internet connection')
     }
-    
+
     window.addEventListener('online', handleOnline)
     window.addEventListener('offline', handleOffline)
-    
+
     return () => {
       clearInterval(interval)
       window.removeEventListener('online', handleOnline)
@@ -109,7 +106,7 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
           text: 'Conectado',
           bgColor: 'bg-green-50',
           borderColor: 'border-green-200',
-          textColor: 'text-green-800'
+          textColor: 'text-green-800',
         }
       case 'offline':
         return {
@@ -117,7 +114,7 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
           text: 'Sin conexión',
           bgColor: 'bg-red-50',
           borderColor: 'border-red-200',
-          textColor: 'text-red-800'
+          textColor: 'text-red-800',
         }
       case 'checking':
         return {
@@ -125,7 +122,7 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
           text: 'Verificando...',
           bgColor: 'bg-yellow-50',
           borderColor: 'border-yellow-200',
-          textColor: 'text-yellow-800'
+          textColor: 'text-yellow-800',
         }
       case 'error':
         return {
@@ -133,7 +130,7 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
           text: 'Error de conexión',
           bgColor: 'bg-orange-50',
           borderColor: 'border-orange-200',
-          textColor: 'text-orange-800'
+          textColor: 'text-orange-800',
         }
     }
   }
@@ -141,20 +138,18 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
   const config = getStatusConfig()
 
   return (
-    <div className={`
+    <div
+      className={`
       fixed top-4 right-4 z-50 
       ${config.bgColor} ${config.borderColor} ${config.textColor}
       border rounded-lg px-3 py-2 shadow-sm
       transition-all duration-300 ease-in-out
       ${className}
-    `}>
+    `}
+    >
       <div className="flex items-center space-x-2">
-        <span className={connectionState === 'checking' ? 'animate-spin' : ''}>
-          {config.icon}
-        </span>
-        <span className="text-sm font-medium">
-          {config.text}
-        </span>
+        <span className={connectionState === 'checking' ? 'animate-spin' : ''}>{config.icon}</span>
+        <span className="text-sm font-medium">{config.text}</span>
         {connectionState !== 'online' && (
           <button
             onClick={checkConnection}
@@ -165,11 +160,9 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
           </button>
         )}
       </div>
-      
+
       {lastError && connectionState !== 'online' && (
-        <div className="mt-1 text-xs opacity-75">
-          {lastError}
-        </div>
+        <div className="mt-1 text-xs opacity-75">{lastError}</div>
       )}
     </div>
   )

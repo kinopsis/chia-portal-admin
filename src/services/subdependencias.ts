@@ -25,16 +25,21 @@ export class SubdependenciasServerService {
 
 // Client-side service functions
 export class SubdependenciasClientService {
-  async getAll(filters?: SearchFilters & { page?: number; limit?: number; dependencia_id?: string }) {
+  async getAll(
+    filters?: SearchFilters & { page?: number; limit?: number; dependencia_id?: string }
+  ) {
     let query = supabase
       .from('subdependencias')
-      .select(`
+      .select(
+        `
         *,
         dependencias (
           id,
           nombre
         )
-      `, { count: 'exact' })
+      `,
+        { count: 'exact' }
+      )
       .order('nombre', { ascending: true })
 
     // Apply filters
@@ -79,13 +84,15 @@ export class SubdependenciasClientService {
   async getById(id: string) {
     const { data, error } = await supabase
       .from('subdependencias')
-      .select(`
+      .select(
+        `
         *,
         dependencias (
           id,
           nombre
         )
-      `)
+      `
+      )
       .eq('id', id)
       .single()
 
@@ -99,13 +106,15 @@ export class SubdependenciasClientService {
   async getActive() {
     const { data, error } = await supabase
       .from('subdependencias')
-      .select(`
+      .select(
+        `
         *,
         dependencias (
           id,
           nombre
         )
-      `)
+      `
+      )
       .eq('activa', true)
       .order('nombre', { ascending: true })
 
@@ -135,13 +144,15 @@ export class SubdependenciasClientService {
     const { data, error } = await supabase
       .from('subdependencias')
       .insert([subdependenciaData])
-      .select(`
+      .select(
+        `
         *,
         dependencias (
           id,
           nombre
         )
-      `)
+      `
+      )
       .single()
 
     if (error) {
@@ -151,18 +162,23 @@ export class SubdependenciasClientService {
     return data as Subdependencia
   }
 
-  async update(id: string, updates: Partial<Omit<Subdependencia, 'id' | 'created_at' | 'updated_at'>>) {
+  async update(
+    id: string,
+    updates: Partial<Omit<Subdependencia, 'id' | 'created_at' | 'updated_at'>>
+  ) {
     const { data, error } = await supabase
       .from('subdependencias')
       .update(updates)
       .eq('id', id)
-      .select(`
+      .select(
+        `
         *,
         dependencias (
           id,
           nombre
         )
-      `)
+      `
+      )
       .single()
 
     if (error) {
@@ -173,10 +189,7 @@ export class SubdependenciasClientService {
   }
 
   async delete(id: string) {
-    const { error } = await supabase
-      .from('subdependencias')
-      .delete()
-      .eq('id', id)
+    const { error } = await supabase.from('subdependencias').delete().eq('id', id)
 
     if (error) {
       throw new Error(`Error deleting subdependencia: ${error.message}`)
@@ -188,13 +201,15 @@ export class SubdependenciasClientService {
   async search(query: string, limit = 10) {
     const { data, error } = await supabase
       .from('subdependencias')
-      .select(`
+      .select(
+        `
         *,
         dependencias (
           id,
           nombre
         )
-      `)
+      `
+      )
       .or(`nombre.ilike.%${query}%,descripcion.ilike.%${query}%`)
       .eq('activa', true)
       .limit(limit)

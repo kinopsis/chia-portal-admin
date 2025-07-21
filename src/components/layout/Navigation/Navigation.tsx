@@ -67,9 +67,7 @@ const Navigation: React.FC<NavigationProps> = ({
         return clsx(
           baseClasses,
           'px-3 py-2',
-          isItemActive
-            ? 'text-primary-green'
-            : 'text-gray-700 hover:text-primary-green'
+          isItemActive ? 'text-primary-green' : 'text-gray-700 hover:text-primary-green'
         )
     }
   }
@@ -79,37 +77,30 @@ const Navigation: React.FC<NavigationProps> = ({
   if (visibleItems.length === 0) return null
 
   return (
-    <nav className={clsx(
-      'flex',
-      orientation === 'vertical' ? 'flex-col space-y-1' : 'flex-row space-x-1',
-      className
-    )}>
+    <nav
+      className={clsx(
+        'flex',
+        orientation === 'vertical' ? 'flex-col space-y-1' : 'flex-row space-x-1',
+        className
+      )}
+    >
       {visibleItems.map((item) => (
         <Link
           key={item.href}
           href={item.href}
-          className={clsx(
-            'flex items-center space-x-2 relative group',
-            getItemClasses(item)
-          )}
+          className={clsx('flex items-center space-x-2 relative group', getItemClasses(item))}
           target={item.external ? '_blank' : undefined}
           rel={item.external ? 'noopener noreferrer' : undefined}
           title={item.description}
         >
-          {item.icon && (
-            <span className="flex-shrink-0">
-              {item.icon}
-            </span>
-          )}
+          {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
           <span className="truncate">{item.label}</span>
           {item.badge && (
             <span className="ml-2 px-2 py-0.5 text-xs bg-red-500 text-white rounded-full">
               {item.badge}
             </span>
           )}
-          {item.external && (
-            <span className="text-xs opacity-60">↗</span>
-          )}
+          {item.external && <span className="text-xs opacity-60">↗</span>}
         </Link>
       ))}
     </nav>

@@ -17,14 +17,14 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
-  
+
   const { signUp } = useAuth()
   const router = useRouter()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }))
   }
 
@@ -70,8 +70,8 @@ export default function RegisterPage() {
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">¡Registro Exitoso!</h2>
             <p className="text-gray-600 mb-6">
-              Hemos enviado un enlace de confirmación a tu correo electrónico. 
-              Por favor, revisa tu bandeja de entrada y haz clic en el enlace para activar tu cuenta.
+              Hemos enviado un enlace de confirmación a tu correo electrónico. Por favor, revisa tu
+              bandeja de entrada y haz clic en el enlace para activar tu cuenta.
             </p>
             <Link href="/auth/login">
               <Button variant="primary" size="lg" fullWidth>
@@ -92,9 +92,7 @@ export default function RegisterPage() {
             <span className="text-white text-2xl font-bold">🏛️</span>
           </div>
           <h2 className="text-3xl font-bold text-gray-900">Crear Cuenta</h2>
-          <p className="mt-2 text-gray-600">
-            Únete al Portal de Atención Ciudadana de Chía
-          </p>
+          <p className="mt-2 text-gray-600">Únete al Portal de Atención Ciudadana de Chía</p>
         </div>
 
         <Card className="mt-8">
@@ -180,7 +178,10 @@ export default function RegisterPage() {
                   Términos de Servicio
                 </Link>{' '}
                 y la{' '}
-                <Link href="/privacidad" className="text-primary-green hover:text-primary-green-dark">
+                <Link
+                  href="/privacidad"
+                  className="text-primary-green hover:text-primary-green-dark"
+                >
                   Política de Privacidad
                 </Link>
               </label>

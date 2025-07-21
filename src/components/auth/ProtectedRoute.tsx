@@ -86,7 +86,10 @@ export function AdminRoute({ children, ...props }: Omit<ProtectedRouteProps, 're
   )
 }
 
-export function FuncionarioRoute({ children, ...props }: Omit<ProtectedRouteProps, 'allowedRoles'>) {
+export function FuncionarioRoute({
+  children,
+  ...props
+}: Omit<ProtectedRouteProps, 'allowedRoles'>) {
   return (
     <ProtectedRoute allowedRoles={['funcionario', 'admin']} {...props}>
       {children}
@@ -94,10 +97,9 @@ export function FuncionarioRoute({ children, ...props }: Omit<ProtectedRouteProp
   )
 }
 
-export function AuthenticatedRoute({ children, ...props }: Omit<ProtectedRouteProps, 'requiredRole' | 'allowedRoles'>) {
-  return (
-    <ProtectedRoute {...props}>
-      {children}
-    </ProtectedRoute>
-  )
+export function AuthenticatedRoute({
+  children,
+  ...props
+}: Omit<ProtectedRouteProps, 'requiredRole' | 'allowedRoles'>) {
+  return <ProtectedRoute {...props}>{children}</ProtectedRoute>
 }

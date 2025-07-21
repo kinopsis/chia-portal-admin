@@ -28,45 +28,28 @@ export async function GET() {
     // Test queries to main tables
     const tests = await Promise.allSettled([
       // Test dependencias table
-      supabase
-        .from('dependencias')
-        .select('id, codigo, nombre, activa')
-        .limit(5),
+      supabase.from('dependencias').select('id, codigo, nombre, activa').limit(5),
 
       // Test subdependencias table
-      supabase
-        .from('subdependencias')
-        .select('id, codigo, nombre, activa')
-        .limit(5),
+      supabase.from('subdependencias').select('id, codigo, nombre, activa').limit(5),
 
       // Test tramites table
-      supabase
-        .from('tramites')
-        .select('id, codigo, nombre, activo')
-        .limit(5),
+      supabase.from('tramites').select('id, codigo, nombre, activo').limit(5),
 
       // Test opas table
-      supabase
-        .from('opas')
-        .select('id, codigo, nombre, activa')
-        .limit(5),
+      supabase.from('opas').select('id, codigo, nombre, activa').limit(5),
 
       // Test faqs table
-      supabase
-        .from('faqs')
-        .select('id, pregunta, activa')
-        .limit(5),
+      supabase.from('faqs').select('id, pregunta, activa').limit(5),
 
       // Test users table
-      supabase
-        .from('users')
-        .select('id, email, rol, activo')
-        .limit(5),
+      supabase.from('users').select('id, email, rol, activo').limit(5),
     ])
 
     const results = {
       dependencias: tests[0].status === 'fulfilled' ? tests[0].value : { error: tests[0].reason },
-      subdependencias: tests[1].status === 'fulfilled' ? tests[1].value : { error: tests[1].reason },
+      subdependencias:
+        tests[1].status === 'fulfilled' ? tests[1].value : { error: tests[1].reason },
       tramites: tests[2].status === 'fulfilled' ? tests[2].value : { error: tests[2].reason },
       opas: tests[3].status === 'fulfilled' ? tests[3].value : { error: tests[3].reason },
       faqs: tests[4].status === 'fulfilled' ? tests[4].value : { error: tests[4].reason },
@@ -74,7 +57,7 @@ export async function GET() {
     }
 
     // Count successful connections
-    const successfulConnections = tests.filter(test => test.status === 'fulfilled').length
+    const successfulConnections = tests.filter((test) => test.status === 'fulfilled').length
     const totalTests = tests.length
 
     return NextResponse.json({

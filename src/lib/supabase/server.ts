@@ -8,28 +8,22 @@ import { config } from '../config'
 export function createClient() {
   const cookieStore = cookies()
 
-  return createServerClient(
-    config.supabase.url,
-    config.supabase.anonKey,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
-          }
-        },
+  return createServerClient(config.supabase.url, config.supabase.anonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll()
       },
-    }
-  )
+      setAll(cookiesToSet) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+        } catch {
+          // The `setAll` method was called from a Server Component.
+          // This can be ignored if you have middleware refreshing
+          // user sessions.
+        }
+      },
+    },
+  })
 }
 
 // Create a service role client for admin operations
@@ -38,18 +32,14 @@ export function createServiceRoleClient() {
     throw new Error('Service role key is required for admin operations')
   }
 
-  return createServerClient(
-    config.supabase.url,
-    config.supabase.serviceRoleKey,
-    {
-      cookies: {
-        getAll() {
-          return []
-        },
-        setAll() {
-          // No-op for service role client
-        },
+  return createServerClient(config.supabase.url, config.supabase.serviceRoleKey, {
+    cookies: {
+      getAll() {
+        return []
       },
-    }
-  )
+      setAll() {
+        // No-op for service role client
+      },
+    },
+  })
 }

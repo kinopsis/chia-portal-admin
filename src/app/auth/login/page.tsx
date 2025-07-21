@@ -11,7 +11,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  
+
   const { signIn } = useAuth()
   const router = useRouter()
 
@@ -38,9 +38,7 @@ export default function LoginPage() {
             <span className="text-white text-2xl font-bold">🏛️</span>
           </div>
           <h2 className="text-3xl font-bold text-gray-900">Iniciar Sesión</h2>
-          <p className="mt-2 text-gray-600">
-            Accede al Portal de Atención Ciudadana de Chía
-          </p>
+          <p className="mt-2 text-gray-600">Accede al Portal de Atención Ciudadana de Chía</p>
         </div>
 
         <Card className="mt-8">

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * Health Check Endpoint
@@ -22,12 +22,12 @@ export async function GET(request: NextRequest) {
         notifications: process.env.ENABLE_NOTIFICATIONS === 'true',
         analytics: process.env.ENABLE_ANALYTICS === 'true',
       },
-    };
+    }
 
-    return NextResponse.json(healthStatus, { status: 200 });
+    return NextResponse.json(healthStatus, { status: 200 })
   } catch (error) {
-    console.error('Health check failed:', error);
-    
+    console.error('Health check failed:', error)
+
     return NextResponse.json(
       {
         status: 'unhealthy',
@@ -35,6 +35,6 @@ export async function GET(request: NextRequest) {
         error: 'Health check failed',
       },
       { status: 503 }
-    );
+    )
   }
 }

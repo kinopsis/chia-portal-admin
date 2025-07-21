@@ -30,7 +30,7 @@ const RoleFilter: React.FC<RoleFilterProps> = ({
   const roles = availableRoles || defaultRoles
 
   // Filter roles based on user permissions
-  const visibleRoles = roles.filter(role => {
+  const visibleRoles = roles.filter((role) => {
     if (userProfile?.rol === 'admin') return true
     if (userProfile?.rol === 'funcionario') return ['ciudadano', 'funcionario'].includes(role)
     return role === 'ciudadano'
@@ -43,7 +43,7 @@ const RoleFilter: React.FC<RoleFilterProps> = ({
     }
 
     if (selectedRoles.includes(role)) {
-      onRoleChange(selectedRoles.filter(r => r !== role))
+      onRoleChange(selectedRoles.filter((r) => r !== role))
     } else {
       onRoleChange([...selectedRoles, role])
     }
@@ -99,8 +99,8 @@ const RoleFilter: React.FC<RoleFilterProps> = ({
             Todos
           </Button>
         )}
-        
-        {visibleRoles.map(role => (
+
+        {visibleRoles.map((role) => (
           <Button
             key={role}
             variant={selectedRoles.includes(role) ? 'primary' : 'outline'}
@@ -127,13 +127,11 @@ const RoleFilter: React.FC<RoleFilterProps> = ({
               onChange={handleAllToggle}
               className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
             />
-            <span className="text-sm font-medium text-gray-700">
-              Todos los roles
-            </span>
+            <span className="text-sm font-medium text-gray-700">Todos los roles</span>
           </label>
         )}
-        
-        {visibleRoles.map(role => (
+
+        {visibleRoles.map((role) => (
           <label key={role} className="flex items-center space-x-3 cursor-pointer">
             <input
               type="checkbox"
@@ -166,7 +164,7 @@ const RoleFilter: React.FC<RoleFilterProps> = ({
           )}
         >
           {showAllOption && <option value="">Todos los roles</option>}
-          {visibleRoles.map(role => (
+          {visibleRoles.map((role) => (
             <option key={role} value={role}>
               {getRoleIcon(role)} {getRoleLabel(role)}
             </option>

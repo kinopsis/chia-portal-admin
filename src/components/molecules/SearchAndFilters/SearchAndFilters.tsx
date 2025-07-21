@@ -33,23 +33,23 @@ export interface SearchAndFiltersProps {
   onSearchChange?: (value: string) => void
   searchPlaceholder?: string
   showSearch?: boolean
-  
+
   filters?: FilterConfig[]
   filterValues?: FilterValue
   onFiltersChange?: (filters: FilterValue) => void
-  
+
   presets?: FilterPreset[]
   onPresetSelect?: (preset: FilterPreset) => void
   onPresetSave?: (name: string, filters: FilterValue) => void
-  
+
   showClearAll?: boolean
   onClearAll?: () => void
-  
+
   loading?: boolean
   className?: string
   size?: 'small' | 'medium' | 'large'
   layout?: 'horizontal' | 'vertical' | 'compact'
-  
+
   // Advanced features
   debounceMs?: number
   showFilterCount?: boolean
@@ -123,19 +123,22 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   }, [searchValue])
 
   // Handle filter change
-  const handleFilterChange = useCallback((key: string, value: any) => {
-    if (!onFiltersChange) return
+  const handleFilterChange = useCallback(
+    (key: string, value: any) => {
+      if (!onFiltersChange) return
 
-    const newFilters = { ...filterValues }
-    
-    if (value === '' || value === null || value === undefined) {
-      delete newFilters[key]
-    } else {
-      newFilters[key] = value
-    }
-    
-    onFiltersChange(newFilters)
-  }, [filterValues, onFiltersChange])
+      const newFilters = { ...filterValues }
+
+      if (value === '' || value === null || value === undefined) {
+        delete newFilters[key]
+      } else {
+        newFilters[key] = value
+      }
+
+      onFiltersChange(newFilters)
+    },
+    [filterValues, onFiltersChange]
+  )
 
   // Handle clear all
   const handleClearAll = useCallback(() => {
@@ -146,10 +149,13 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   }, [onSearchChange, onFiltersChange, onClearAll])
 
   // Handle preset selection
-  const handlePresetSelect = useCallback((preset: FilterPreset) => {
-    if (onFiltersChange) onFiltersChange(preset.filters)
-    if (onPresetSelect) onPresetSelect(preset)
-  }, [onFiltersChange, onPresetSelect])
+  const handlePresetSelect = useCallback(
+    (preset: FilterPreset) => {
+      if (onFiltersChange) onFiltersChange(preset.filters)
+      if (onPresetSelect) onPresetSelect(preset)
+    },
+    [onFiltersChange, onPresetSelect]
+  )
 
   // Handle save preset
   const handleSavePreset = useCallback(() => {
@@ -170,7 +176,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
     if (advancedFilterGroup) {
       const countConditions = (group: FilterGroup): number => {
         let conditionCount = group.conditions.length
-        group.groups.forEach(nestedGroup => {
+        group.groups.forEach((nestedGroup) => {
           conditionCount += countConditions(nestedGroup)
         })
         return conditionCount
@@ -251,7 +257,9 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
           <input
             type="number"
             value={value}
-            onChange={(e) => handleFilterChange(filter.key, e.target.value ? Number(e.target.value) : '')}
+            onChange={(e) =>
+              handleFilterChange(filter.key, e.target.value ? Number(e.target.value) : '')
+            }
             placeholder={filter.placeholder}
             min={filter.min}
             max={filter.max}
@@ -289,7 +297,9 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             <input
               type="date"
               value={rangeValue.start || ''}
-              onChange={(e) => handleFilterChange(filter.key, { ...rangeValue, start: e.target.value })}
+              onChange={(e) =>
+                handleFilterChange(filter.key, { ...rangeValue, start: e.target.value })
+              }
               disabled={loading}
               className={clsx(
                 'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
@@ -302,7 +312,9 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             <input
               type="date"
               value={rangeValue.end || ''}
-              onChange={(e) => handleFilterChange(filter.key, { ...rangeValue, end: e.target.value })}
+              onChange={(e) =>
+                handleFilterChange(filter.key, { ...rangeValue, end: e.target.value })
+              }
               disabled={loading}
               className={clsx(
                 'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
@@ -343,7 +355,9 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
   if (collapsible && isCollapsed) {
     return (
-      <div className={clsx('flex items-center justify-between p-4 bg-gray-50 rounded-lg', className)}>
+      <div
+        className={clsx('flex items-center justify-between p-4 bg-gray-50 rounded-lg', className)}
+      >
         <div className="flex items-center space-x-2">
           <span className="text-sm text-gray-600">Filtros</span>
           {showFilterCount && activeFilterCount > 0 && (
@@ -369,16 +383,14 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
-          <h3 className="text-sm font-medium text-gray-900">
-            Búsqueda y Filtros
-          </h3>
+          <h3 className="text-sm font-medium text-gray-900">Búsqueda y Filtros</h3>
           {showFilterCount && activeFilterCount > 0 && (
             <span className="bg-primary-green text-white text-xs px-2 py-1 rounded-full">
               {activeFilterCount} activos
             </span>
           )}
         </div>
-        
+
         <div className="flex items-center space-x-2">
           {collapsible && (
             <Button
@@ -431,9 +443,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                 size="sm"
                 onClick={() => handlePresetSelect(preset)}
                 disabled={loading}
-                className={clsx(
-                  preset.isDefault && 'border-primary-green text-primary-green'
-                )}
+                className={clsx(preset.isDefault && 'border-primary-green text-primary-green')}
               >
                 {preset.name}
               </Button>
@@ -444,17 +454,17 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
       {/* Filters */}
       {filters.length > 0 && (
-        <div className={clsx(
-          'grid gap-4',
-          layout === 'horizontal' && 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
-          layout === 'vertical' && 'grid-cols-1',
-          layout === 'compact' && 'grid-cols-1 sm:grid-cols-3 lg:grid-cols-6'
-        )}>
+        <div
+          className={clsx(
+            'grid gap-4',
+            layout === 'horizontal' && 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+            layout === 'vertical' && 'grid-cols-1',
+            layout === 'compact' && 'grid-cols-1 sm:grid-cols-3 lg:grid-cols-6'
+          )}
+        >
           {filters.map((filter) => (
             <div key={filter.key} className="space-y-1">
-              <label className="block text-xs font-medium text-gray-700">
-                {filter.label}:
-              </label>
+              <label className="block text-xs font-medium text-gray-700">{filter.label}:</label>
               {renderFilterInput(filter)}
             </div>
           ))}
@@ -465,16 +475,11 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
       <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
         <div className="flex items-center space-x-2">
           {showClearAll && activeFilterCount > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleClearAll}
-              disabled={loading}
-            >
+            <Button variant="outline" size="sm" onClick={handleClearAll} disabled={loading}>
               Limpiar Todo
             </Button>
           )}
-          
+
           {onPresetSave && activeFilterCount > 0 && (
             <Button
               variant="ghost"
@@ -488,7 +493,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
           {showAdvancedFilters && advancedFilterFields.length > 0 && (
             <Button
-              variant={showAdvancedBuilder ? "primary" : "outline"}
+              variant={showAdvancedBuilder ? 'primary' : 'outline'}
               size="sm"
               onClick={() => setShowAdvancedBuilder(!showAdvancedBuilder)}
               disabled={loading}
@@ -530,11 +535,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             >
               Guardar
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowSavePreset(false)}
-            >
+            <Button variant="ghost" size="sm" onClick={() => setShowSavePreset(false)}>
               Cancelar
             </Button>
           </div>
@@ -559,7 +560,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                 filterGroup,
               }
               const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-                type: 'application/json'
+                type: 'application/json',
               })
               const url = URL.createObjectURL(blob)
               const a = document.createElement('a')

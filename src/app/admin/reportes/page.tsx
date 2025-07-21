@@ -57,10 +57,10 @@ export default function ReportesAdminPage() {
     try {
       // TODO: Implement report generation
       console.log(`Generating report: ${reportId}`)
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+
       // TODO: Download or display report
       alert(`Reporte ${reportId} generado exitosamente`)
     } catch (error) {
@@ -94,7 +94,7 @@ export default function ReportesAdminPage() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500">Reportes Disponibles</p>
                 <p className="text-2xl font-semibold text-gray-900">
-                  {reportTypes.filter(r => r.status === 'available').length}
+                  {reportTypes.filter((r) => r.status === 'available').length}
                 </p>
               </div>
             </div>
@@ -124,7 +124,7 @@ export default function ReportesAdminPage() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500">En Desarrollo</p>
                 <p className="text-2xl font-semibold text-gray-900">
-                  {reportTypes.filter(r => r.status === 'coming_soon').length}
+                  {reportTypes.filter((r) => r.status === 'coming_soon').length}
                 </p>
               </div>
             </div>
@@ -160,16 +160,13 @@ export default function ReportesAdminPage() {
                     <h3 className="text-lg font-medium text-gray-900">{report.title}</h3>
                   </div>
                 </div>
-                <Badge 
-                  variant={report.status === 'available' ? 'success' : 'warning'}
-                  size="sm"
-                >
+                <Badge variant={report.status === 'available' ? 'success' : 'warning'} size="sm">
                   {report.status === 'available' ? 'Disponible' : 'Próximamente'}
                 </Badge>
               </div>
-              
+
               <p className="mt-3 text-sm text-gray-500">{report.description}</p>
-              
+
               <div className="mt-6">
                 <Button
                   variant={report.status === 'available' ? 'primary' : 'outline'}
@@ -192,8 +189,14 @@ export default function ReportesAdminPage() {
           <div className="space-y-3 text-sm text-gray-600">
             <p>• Los reportes se generan en formato PDF y Excel según el tipo de información.</p>
             <p>• Los reportes incluyen datos actualizados hasta el momento de la generación.</p>
-            <p>• Algunos reportes pueden tardar varios minutos en generarse dependiendo del volumen de datos.</p>
-            <p>• Los reportes marcados como "Próximamente" estarán disponibles en futuras actualizaciones.</p>
+            <p>
+              • Algunos reportes pueden tardar varios minutos en generarse dependiendo del volumen
+              de datos.
+            </p>
+            <p>
+              • Los reportes marcados como "Próximamente" estarán disponibles en futuras
+              actualizaciones.
+            </p>
           </div>
         </Card>
       </div>

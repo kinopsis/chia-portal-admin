@@ -15,7 +15,7 @@ export {
   default as Navigation,
   getMainNavigation,
   getAdminNavigation,
-  getUserNavigation
+  getUserNavigation,
 } from './Navigation'
 export type { NavigationProps, NavigationItem } from './Navigation'
 

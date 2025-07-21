@@ -47,11 +47,7 @@ export class DependenciasClientService {
   }
 
   async getById(id: string) {
-    const { data, error } = await supabase
-      .from('dependencias')
-      .select('*')
-      .eq('id', id)
-      .single()
+    const { data, error } = await supabase.from('dependencias').select('*').eq('id', id).single()
 
     if (error) {
       throw new Error(`Error fetching dependencia: ${error.message}`)
@@ -88,7 +84,10 @@ export class DependenciasClientService {
     return data as Dependencia
   }
 
-  async update(id: string, updates: Partial<Omit<Dependencia, 'id' | 'created_at' | 'updated_at'>>) {
+  async update(
+    id: string,
+    updates: Partial<Omit<Dependencia, 'id' | 'created_at' | 'updated_at'>>
+  ) {
     const { data, error } = await supabase
       .from('dependencias')
       .update({ ...updates, updated_at: new Date().toISOString() })
@@ -104,10 +103,7 @@ export class DependenciasClientService {
   }
 
   async delete(id: string) {
-    const { error } = await supabase
-      .from('dependencias')
-      .delete()
-      .eq('id', id)
+    const { error } = await supabase.from('dependencias').delete().eq('id', id)
 
     if (error) {
       throw new Error(`Error deleting dependencia: ${error.message}`)

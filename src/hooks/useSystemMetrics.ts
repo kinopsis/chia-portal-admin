@@ -3,7 +3,13 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from './useAuth'
 import { supabase } from '@/lib/supabase/client'
-import { logSupabaseError, getUserFriendlyErrorMessage, isMissingTableError, withRetry, analyzeNetworkError } from '@/lib/errors'
+import {
+  logSupabaseError,
+  getUserFriendlyErrorMessage,
+  isMissingTableError,
+  withRetry,
+  analyzeNetworkError,
+} from '@/lib/errors'
 
 export interface SystemMetrics {
   users: {
@@ -92,51 +98,52 @@ export function useSystemMetrics(
 
       // Fetch users metrics with error handling and retry logic
       try {
-        usersData = await withRetry(async () => {
-          const { data, error } = await supabase
-            .from('users')
-            .select('rol, activo, created_at')
+        usersData = await withRetry(
+          async () => {
+            const { data, error } = await supabase.from('users').select('rol, activo, created_at')
 
-          if (error) throw error
-          return data || []
-        }, { maxRetries: 2, baseDelay: 500 })
+            if (error) throw error
+            return data || []
+          },
+          { maxRetries: 2, baseDelay: 500 }
+        )
       } catch (err) {
         logSupabaseError('Error fetching users metrics', err)
       }
 
       // Fetch tramites metrics with error handling and retry logic
       try {
-        tramitesData = await withRetry(async () => {
-          const { data, error } = await supabase
-            .from('tramites')
-            .select('activo, created_at')
+        tramitesData = await withRetry(
+          async () => {
+            const { data, error } = await supabase.from('tramites').select('activo, created_at')
 
-          if (error) throw error
-          return data || []
-        }, { maxRetries: 2, baseDelay: 500 })
+            if (error) throw error
+            return data || []
+          },
+          { maxRetries: 2, baseDelay: 500 }
+        )
       } catch (err) {
         logSupabaseError('Error fetching tramites metrics', err)
       }
 
       // Fetch OPAs metrics with error handling and retry logic
       try {
-        opasData = await withRetry(async () => {
-          const { data, error } = await supabase
-            .from('opas')
-            .select('activo, created_at')
+        opasData = await withRetry(
+          async () => {
+            const { data, error } = await supabase.from('opas').select('activo, created_at')
 
-          if (error) throw error
-          return data || []
-        }, { maxRetries: 2, baseDelay: 500 })
+            if (error) throw error
+            return data || []
+          },
+          { maxRetries: 2, baseDelay: 500 }
+        )
       } catch (err) {
         logSupabaseError('Error fetching OPAs metrics', err)
       }
 
       // Fetch FAQs metrics with error handling
       try {
-        const { data, error } = await supabase
-          .from('faqs')
-          .select('activo, created_at')
+        const { data, error } = await supabase.from('faqs').select('activo, created_at')
 
         if (error) throw error
         faqsData = data || []
@@ -146,9 +153,7 @@ export function useSystemMetrics(
 
       // Fetch dependencias metrics with error handling
       try {
-        const { data, error } = await supabase
-          .from('dependencias')
-          .select('activo')
+        const { data, error } = await supabase.from('dependencias').select('activo')
 
         if (error) throw error
         dependenciasData = data || []
@@ -159,63 +164,53 @@ export function useSystemMetrics(
       // Process users metrics
       const usersMetrics = {
         total: usersData?.length || 0,
-        active: usersData?.filter(u => u.activo).length || 0,
-        newThisMonth: usersData?.filter(u => 
-          new Date(u.created_at) >= startOfMonth
-        ).length || 0,
+        active: usersData?.filter((u) => u.activo).length || 0,
+        newThisMonth: usersData?.filter((u) => new Date(u.created_at) >= startOfMonth).length || 0,
         byRole: {
-          ciudadano: usersData?.filter(u => u.rol === 'ciudadano').length || 0,
-          funcionario: usersData?.filter(u => u.rol === 'funcionario').length || 0,
-          admin: usersData?.filter(u => u.rol === 'admin').length || 0,
-        }
+          ciudadano: usersData?.filter((u) => u.rol === 'ciudadano').length || 0,
+          funcionario: usersData?.filter((u) => u.rol === 'funcionario').length || 0,
+          admin: usersData?.filter((u) => u.rol === 'admin').length || 0,
+        },
       }
 
       // Process tramites metrics
       const tramitesMetrics = {
         total: tramitesData?.length || 0,
-        active: tramitesData?.filter(t => t.activo).length || 0,
-        inactive: tramitesData?.filter(t => !t.activo).length || 0,
-        thisMonth: tramitesData?.filter(t =>
-          new Date(t.created_at) >= startOfMonth
-        ).length || 0,
+        active: tramitesData?.filter((t) => t.activo).length || 0,
+        inactive: tramitesData?.filter((t) => !t.activo).length || 0,
+        thisMonth: tramitesData?.filter((t) => new Date(t.created_at) >= startOfMonth).length || 0,
       }
 
       // Process OPAs metrics
       const opasMetrics = {
         total: opasData?.length || 0,
-        active: opasData?.filter(o => o.activo).length || 0,
-        inactive: opasData?.filter(o => !o.activo).length || 0,
-        thisMonth: opasData?.filter(o =>
-          new Date(o.created_at) >= startOfMonth
-        ).length || 0,
+        active: opasData?.filter((o) => o.activo).length || 0,
+        inactive: opasData?.filter((o) => !o.activo).length || 0,
+        thisMonth: opasData?.filter((o) => new Date(o.created_at) >= startOfMonth).length || 0,
       }
 
       // Process FAQs metrics
       const faqsMetrics = {
         total: faqsData?.length || 0,
-        published: faqsData?.filter(f => f.activo).length || 0,
-        thisMonth: faqsData?.filter(f =>
-          new Date(f.created_at) >= startOfMonth
-        ).length || 0,
+        published: faqsData?.filter((f) => f.activo).length || 0,
+        thisMonth: faqsData?.filter((f) => new Date(f.created_at) >= startOfMonth).length || 0,
       }
 
       // Process dependencias metrics
       const dependenciasMetrics = {
         total: dependenciasData?.length || 0,
-        active: dependenciasData?.filter(d => d.activo).length || 0,
+        active: dependenciasData?.filter((d) => d.activo).length || 0,
       }
 
       // Calculate activity metrics (simplified for now)
       const totalActions = (tramitesData?.length || 0) + (opasData?.length || 0)
-      const todayActions = [
-        ...(tramitesData || []),
-        ...(opasData || [])
-      ].filter(item => new Date(item.created_at) >= startOfToday).length
+      const todayActions = [...(tramitesData || []), ...(opasData || [])].filter(
+        (item) => new Date(item.created_at) >= startOfToday
+      ).length
 
-      const weekActions = [
-        ...(tramitesData || []),
-        ...(opasData || [])
-      ].filter(item => new Date(item.created_at) >= startOfWeek).length
+      const weekActions = [...(tramitesData || []), ...(opasData || [])].filter(
+        (item) => new Date(item.created_at) >= startOfWeek
+      ).length
 
       const activityMetrics = {
         totalActions,

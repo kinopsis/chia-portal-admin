@@ -43,9 +43,19 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
     {
       title: 'Síguenos',
       links: [
-        { label: 'Facebook', href: 'https://facebook.com/alcaldiachia', icon: '📘', external: true },
+        {
+          label: 'Facebook',
+          href: 'https://facebook.com/alcaldiachia',
+          icon: '📘',
+          external: true,
+        },
         { label: 'Twitter', href: 'https://twitter.com/alcaldiachia', icon: '🐦', external: true },
-        { label: 'Instagram', href: 'https://instagram.com/alcaldiachia', icon: '📸', external: true },
+        {
+          label: 'Instagram',
+          href: 'https://instagram.com/alcaldiachia',
+          icon: '📸',
+          external: true,
+        },
         { label: 'YouTube', href: 'https://youtube.com/alcaldiachia', icon: '📺', external: true },
         { label: 'WhatsApp', href: 'https://wa.me/573001234567', icon: '💬', external: true },
       ],
@@ -81,9 +91,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
                         {link.icon}
                       </span>
                       <span>{link.label}</span>
-                      {link.external && (
-                        <span className="text-xs opacity-60">↗</span>
-                      )}
+                      {link.external && <span className="text-xs opacity-60">↗</span>}
                     </Link>
                   </li>
                 ))}
@@ -95,9 +103,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
         {/* Newsletter Subscription */}
         <div className="mt-12 pt-8 border-t border-gray-700">
           <div className="max-w-md mx-auto text-center">
-            <h3 className="text-lg font-semibold mb-4 text-primary-yellow">
-              Mantente Informado
-            </h3>
+            <h3 className="text-lg font-semibold mb-4 text-primary-yellow">Mantente Informado</h3>
             <p className="text-gray-300 text-sm mb-4">
               Recibe las últimas noticias y actualizaciones de la Alcaldía de Chía
             </p>

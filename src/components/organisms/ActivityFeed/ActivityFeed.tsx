@@ -4,7 +4,12 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Card, Button, Spinner } from '@/components/atoms'
 import { useAuth } from '@/hooks'
 import { supabase } from '@/lib/supabase/client'
-import { logSupabaseError, getUserFriendlyErrorMessage, isMissingTableError, isMissingForeignKeyError } from '@/lib/errors'
+import {
+  logSupabaseError,
+  getUserFriendlyErrorMessage,
+  isMissingTableError,
+  isMissingForeignKeyError,
+} from '@/lib/errors'
 import { clsx } from 'clsx'
 
 export interface ActivityItem {
@@ -31,7 +36,7 @@ export interface ActivityFeedProps {
 }
 
 const ActivityFeed: React.FC<ActivityFeedProps> = ({
-  title = "Actividad Reciente",
+  title = 'Actividad Reciente',
   maxItems = 10,
   autoRefresh = true,
   refreshInterval = 30000,
@@ -55,19 +60,21 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
       try {
         const { data: tramitesData, error: tramitesError } = await supabase
           .from('tramites')
-          .select(`
+          .select(
+            `
             id,
             nombre,
             activo,
             created_at,
             updated_at
-          `)
+          `
+          )
           .order('updated_at', { ascending: false })
           .limit(5)
 
         if (tramitesError) throw tramitesError
 
-        tramitesData?.forEach(tramite => {
+        tramitesData?.forEach((tramite) => {
           activities.push({
             id: `tramite-${tramite.id}`,
             type: 'tramite',
@@ -76,10 +83,10 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
             description: tramite.activo ? 'Trámite activado' : 'Trámite actualizado',
             user: {
               name: 'Usuario del Sistema',
-              role: 'ciudadano'
+              role: 'ciudadano',
             },
             timestamp: tramite.updated_at,
-            metadata: { activo: tramite.activo }
+            metadata: { activo: tramite.activo },
           })
         })
       } catch (err) {
@@ -91,19 +98,21 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
       try {
         const { data: opasData, error: opasError } = await supabase
           .from('opas')
-          .select(`
+          .select(
+            `
             id,
             nombre,
             activo,
             created_at,
             updated_at
-          `)
+          `
+          )
           .order('updated_at', { ascending: false })
           .limit(5)
 
         if (opasError) throw opasError
 
-        opasData?.forEach(opa => {
+        opasData?.forEach((opa) => {
           activities.push({
             id: `opa-${opa.id}`,
             type: 'opa',
@@ -112,10 +121,10 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
             description: opa.activo ? 'OPA activada' : 'OPA actualizada',
             user: {
               name: 'Usuario del Sistema',
-              role: 'ciudadano'
+              role: 'ciudadano',
             },
             timestamp: opa.updated_at,
-            metadata: { activo: opa.activo }
+            metadata: { activo: opa.activo },
           })
         })
       } catch (err) {
@@ -134,7 +143,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
 
           if (faqsError) throw faqsError
 
-          faqsData?.forEach(faq => {
+          faqsData?.forEach((faq) => {
             activities.push({
               id: `faq-${faq.id}`,
               type: 'faq',
@@ -143,10 +152,10 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
               description: faq.activo ? 'FAQ actualizada' : 'Nueva FAQ creada',
               user: {
                 name: 'Sistema',
-                role: 'admin'
+                role: 'admin',
               },
               timestamp: faq.updated_at,
-              metadata: { activo: faq.activo }
+              metadata: { activo: faq.activo },
             })
           })
         } catch (err) {
@@ -183,11 +192,46 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
 
   const getActivityIcon = (type: ActivityItem['type'], action: ActivityItem['action']) => {
     const icons = {
-      tramite: { created: '📋', updated: '📝', completed: '✅', approved: '✅', rejected: '❌', deleted: '🗑️' },
-      opa: { created: '⚡', updated: '📝', completed: '✅', approved: '✅', rejected: '❌', deleted: '🗑️' },
-      user: { created: '👤', updated: '👤', completed: '👤', approved: '👤', rejected: '👤', deleted: '👤' },
-      faq: { created: '❓', updated: '📝', completed: '❓', approved: '❓', rejected: '❓', deleted: '🗑️' },
-      dependencia: { created: '🏛️', updated: '📝', completed: '🏛️', approved: '🏛️', rejected: '🏛️', deleted: '🗑️' },
+      tramite: {
+        created: '📋',
+        updated: '📝',
+        completed: '✅',
+        approved: '✅',
+        rejected: '❌',
+        deleted: '🗑️',
+      },
+      opa: {
+        created: '⚡',
+        updated: '📝',
+        completed: '✅',
+        approved: '✅',
+        rejected: '❌',
+        deleted: '🗑️',
+      },
+      user: {
+        created: '👤',
+        updated: '👤',
+        completed: '👤',
+        approved: '👤',
+        rejected: '👤',
+        deleted: '👤',
+      },
+      faq: {
+        created: '❓',
+        updated: '📝',
+        completed: '❓',
+        approved: '❓',
+        rejected: '❓',
+        deleted: '🗑️',
+      },
+      dependencia: {
+        created: '🏛️',
+        updated: '📝',
+        completed: '🏛️',
+        approved: '🏛️',
+        rejected: '🏛️',
+        deleted: '🗑️',
+      },
     }
     return icons[type][action] || '📄'
   }
@@ -204,7 +248,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
     return colors[action] || 'text-gray-600 bg-gray-50'
   }
 
-  const filteredActivities = activities.filter(activity => {
+  const filteredActivities = activities.filter((activity) => {
     if (filter === 'all') return true
     return activity.type === filter
   })
@@ -241,15 +285,10 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
           <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
           <p className="text-sm text-gray-600">Últimas actividades del sistema</p>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           {loading && <Spinner size="sm" />}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={fetchActivities}
-            disabled={loading}
-          >
+          <Button variant="ghost" size="sm" onClick={fetchActivities} disabled={loading}>
             🔄
           </Button>
         </div>
@@ -265,7 +304,9 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
               size="sm"
               onClick={() => setFilter(filterType)}
             >
-              {filterType === 'all' ? 'Todos' : filterType.charAt(0).toUpperCase() + filterType.slice(1)}
+              {filterType === 'all'
+                ? 'Todos'
+                : filterType.charAt(0).toUpperCase() + filterType.slice(1)}
             </Button>
           ))}
         </div>
@@ -294,28 +335,24 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
               className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
             >
               {/* Icon */}
-              <div className={clsx(
-                'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
-                getActivityColor(activity.action)
-              )}>
-                <span className="text-sm">
-                  {getActivityIcon(activity.type, activity.action)}
-                </span>
+              <div
+                className={clsx(
+                  'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
+                  getActivityColor(activity.action)
+                )}
+              >
+                <span className="text-sm">{getActivityIcon(activity.type, activity.action)}</span>
               </div>
 
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    {activity.title}
-                  </p>
+                  <p className="text-sm font-medium text-gray-900 truncate">{activity.title}</p>
                   <span className="text-xs text-gray-500 flex-shrink-0 ml-2">
                     {formatTimeAgo(activity.timestamp)}
                   </span>
                 </div>
-                <p className="text-xs text-gray-600 mt-1">
-                  {activity.description}
-                </p>
+                <p className="text-xs text-gray-600 mt-1">{activity.description}</p>
                 <p className="text-xs text-gray-500 mt-1">
                   por {activity.user.name} ({activity.user.role})
                 </p>

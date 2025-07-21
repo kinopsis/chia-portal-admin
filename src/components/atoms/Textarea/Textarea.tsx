@@ -91,14 +91,16 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
               <p className="text-sm text-gray-500">{helperText}</p>
             ) : null}
           </div>
-          
+
           {showCharCount && maxLength && (
             <div className="ml-2">
-              <span className={clsx(
-                'text-xs',
-                currentLength > maxLength * 0.9 ? 'text-orange-600' : 'text-gray-500',
-                currentLength >= maxLength ? 'text-red-600' : ''
-              )}>
+              <span
+                className={clsx(
+                  'text-xs',
+                  currentLength > maxLength * 0.9 ? 'text-orange-600' : 'text-gray-500',
+                  currentLength >= maxLength ? 'text-red-600' : ''
+                )}
+              >
                 {currentLength}/{maxLength}
               </span>
             </div>

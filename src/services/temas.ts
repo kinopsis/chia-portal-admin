@@ -7,12 +7,12 @@ import type { Tema, SearchFilters, PaginatedResponse } from '@/types'
 
 // Virtual Tema management - extracts unique temas from FAQs
 export class TemasClientService {
-  
   // Get all unique temas for a specific subdependencia
   async getBySubdependencia(subdependenciaId: string): Promise<Tema[]> {
     const { data, error } = await supabase
       .from('faqs')
-      .select(`
+      .select(
+        `
         tema,
         subdependencia_id,
         subdependencias (
@@ -26,7 +26,8 @@ export class TemasClientService {
             codigo
           )
         )
-      `)
+      `
+      )
       .eq('subdependencia_id', subdependenciaId)
       .eq('activo', true)
       .not('tema', 'is', null)
@@ -38,8 +39,8 @@ export class TemasClientService {
 
     // Group by tema and create virtual Tema objects
     const temasMap = new Map<string, any>()
-    
-    data?.forEach(faq => {
+
+    data?.forEach((faq) => {
       if (faq.tema && !temasMap.has(faq.tema)) {
         temasMap.set(faq.tema, {
           id: `tema-${subdependenciaId}-${faq.tema.toLowerCase().replace(/\s+/g, '-')}`,
@@ -51,7 +52,7 @@ export class TemasClientService {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           subdependencias: faq.subdependencias,
-          faqs_count: 0
+          faqs_count: 0,
         })
       }
     })
@@ -64,7 +65,7 @@ export class TemasClientService {
         .eq('subdependencia_id', subdependenciaId)
         .eq('tema', temaName)
         .eq('activo', true)
-      
+
       tema.faqs_count = count || 0
     }
 
@@ -75,7 +76,8 @@ export class TemasClientService {
   async getAll(filters?: SearchFilters): Promise<Tema[]> {
     let query = supabase
       .from('faqs')
-      .select(`
+      .select(
+        `
         tema,
         subdependencia_id,
         subdependencias (
@@ -89,7 +91,8 @@ export class TemasClientService {
             codigo
           )
         )
-      `)
+      `
+      )
       .eq('activo', true)
       .not('tema', 'is', null)
       .not('tema', 'eq', '')
@@ -106,8 +109,8 @@ export class TemasClientService {
 
     // Group by subdependencia and tema
     const temasMap = new Map<string, any>()
-    
-    data?.forEach(faq => {
+
+    data?.forEach((faq) => {
       if (faq.tema) {
         const key = `${faq.subdependencia_id}-${faq.tema}`
         if (!temasMap.has(key)) {
@@ -121,7 +124,7 @@ export class TemasClientService {
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
             subdependencias: faq.subdependencias,
-            faqs_count: 0
+            faqs_count: 0,
           })
         }
       }
@@ -136,18 +139,23 @@ export class TemasClientService {
         .eq('subdependencia_id', subdependenciaId)
         .eq('tema', temaName)
         .eq('activo', true)
-      
+
       tema.faqs_count = count || 0
     }
 
-    return Array.from(temasMap.values()).sort((a, b) => 
-      a.subdependencias?.nombre.localeCompare(b.subdependencias?.nombre) || 
-      a.nombre.localeCompare(b.nombre)
+    return Array.from(temasMap.values()).sort(
+      (a, b) =>
+        a.subdependencias?.nombre.localeCompare(b.subdependencias?.nombre) ||
+        a.nombre.localeCompare(b.nombre)
     )
   }
 
   // Create a new tema (by creating a FAQ with that tema)
-  async create(temaData: { nombre: string; descripcion?: string; subdependencia_id: string }): Promise<Tema> {
+  async create(temaData: {
+    nombre: string
+    descripcion?: string
+    subdependencia_id: string
+  }): Promise<Tema> {
     // Since we can't create temas directly, we'll create a placeholder FAQ
     // This is a workaround until we have a proper temas table
     const placeholderFAQ = {
@@ -159,11 +167,7 @@ export class TemasClientService {
       activo: false, // Mark as inactive since it's just a placeholder
     }
 
-    const { data, error } = await supabase
-      .from('faqs')
-      .insert([placeholderFAQ])
-      .select()
-      .single()
+    const { data, error } = await supabase.from('faqs').insert([placeholderFAQ]).select().single()
 
     if (error) {
       throw new Error(`Error creating tema: ${error.message}`)
@@ -179,7 +183,7 @@ export class TemasClientService {
       activo: true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      faqs_count: 0
+      faqs_count: 0,
     }
   }
 
@@ -190,7 +194,7 @@ export class TemasClientService {
     if (parts.length < 3) {
       throw new Error('Invalid tema ID format')
     }
-    
+
     const subdependenciaId = parts[1]
     const oldTemaName = parts.slice(2).join('-').replace(/-/g, ' ')
 
@@ -217,7 +221,7 @@ export class TemasClientService {
       activo: temaData.activo !== undefined ? temaData.activo : true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      faqs_count: 0
+      faqs_count: 0,
     }
   }
 
@@ -228,7 +232,7 @@ export class TemasClientService {
     if (parts.length < 3) {
       throw new Error('Invalid tema ID format')
     }
-    
+
     const subdependenciaId = parts[1]
     const temaName = parts.slice(2).join('-').replace(/-/g, ' ')
 
@@ -259,7 +263,7 @@ export class TemasClientService {
     }
 
     // Get unique tema names
-    const uniqueTemas = [...new Set(data?.map(faq => faq.tema).filter(Boolean))]
+    const uniqueTemas = [...new Set(data?.map((faq) => faq.tema).filter(Boolean))]
     return uniqueTemas.sort()
   }
 }

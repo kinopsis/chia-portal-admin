@@ -17,10 +17,7 @@ export {
 } from './subdependencias'
 
 // Temas services
-export {
-  TemasClientService,
-  temasClientService,
-} from './temas'
+export { TemasClientService, temasClientService } from './temas'
 
 // Tramites services
 export {
@@ -31,20 +28,10 @@ export {
 } from './tramites'
 
 // OPAs services
-export {
-  OPAsServerService,
-  OPAsClientService,
-  opasServerService,
-  opasClientService,
-} from './opas'
+export { OPAsServerService, OPAsClientService, opasServerService, opasClientService } from './opas'
 
 // FAQs services
-export {
-  FAQsServerService,
-  FAQsClientService,
-  faqsServerService,
-  faqsClientService,
-} from './faqs'
+export { FAQsServerService, FAQsClientService, faqsServerService, faqsClientService } from './faqs'
 
 // Service types for convenience
 export type {

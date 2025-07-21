@@ -11,7 +11,11 @@ interface AuthContextType {
   session: Session | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>
-  signUp: (email: string, password: string, userData: { nombre: string; apellido: string }) => Promise<{ error: Error | null }>
+  signUp: (
+    email: string,
+    password: string,
+    userData: { nombre: string; apellido: string }
+  ) => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<{ error: Error | null }>
   updateProfile: (updates: Partial<AppUser>) => Promise<{ error: Error | null }>
@@ -32,7 +36,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
-      const { data: { session: initialSession } } = await supabase.auth.getSession()
+      const {
+        data: { session: initialSession },
+      } = await supabase.auth.getSession()
       setSession(initialSession)
       setUser(initialSession?.user ?? null)
 
@@ -46,31 +52,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     getInitialSession()
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session)
-        setUser(session?.user ?? null)
-        
-        if (session?.user) {
-          await fetchUserProfile(session.user.id)
-        } else {
-          setUserProfile(null)
-        }
-        
-        setLoading(false)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setSession(session)
+      setUser(session?.user ?? null)
+
+      if (session?.user) {
+        await fetchUserProfile(session.user.id)
+      } else {
+        setUserProfile(null)
       }
-    )
+
+      setLoading(false)
+    })
 
     return () => subscription.unsubscribe()
   }, [])
 
   const fetchUserProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', userId)
-        .single()
+      const { data, error } = await supabase.from('users').select('*').eq('id', userId).single()
 
       if (error) {
         console.error('Error fetching user profile:', error)
@@ -97,8 +99,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signUp = async (
-    email: string, 
-    password: string, 
+    email: string,
+    password: string,
     userData: { nombre: string; apellido: string }
   ) => {
     try {
@@ -119,16 +121,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Create user profile in the users table
       if (data.user) {
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert({
-            id: data.user.id,
-            email: data.user.email!,
-            nombre: userData.nombre,
-            // apellido: userData.apellido, // Commented out due to missing column in database
-            rol: 'ciudadano' as UserRole,
-            activo: true,
-          })
+        const { error: profileError } = await supabase.from('users').insert({
+          id: data.user.id,
+          email: data.user.email!,
+          nombre: userData.nombre,
+          // apellido: userData.apellido, // Commented out due to missing column in database
+          rol: 'ciudadano' as UserRole,
+          activo: true,
+        })
 
         if (profileError) {
           console.error('Error creating user profile:', profileError)
@@ -203,11 +203,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isCiudadano,
   }
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

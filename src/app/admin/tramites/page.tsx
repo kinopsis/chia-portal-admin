@@ -14,8 +14,6 @@ import { useAdminBreadcrumbs } from '@/hooks'
 
 const tramitesService = new TramitesClientService()
 
-
-
 // Real API functions using Supabase
 const fetchTramites = async () => {
   try {
@@ -91,11 +89,9 @@ const TramitesAdminPage: React.FC = () => {
         setLoading(true)
         console.log('Loading Tramites data...')
 
-        const [tramitesResponse, dependenciasResponse, subdependenciasResponse] = await Promise.all([
-          fetchTramites(),
-          fetchDependencias(),
-          fetchSubdependencias()
-        ])
+        const [tramitesResponse, dependenciasResponse, subdependenciasResponse] = await Promise.all(
+          [fetchTramites(), fetchDependencias(), fetchSubdependencias()]
+        )
 
         console.log('Tramites response:', tramitesResponse)
         console.log('Dependencias loaded:', dependenciasResponse.data?.length || 0)
@@ -104,9 +100,15 @@ const TramitesAdminPage: React.FC = () => {
         if (tramitesResponse.success && tramitesResponse.data) {
           console.log('Tramites data length:', tramitesResponse.data.length)
           if (tramitesResponse.data.length > 0) {
-            console.log('First Tramite data structure:', JSON.stringify(tramitesResponse.data[0], null, 2))
+            console.log(
+              'First Tramite data structure:',
+              JSON.stringify(tramitesResponse.data[0], null, 2)
+            )
             console.log('First Tramite subdependencias:', tramitesResponse.data[0].subdependencias)
-            console.log('First Tramite dependencias:', tramitesResponse.data[0].subdependencias?.dependencias)
+            console.log(
+              'First Tramite dependencias:',
+              tramitesResponse.data[0].subdependencias?.dependencias
+            )
           }
           setTramites(tramitesResponse.data)
         }
@@ -136,15 +138,15 @@ const TramitesAdminPage: React.FC = () => {
     console.log('handleDependenciaChange called with:', dependenciaValue)
 
     // Find the dependencia by ID (if it's an ID) or by name (if it's a name)
-    let dependencia = dependencias.find(dep => dep.id === dependenciaValue)
+    let dependencia = dependencias.find((dep) => dep.id === dependenciaValue)
     if (!dependencia) {
-      dependencia = dependencias.find(dep => dep.nombre === dependenciaValue)
+      dependencia = dependencias.find((dep) => dep.nombre === dependenciaValue)
     }
 
     if (dependencia) {
       console.log('Found dependencia:', dependencia)
       setSelectedDependenciaId(dependencia.id)
-      const filtered = subdependencias.filter(sub => sub.dependencia_id === dependencia.id)
+      const filtered = subdependencias.filter((sub) => sub.dependencia_id === dependencia.id)
       console.log('Filtered subdependencias:', filtered)
       setFilteredSubdependencias(filtered)
     } else {
@@ -185,10 +187,10 @@ const TramitesAdminPage: React.FC = () => {
       required: true,
       options: [
         { value: '', label: 'Seleccionar dependencia', disabled: true },
-        ...dependencias.map(dep => ({
+        ...dependencias.map((dep) => ({
           value: dep.id,
           label: dep.nombre,
-        }))
+        })),
       ],
       placeholder: 'Seleccionar dependencia',
       onChange: handleDependenciaChange,
@@ -201,13 +203,15 @@ const TramitesAdminPage: React.FC = () => {
       options: [
         {
           value: '',
-          label: selectedDependenciaId ? 'Seleccionar subdependencia' : 'Primero seleccione una dependencia',
-          disabled: true
+          label: selectedDependenciaId
+            ? 'Seleccionar subdependencia'
+            : 'Primero seleccione una dependencia',
+          disabled: true,
         },
-        ...filteredSubdependencias.map(sub => ({
+        ...filteredSubdependencias.map((sub) => ({
           value: sub.id,
           label: sub.nombre,
-        }))
+        })),
       ],
       disabled: !selectedDependenciaId,
       placeholder: 'Seleccionar subdependencia',
@@ -252,9 +256,7 @@ const TramitesAdminPage: React.FC = () => {
       sortable: true,
       width: 120,
       render: (value, record) => (
-        <span className="font-mono text-sm text-gray-900">
-          {value || 'N/A'}
-        </span>
+        <span className="font-mono text-sm text-gray-900">{value || 'N/A'}</span>
       ),
     },
     {
@@ -278,9 +280,7 @@ const TramitesAdminPage: React.FC = () => {
           <div className="text-sm font-medium text-gray-900">
             {value?.dependencias?.nombre || 'N/A'}
           </div>
-          <div className="text-xs text-gray-500">
-            {value?.nombre || 'N/A'}
-          </div>
+          <div className="text-xs text-gray-500">{value?.nombre || 'N/A'}</div>
         </div>
       ),
     },
@@ -298,9 +298,7 @@ const TramitesAdminPage: React.FC = () => {
       key: 'tiempo_respuesta',
       title: 'Tiempo Respuesta',
       render: (value, record) => (
-        <span className="text-sm text-gray-600">
-          {value || 'No especificado'}
-        </span>
+        <span className="text-sm text-gray-600">{value || 'No especificado'}</span>
       ),
     },
     {
@@ -308,11 +306,11 @@ const TramitesAdminPage: React.FC = () => {
       title: 'Estado',
       align: 'center',
       render: (value, record) => (
-        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-          value
-            ? 'bg-green-100 text-green-800'
-            : 'bg-red-100 text-red-800'
-        }`}>
+        <span
+          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+            value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          }`}
+        >
           {value ? 'Activo' : 'Inactivo'}
         </span>
       ),
@@ -321,11 +319,7 @@ const TramitesAdminPage: React.FC = () => {
       key: 'updated_at',
       title: 'Actualizado',
       sortable: true,
-      render: (value, record) => (
-        <span className="text-sm text-gray-500">
-          {formatDate(value)}
-        </span>
-      ),
+      render: (value, record) => <span className="text-sm text-gray-500">{formatDate(value)}</span>,
     },
   ]
 
@@ -338,7 +332,7 @@ const TramitesAdminPage: React.FC = () => {
       console.log('Creating tramite with data:', formData)
 
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       const newTramite = {
         id: String(tramites.length + 1),
@@ -350,10 +344,10 @@ const TramitesAdminPage: React.FC = () => {
         activo: formData.activo || false,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        subdependencias: subdependencias.find(s => s.id === formData.subdependencia_id)
+        subdependencias: subdependencias.find((s) => s.id === formData.subdependencia_id),
       }
 
-      setTramites(prev => [...prev, newTramite])
+      setTramites((prev) => [...prev, newTramite])
       setIsCreateModalOpen(false)
       setSelectedDependenciaId('')
       setFilteredSubdependencias([])
@@ -373,7 +367,7 @@ const TramitesAdminPage: React.FC = () => {
       console.log('Updating tramite with data:', formData)
 
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       const updatedTramite = {
         ...selectedTramite,
@@ -383,10 +377,10 @@ const TramitesAdminPage: React.FC = () => {
           : [],
         costo: formData.costo || 0,
         updated_at: new Date().toISOString(),
-        subdependencias: subdependencias.find(s => s.id === formData.subdependencia_id)
+        subdependencias: subdependencias.find((s) => s.id === formData.subdependencia_id),
       }
 
-      setTramites(prev => prev.map(t => t.id === selectedTramite.id ? updatedTramite : t))
+      setTramites((prev) => prev.map((t) => (t.id === selectedTramite.id ? updatedTramite : t)))
       setIsEditModalOpen(false)
       setSelectedTramite(null)
       setSelectedDependenciaId('')
@@ -407,9 +401,9 @@ const TramitesAdminPage: React.FC = () => {
       console.log('Deleting tramite:', selectedTramite.id)
 
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      setTramites(prev => prev.filter(t => t.id !== selectedTramite.id))
+      setTramites((prev) => prev.filter((t) => t.id !== selectedTramite.id))
       setIsDeleteModalOpen(false)
       setSelectedTramite(null)
     } catch (err) {
@@ -450,7 +444,9 @@ const TramitesAdminPage: React.FC = () => {
     // Set the dependencia for hierarchical selection
     if (selectedTramite.subdependencias?.dependencia_id) {
       setSelectedDependenciaId(selectedTramite.subdependencias.dependencia_id)
-      const filtered = subdependencias.filter(sub => sub.dependencia_id === selectedTramite.subdependencias.dependencia_id)
+      const filtered = subdependencias.filter(
+        (sub) => sub.dependencia_id === selectedTramite.subdependencias.dependencia_id
+      )
       setFilteredSubdependencias(filtered)
     }
 
@@ -482,152 +478,146 @@ const TramitesAdminPage: React.FC = () => {
         }
       />
       <div className="space-y-6">
-
-      {/* Error Alert */}
-      {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div className="flex">
-            <div className="text-red-400">⚠️</div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">Error</h3>
-              <p className="text-sm text-red-700 mt-1">{error}</p>
+        {/* Error Alert */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex">
+              <div className="text-red-400">⚠️</div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">Error</h3>
+                <p className="text-sm text-red-700 mt-1">{error}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setError(null)}
+                className="ml-auto text-red-400 hover:text-red-600"
+              >
+                ✕
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => setError(null)}
-              className="ml-auto text-red-400 hover:text-red-600"
-            >
-              ✕
-            </button>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Data Table */}
-      <Card>
-        <DataTable
-          data={tramites}
-          columns={columns}
-          loading={loading}
-          error={error}
-          rowActions={rowActions}
-          searchPlaceholder="Buscar trámites..."
-          showSearchAndFilters
-          emptyStateProps={{
-            title: 'No hay trámites',
-            description: 'No se encontraron trámites. Crea el primer trámite.',
-            action: (
+        {/* Data Table */}
+        <Card>
+          <DataTable
+            data={tramites}
+            columns={columns}
+            loading={loading}
+            error={error}
+            rowActions={rowActions}
+            searchPlaceholder="Buscar trámites..."
+            showSearchAndFilters
+            emptyStateProps={{
+              title: 'No hay trámites',
+              description: 'No se encontraron trámites. Crea el primer trámite.',
+              action: (
+                <Button variant="primary" onClick={() => setIsCreateModalOpen(true)}>
+                  Crear Trámite
+                </Button>
+              ),
+            }}
+          />
+        </Card>
+
+        {/* Create Modal */}
+        <Modal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          title="Crear Nuevo Trámite"
+          size="lg"
+          footer={
+            <>
               <Button
+                variant="outline"
+                onClick={() => setIsCreateModalOpen(false)}
+                disabled={formLoading}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                form="create-tramite-form"
                 variant="primary"
-                onClick={() => setIsCreateModalOpen(true)}
+                isLoading={formLoading}
               >
                 Crear Trámite
               </Button>
-            ),
+            </>
+          }
+        >
+          <Form
+            id="create-tramite-form"
+            fields={formFields}
+            onSubmit={handleCreate}
+            initialData={{ activo: true }}
+            validateOnChange
+            validateOnBlur
+          />
+        </Modal>
+
+        {/* Edit Modal */}
+        <Modal
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setIsEditModalOpen(false)
+            setSelectedTramite(null)
           }}
-        />
-      </Card>
+          title="Editar Trámite"
+          size="lg"
+          footer={
+            <>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsEditModalOpen(false)
+                  setSelectedTramite(null)
+                }}
+                disabled={formLoading}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                form="edit-tramite-form"
+                variant="primary"
+                isLoading={formLoading}
+              >
+                Guardar Cambios
+              </Button>
+            </>
+          }
+        >
+          <Form
+            id="edit-tramite-form"
+            fields={formFields}
+            onSubmit={handleEdit}
+            initialData={getEditInitialData()}
+            validateOnChange
+            validateOnBlur
+          />
+        </Modal>
 
-      {/* Create Modal */}
-      <Modal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        title="Crear Nuevo Trámite"
-        size="lg"
-        footer={
-          <>
-            <Button
-              variant="outline"
-              onClick={() => setIsCreateModalOpen(false)}
-              disabled={formLoading}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              form="create-tramite-form"
-              variant="primary"
-              isLoading={formLoading}
-            >
-              Crear Trámite
-            </Button>
-          </>
-        }
-      >
-        <Form
-          id="create-tramite-form"
-          fields={formFields}
-          onSubmit={handleCreate}
-          initialData={{ activo: true }}
-          validateOnChange
-          validateOnBlur
-        />
-      </Modal>
-
-      {/* Edit Modal */}
-      <Modal
-        isOpen={isEditModalOpen}
-        onClose={() => {
-          setIsEditModalOpen(false)
-          setSelectedTramite(null)
-        }}
-        title="Editar Trámite"
-        size="lg"
-        footer={
-          <>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsEditModalOpen(false)
-                setSelectedTramite(null)
-              }}
-              disabled={formLoading}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              form="edit-tramite-form"
-              variant="primary"
-              isLoading={formLoading}
-            >
-              Guardar Cambios
-            </Button>
-          </>
-        }
-      >
-        <Form
-          id="edit-tramite-form"
-          fields={formFields}
-          onSubmit={handleEdit}
-          initialData={getEditInitialData()}
-          validateOnChange
-          validateOnBlur
-        />
-      </Modal>
-
-      {/* Delete Confirmation */}
-      <ConfirmDialog
-        isOpen={isDeleteModalOpen}
-        onClose={() => {
-          setIsDeleteModalOpen(false)
-          setSelectedTramite(null)
-        }}
-        onConfirm={handleDelete}
-        title="Eliminar Trámite"
-        confirmText="Eliminar"
-        confirmVariant="danger"
-        loading={formLoading}
-      >
-        <p className="text-gray-600">
-          ¿Estás seguro de que deseas eliminar el trámite{' '}
-          <strong>{selectedTramite?.nombre}</strong>?
-        </p>
-        <p className="text-sm text-red-600 mt-2">
-          Esta acción no se puede deshacer.
-        </p>
-      </ConfirmDialog>
-    </div>
+        {/* Delete Confirmation */}
+        <ConfirmDialog
+          isOpen={isDeleteModalOpen}
+          onClose={() => {
+            setIsDeleteModalOpen(false)
+            setSelectedTramite(null)
+          }}
+          onConfirm={handleDelete}
+          title="Eliminar Trámite"
+          confirmText="Eliminar"
+          confirmVariant="danger"
+          loading={formLoading}
+        >
+          <p className="text-gray-600">
+            ¿Estás seguro de que deseas eliminar el trámite{' '}
+            <strong>{selectedTramite?.nombre}</strong>?
+          </p>
+          <p className="text-sm text-red-600 mt-2">Esta acción no se puede deshacer.</p>
+        </ConfirmDialog>
+      </div>
     </>
   )
 }

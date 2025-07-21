@@ -77,11 +77,7 @@ export default function FAQsAdminPage() {
       try {
         setLoading(true)
         setError(null)
-        await Promise.all([
-          loadFaqs(),
-          loadDependencias(),
-          loadSubdependencias()
-        ])
+        await Promise.all([loadFaqs(), loadDependencias(), loadSubdependencias()])
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error loading data')
       } finally {
@@ -97,12 +93,12 @@ export default function FAQsAdminPage() {
     console.log('handleDependenciaChange called with:', dependenciaValue)
 
     // Find the dependencia by ID
-    const dependencia = dependencias.find(dep => dep.id === dependenciaValue)
+    const dependencia = dependencias.find((dep) => dep.id === dependenciaValue)
 
     if (dependencia) {
       console.log('Found dependencia:', dependencia)
       setSelectedDependenciaId(dependencia.id)
-      const filtered = subdependencias.filter(sub => sub.dependencia_id === dependencia.id)
+      const filtered = subdependencias.filter((sub) => sub.dependencia_id === dependencia.id)
       console.log('Filtered subdependencias:', filtered)
       setFilteredSubdependencias(filtered)
     } else {
@@ -188,9 +184,7 @@ export default function FAQsAdminPage() {
       sortable: true,
       width: '80px',
       render: (value, record) => (
-        <div className="text-sm text-gray-500 text-center">
-          {record?.orden || 0}
-        </div>
+        <div className="text-sm text-gray-500 text-center">{record?.orden || 0}</div>
       ),
     },
     {
@@ -229,10 +223,10 @@ export default function FAQsAdminPage() {
       required: true,
       options: [
         { value: '', label: 'Seleccionar dependencia', disabled: true },
-        ...dependencias.map(dep => ({
+        ...dependencias.map((dep) => ({
           value: dep.id,
           label: dep.nombre,
-        }))
+        })),
       ],
       placeholder: 'Seleccionar dependencia',
       onChange: handleDependenciaChange,
@@ -245,13 +239,15 @@ export default function FAQsAdminPage() {
       options: [
         {
           value: '',
-          label: selectedDependenciaId ? 'Seleccionar subdependencia' : 'Primero seleccione una dependencia',
-          disabled: true
+          label: selectedDependenciaId
+            ? 'Seleccionar subdependencia'
+            : 'Primero seleccione una dependencia',
+          disabled: true,
         },
-        ...filteredSubdependencias.map(sub => ({
+        ...filteredSubdependencias.map((sub) => ({
           value: sub.id,
           label: sub.nombre,
-        }))
+        })),
       ],
       disabled: !selectedDependenciaId,
       placeholder: 'Seleccionar subdependencia',
@@ -321,7 +317,7 @@ export default function FAQsAdminPage() {
     // Set the dependencia and filter subdependencias for editing
     if (faq.dependencia_id) {
       setSelectedDependenciaId(faq.dependencia_id)
-      const filtered = subdependencias.filter(sub => sub.dependencia_id === faq.dependencia_id)
+      const filtered = subdependencias.filter((sub) => sub.dependencia_id === faq.dependencia_id)
       setFilteredSubdependencias(filtered)
     } else {
       setSelectedDependenciaId('')
@@ -344,7 +340,10 @@ export default function FAQsAdminPage() {
 
       // Process palabras_clave from comma-separated string to array
       const palabrasClaveArray = formData.palabras_clave
-        ? (formData.palabras_clave as string).split(',').map(word => word.trim()).filter(Boolean)
+        ? (formData.palabras_clave as string)
+            .split(',')
+            .map((word) => word.trim())
+            .filter(Boolean)
         : []
 
       const faqData = {
@@ -352,7 +351,7 @@ export default function FAQsAdminPage() {
         respuesta: formData.respuesta as string,
         dependencia_id: formData.dependencia_id as string,
         subdependencia_id: formData.subdependencia_id as string,
-        tema: formData.tema as string || null,
+        tema: (formData.tema as string) || null,
         palabras_clave: palabrasClaveArray.length > 0 ? palabrasClaveArray : null,
         categoria: formData.categoria as string,
         orden: parseInt(formData.orden as string) || 0,
@@ -378,7 +377,10 @@ export default function FAQsAdminPage() {
 
       // Process palabras_clave from comma-separated string to array
       const palabrasClaveArray = formData.palabras_clave
-        ? (formData.palabras_clave as string).split(',').map(word => word.trim()).filter(Boolean)
+        ? (formData.palabras_clave as string)
+            .split(',')
+            .map((word) => word.trim())
+            .filter(Boolean)
         : []
 
       const updates = {
@@ -386,7 +388,7 @@ export default function FAQsAdminPage() {
         respuesta: formData.respuesta as string,
         dependencia_id: formData.dependencia_id as string,
         subdependencia_id: formData.subdependencia_id as string,
-        tema: formData.tema as string || null,
+        tema: (formData.tema as string) || null,
         palabras_clave: palabrasClaveArray.length > 0 ? palabrasClaveArray : null,
         categoria: formData.categoria as string,
         orden: parseInt(formData.orden as string) || 0,
@@ -438,13 +440,14 @@ export default function FAQsAdminPage() {
   ]
 
   // Filter data based on search
-  const filteredFaqs = faqs.filter(faq =>
-    (faq.pregunta || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (faq.respuesta || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (faq.categoria || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (faq.dependencias?.nombre || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (faq.subdependencias?.nombre || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (faq.tema || '').toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredFaqs = faqs.filter(
+    (faq) =>
+      (faq.pregunta || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (faq.respuesta || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (faq.categoria || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (faq.dependencias?.nombre || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (faq.subdependencias?.nombre || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (faq.tema || '').toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   return (
@@ -456,11 +459,7 @@ export default function FAQsAdminPage() {
             <h1 className="text-2xl font-bold text-gray-900">Gestión de FAQs</h1>
             <p className="text-gray-600">Administrar Preguntas Frecuentes</p>
           </div>
-          <Button
-            variant="primary"
-            onClick={handleCreate}
-            className="flex items-center space-x-2"
-          >
+          <Button variant="primary" onClick={handleCreate} className="flex items-center space-x-2">
             <span>➕</span>
             <span>Nueva FAQ</span>
           </Button>
@@ -482,10 +481,7 @@ export default function FAQsAdminPage() {
               title: 'No hay FAQs',
               description: 'No se encontraron preguntas frecuentes. Crea la primera FAQ.',
               action: (
-                <Button
-                  variant="primary"
-                  onClick={handleCreate}
-                >
+                <Button variant="primary" onClick={handleCreate}>
                   Crear FAQ
                 </Button>
               ),
@@ -544,12 +540,7 @@ export default function FAQsAdminPage() {
               >
                 Cancelar
               </Button>
-              <Button
-                type="submit"
-                form="edit-faq-form"
-                variant="primary"
-                isLoading={isSubmitting}
-              >
+              <Button type="submit" form="edit-faq-form" variant="primary" isLoading={isSubmitting}>
                 Guardar Cambios
               </Button>
             </>
@@ -565,7 +556,9 @@ export default function FAQsAdminPage() {
                 dependencia_id: selectedFAQ.dependencia_id,
                 subdependencia_id: selectedFAQ.subdependencia_id,
                 tema: selectedFAQ.tema || '',
-                palabras_clave: selectedFAQ.palabras_clave ? selectedFAQ.palabras_clave.join(', ') : '',
+                palabras_clave: selectedFAQ.palabras_clave
+                  ? selectedFAQ.palabras_clave.join(', ')
+                  : '',
                 categoria: selectedFAQ.categoria,
                 orden: selectedFAQ.orden,
                 activo: selectedFAQ.activo,
@@ -592,11 +585,9 @@ export default function FAQsAdminPage() {
             <>
               <p className="text-gray-600">
                 ¿Estás seguro de que deseas eliminar la FAQ{' '}
-                <strong>"{selectedFAQ.pregunta}"</strong>?
+                <strong>&quot;{selectedFAQ.pregunta}&quot;</strong>?
               </p>
-              <p className="text-sm text-red-600 mt-2">
-                Esta acción no se puede deshacer.
-              </p>
+              <p className="text-sm text-red-600 mt-2">Esta acción no se puede deshacer.</p>
             </>
           )}
         </ConfirmDialog>

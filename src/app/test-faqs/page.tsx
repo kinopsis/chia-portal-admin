@@ -37,7 +37,7 @@ export default function TestFAQsPage() {
     subdependencia_id: '',
     tema: '',
     palabras_clave: [],
-    activo: true
+    activo: true,
   })
   const [tagsInput, setTagsInput] = useState('')
 
@@ -86,7 +86,8 @@ export default function TestFAQsPage() {
         console.log('Loading subdependencias...')
         const { data: subdependenciasData, error: subdependenciasError } = await supabase
           .from('subdependencias')
-          .select(`
+          .select(
+            `
             id,
             nombre,
             dependencia_id,
@@ -95,7 +96,8 @@ export default function TestFAQsPage() {
               id,
               nombre
             )
-          `)
+          `
+          )
           .eq('activo', true)
           .order('nombre')
 
@@ -106,7 +108,6 @@ export default function TestFAQsPage() {
         console.error('Error loading subdependencias:', subError)
         setSubdependencias([])
       }
-
     } catch (error) {
       console.error('General error loading data:', error)
     } finally {
@@ -120,14 +121,14 @@ export default function TestFAQsPage() {
     setSelectedDependenciaId(dependenciaId)
 
     // Filter subdependencias by selected dependencia
-    const filtered = subdependencias.filter(sub => sub.dependencia_id === dependenciaId)
+    const filtered = subdependencias.filter((sub) => sub.dependencia_id === dependenciaId)
     setFilteredSubdependencias(filtered)
 
     // Update form data with dependencia_id and reset subdependencia selection
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       dependencia_id: dependenciaId,
-      subdependencia_id: ''
+      subdependencia_id: '',
     }))
   }
 
@@ -140,7 +141,7 @@ export default function TestFAQsPage() {
       subdependencia_id: '',
       tema: '',
       palabras_clave: [],
-      activo: true
+      activo: true,
     })
     setTagsInput('')
     setSelectedDependenciaId('')
@@ -155,16 +156,16 @@ export default function TestFAQsPage() {
       // Process palabras_clave from tagsInput
       const palabras_clave = tagsInput
         .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0)
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0)
 
       const newFaq = await faqsService.create({
         ...formData,
-        palabras_clave
+        palabras_clave,
       })
 
       console.log('FAQ created successfully:', newFaq)
-      setFaqs(prev => [newFaq, ...prev])
+      setFaqs((prev) => [newFaq, ...prev])
       setShowCreateModal(false)
       resetForm()
     } catch (error) {
@@ -183,7 +184,7 @@ export default function TestFAQsPage() {
     setSelectedDependenciaId(dependenciaId)
 
     // Filter subdependencias for the selected dependencia
-    const filtered = subdependencias.filter(sub => sub.dependencia_id === dependenciaId)
+    const filtered = subdependencias.filter((sub) => sub.dependencia_id === dependenciaId)
     setFilteredSubdependencias(filtered)
 
     setFormData({
@@ -193,7 +194,7 @@ export default function TestFAQsPage() {
       subdependencia_id: faq.subdependencia_id,
       tema: faq.tema || '',
       palabras_clave: faq.palabras_clave || [],
-      activo: faq.activo
+      activo: faq.activo,
     })
     setTagsInput((faq.palabras_clave || []).join(', '))
     setShowEditModal(true)
@@ -208,18 +209,16 @@ export default function TestFAQsPage() {
       // Process palabras_clave from tagsInput
       const palabras_clave = tagsInput
         .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0)
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0)
 
       const updatedFaq = await faqsService.update(selectedFaq.id, {
         ...formData,
-        palabras_clave
+        palabras_clave,
       })
-      
+
       console.log('FAQ updated successfully:', updatedFaq)
-      setFaqs(prev => prev.map(faq => 
-        faq.id === selectedFaq.id ? updatedFaq : faq
-      ))
+      setFaqs((prev) => prev.map((faq) => (faq.id === selectedFaq.id ? updatedFaq : faq)))
       setShowEditModal(false)
       resetForm()
     } catch (error) {
@@ -240,9 +239,9 @@ export default function TestFAQsPage() {
     try {
       console.log('Confirming delete for FAQ:', selectedFaq.id)
       await faqsService.delete(selectedFaq.id)
-      
+
       console.log('FAQ deleted successfully')
-      setFaqs(prev => prev.filter(faq => faq.id !== selectedFaq.id))
+      setFaqs((prev) => prev.filter((faq) => faq.id !== selectedFaq.id))
       setShowDeleteModal(false)
       setSelectedFaq(null)
     } catch (error) {
@@ -258,7 +257,7 @@ export default function TestFAQsPage() {
       subdependencia_id: '',
       tema: '',
       palabras_clave: [],
-      activo: true
+      activo: true,
     })
     setTagsInput('')
     setSelectedFaq(null)
@@ -274,11 +273,9 @@ export default function TestFAQsPage() {
       sortable: true,
       render: (value: any, faq: FAQ) => (
         <div className="max-w-xs">
-          <div className="font-medium text-gray-900 truncate">
-            {faq.pregunta}
-          </div>
+          <div className="font-medium text-gray-900 truncate">{faq.pregunta}</div>
         </div>
-      )
+      ),
     },
     {
       key: 'respuesta',
@@ -286,11 +283,9 @@ export default function TestFAQsPage() {
       sortable: false,
       render: (value: any, faq: FAQ) => (
         <div className="max-w-sm">
-          <div className="text-gray-600 text-sm line-clamp-2">
-            {faq.respuesta}
-          </div>
+          <div className="text-gray-600 text-sm line-clamp-2">{faq.respuesta}</div>
         </div>
-      )
+      ),
     },
     {
       key: 'jerarquia',
@@ -304,12 +299,10 @@ export default function TestFAQsPage() {
             <div className="text-gray-900 font-medium">
               {dependencia?.nombre || 'Sin dependencia'}
             </div>
-            <div className="text-gray-600">
-              {subdependencia?.nombre || 'Sin subdependencia'}
-            </div>
+            <div className="text-gray-600">{subdependencia?.nombre || 'Sin subdependencia'}</div>
           </div>
         )
-      }
+      },
     },
     {
       key: 'tema',
@@ -321,7 +314,7 @@ export default function TestFAQsPage() {
             {faq.tema || 'Sin tema'}
           </span>
         </div>
-      )
+      ),
     },
     {
       key: 'palabras_clave',
@@ -343,21 +336,21 @@ export default function TestFAQsPage() {
             </span>
           )}
         </div>
-      )
+      ),
     },
     {
       key: 'activo',
       title: 'Estado',
       sortable: true,
       render: (value: any, faq: FAQ) => (
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-          faq.activo
-            ? 'bg-green-100 text-green-800'
-            : 'bg-red-100 text-red-800'
-        }`}>
+        <span
+          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+            faq.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          }`}
+        >
           {faq.activo ? 'Activa' : 'Inactiva'}
         </span>
-      )
+      ),
     },
     {
       key: 'updated_at',
@@ -367,22 +360,22 @@ export default function TestFAQsPage() {
         <div className="text-sm text-gray-500">
           {new Date(faq.updated_at).toLocaleDateString('es-CO')}
         </div>
-      )
-    }
+      ),
+    },
   ]
 
   const actions = [
     {
       label: 'Editar',
       icon: '✏️',
-      onClick: handleEdit
+      onClick: handleEdit,
     },
     {
       label: 'Eliminar',
       icon: '🗑️',
       onClick: handleDelete,
-      variant: 'danger' as const
-    }
+      variant: 'danger' as const,
+    },
   ]
 
   if (loading) {
@@ -403,12 +396,8 @@ export default function TestFAQsPage() {
         <div className="mb-8">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Gestión de FAQs (Test)
-              </h1>
-              <p className="mt-2 text-gray-600">
-                Prueba de la interfaz CRUD de FAQs
-              </p>
+              <h1 className="text-3xl font-bold text-gray-900">Gestión de FAQs (Test)</h1>
+              <p className="mt-2 text-gray-600">Prueba de la interfaz CRUD de FAQs</p>
             </div>
             <Button
               onClick={handleCreate}
@@ -434,29 +423,25 @@ export default function TestFAQsPage() {
             total: faqs.length,
             showSizeChanger: true,
             showQuickJumper: false,
-            showTotal: (total, range) => `Mostrando ${range[0]}-${range[1]} de ${total} registros`
+            showTotal: (total, range) => `Mostrando ${range[0]}-${range[1]} de ${total} registros`,
           }}
         />
 
         {/* Create Modal */}
-        <Modal
-          isOpen={showCreateModal}
-          onClose={() => setShowCreateModal(false)}
-          title="Nueva FAQ"
-        >
+        <Modal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} title="Nueva FAQ">
           <div className="space-y-4">
             <Input
               label="Pregunta"
               value={formData.pregunta}
-              onChange={(e) => setFormData(prev => ({ ...prev, pregunta: e.target.value }))}
+              onChange={(e) => setFormData((prev) => ({ ...prev, pregunta: e.target.value }))}
               placeholder="Ingrese la pregunta frecuente"
               required
             />
-            
+
             <Textarea
               label="Respuesta"
               value={formData.respuesta}
-              onChange={(e) => setFormData(prev => ({ ...prev, respuesta: e.target.value }))}
+              onChange={(e) => setFormData((prev) => ({ ...prev, respuesta: e.target.value }))}
               placeholder="Ingrese la respuesta detallada"
               rows={4}
               required
@@ -468,10 +453,10 @@ export default function TestFAQsPage() {
               onChange={(e) => handleDependenciaChange(e.target.value)}
               placeholder="Seleccione una dependencia"
               options={[
-                ...dependencias.map(dep => ({
+                ...dependencias.map((dep) => ({
                   value: dep.id,
-                  label: `${dep.nombre} (${dep.codigo})`
-                }))
+                  label: `${dep.nombre} (${dep.codigo})`,
+                })),
               ]}
               required
             />
@@ -479,13 +464,15 @@ export default function TestFAQsPage() {
             <Select
               label="Subdependencia"
               value={formData.subdependencia_id}
-              onChange={(e) => setFormData(prev => ({ ...prev, subdependencia_id: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, subdependencia_id: e.target.value }))
+              }
               placeholder="Seleccione una subdependencia"
               options={[
-                ...filteredSubdependencias.map(sub => ({
+                ...filteredSubdependencias.map((sub) => ({
                   value: sub.id,
-                  label: sub.nombre
-                }))
+                  label: sub.nombre,
+                })),
               ]}
               required
               disabled={!selectedDependenciaId}
@@ -494,7 +481,7 @@ export default function TestFAQsPage() {
             <Input
               label="Tema"
               value={formData.tema || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, tema: e.target.value }))}
+              onChange={(e) => setFormData((prev) => ({ ...prev, tema: e.target.value }))}
               placeholder="ej: Certificados, Trámites, Documentos"
             />
 
@@ -510,7 +497,7 @@ export default function TestFAQsPage() {
                 type="checkbox"
                 id="activa-create"
                 checked={formData.activo}
-                onChange={(e) => setFormData(prev => ({ ...prev, activo: e.target.checked }))}
+                onChange={(e) => setFormData((prev) => ({ ...prev, activo: e.target.checked }))}
                 className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
               />
               <label htmlFor="activa-create" className="text-sm font-medium text-gray-700">
@@ -519,15 +506,17 @@ export default function TestFAQsPage() {
             </div>
 
             <div className="flex justify-end space-x-3 pt-4">
-              <Button
-                variant="secondary"
-                onClick={() => setShowCreateModal(false)}
-              >
+              <Button variant="secondary" onClick={() => setShowCreateModal(false)}>
                 Cancelar
               </Button>
               <Button
                 onClick={handleCreateSubmit}
-                disabled={!formData.pregunta || !formData.respuesta || !formData.dependencia_id || !formData.subdependencia_id}
+                disabled={
+                  !formData.pregunta ||
+                  !formData.respuesta ||
+                  !formData.dependencia_id ||
+                  !formData.subdependencia_id
+                }
               >
                 Crear FAQ
               </Button>
@@ -536,24 +525,20 @@ export default function TestFAQsPage() {
         </Modal>
 
         {/* Edit Modal */}
-        <Modal
-          isOpen={showEditModal}
-          onClose={() => setShowEditModal(false)}
-          title="Editar FAQ"
-        >
+        <Modal isOpen={showEditModal} onClose={() => setShowEditModal(false)} title="Editar FAQ">
           <div className="space-y-4">
             <Input
               label="Pregunta"
               value={formData.pregunta}
-              onChange={(e) => setFormData(prev => ({ ...prev, pregunta: e.target.value }))}
+              onChange={(e) => setFormData((prev) => ({ ...prev, pregunta: e.target.value }))}
               placeholder="Ingrese la pregunta frecuente"
               required
             />
-            
+
             <Textarea
               label="Respuesta"
               value={formData.respuesta}
-              onChange={(e) => setFormData(prev => ({ ...prev, respuesta: e.target.value }))}
+              onChange={(e) => setFormData((prev) => ({ ...prev, respuesta: e.target.value }))}
               placeholder="Ingrese la respuesta detallada"
               rows={4}
               required
@@ -565,10 +550,10 @@ export default function TestFAQsPage() {
               onChange={(e) => handleDependenciaChange(e.target.value)}
               placeholder="Seleccione una dependencia"
               options={[
-                ...dependencias.map(dep => ({
+                ...dependencias.map((dep) => ({
                   value: dep.id,
-                  label: `${dep.nombre} (${dep.codigo})`
-                }))
+                  label: `${dep.nombre} (${dep.codigo})`,
+                })),
               ]}
               required
             />
@@ -576,13 +561,15 @@ export default function TestFAQsPage() {
             <Select
               label="Subdependencia"
               value={formData.subdependencia_id}
-              onChange={(e) => setFormData(prev => ({ ...prev, subdependencia_id: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, subdependencia_id: e.target.value }))
+              }
               placeholder="Seleccione una subdependencia"
               options={[
-                ...filteredSubdependencias.map(sub => ({
+                ...filteredSubdependencias.map((sub) => ({
                   value: sub.id,
-                  label: sub.nombre
-                }))
+                  label: sub.nombre,
+                })),
               ]}
               required
               disabled={!selectedDependenciaId}
@@ -591,7 +578,7 @@ export default function TestFAQsPage() {
             <Input
               label="Tema"
               value={formData.tema || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, tema: e.target.value }))}
+              onChange={(e) => setFormData((prev) => ({ ...prev, tema: e.target.value }))}
               placeholder="ej: Certificados, Trámites, Documentos"
             />
 
@@ -607,7 +594,7 @@ export default function TestFAQsPage() {
                 type="checkbox"
                 id="activa-edit"
                 checked={formData.activo}
-                onChange={(e) => setFormData(prev => ({ ...prev, activo: e.target.checked }))}
+                onChange={(e) => setFormData((prev) => ({ ...prev, activo: e.target.checked }))}
                 className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
               />
               <label htmlFor="activa-edit" className="text-sm font-medium text-gray-700">
@@ -616,15 +603,17 @@ export default function TestFAQsPage() {
             </div>
 
             <div className="flex justify-end space-x-3 pt-4">
-              <Button
-                variant="secondary"
-                onClick={() => setShowEditModal(false)}
-              >
+              <Button variant="secondary" onClick={() => setShowEditModal(false)}>
                 Cancelar
               </Button>
               <Button
                 onClick={handleEditSubmit}
-                disabled={!formData.pregunta || !formData.respuesta || !formData.dependencia_id || !formData.subdependencia_id}
+                disabled={
+                  !formData.pregunta ||
+                  !formData.respuesta ||
+                  !formData.dependencia_id ||
+                  !formData.subdependencia_id
+                }
               >
                 Guardar Cambios
               </Button>
@@ -644,20 +633,14 @@ export default function TestFAQsPage() {
                 <img src="/warning-icon.svg" alt="Warning" className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-gray-900">
-                  Eliminar FAQ
-                </h3>
-                <p className="text-sm text-gray-600">
-                  ¿Estás seguro de que deseas continuar?
-                </p>
+                <h3 className="text-lg font-medium text-gray-900">Eliminar FAQ</h3>
+                <p className="text-sm text-gray-600">¿Estás seguro de que deseas continuar?</p>
               </div>
             </div>
-            
+
             {selectedFaq && (
               <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="font-medium text-gray-900">
-                  {selectedFaq.pregunta}
-                </p>
+                <p className="font-medium text-gray-900">{selectedFaq.pregunta}</p>
                 <p className="text-sm text-gray-600 mt-1">
                   {selectedFaq.respuesta.substring(0, 100)}...
                 </p>
@@ -665,16 +648,10 @@ export default function TestFAQsPage() {
             )}
 
             <div className="flex justify-end space-x-3 pt-4">
-              <Button
-                variant="secondary"
-                onClick={() => setShowDeleteModal(false)}
-              >
+              <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
                 Cancelar
               </Button>
-              <Button
-                variant="danger"
-                onClick={handleDeleteConfirm}
-              >
+              <Button variant="danger" onClick={handleDeleteConfirm}>
                 Eliminar
               </Button>
             </div>

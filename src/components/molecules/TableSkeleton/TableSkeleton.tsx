@@ -71,9 +71,9 @@ const TableSkeleton: React.FC<TableSkeletonProps> = ({
                     className={clsx('text-left border-b border-gray-200', classes.padding)}
                   >
                     <div className="flex items-center space-x-2">
-                      <Skeleton 
-                        width={index === 0 ? '120px' : index === columns - 1 ? '80px' : '100px'} 
-                        height="16px" 
+                      <Skeleton
+                        width={index === 0 ? '120px' : index === columns - 1 ? '80px' : '100px'}
+                        height="16px"
                       />
                       <Skeleton width="16px" height="16px" variant="rectangular" />
                     </div>
@@ -110,10 +110,7 @@ const TableSkeleton: React.FC<TableSkeletonProps> = ({
                       </div>
                     ) : (
                       // Regular columns
-                      <Skeleton 
-                        width={`${60 + Math.random() * 40}%`} 
-                        height="16px" 
-                      />
+                      <Skeleton width={`${60 + Math.random() * 40}%`} height="16px" />
                     )}
                   </td>
                 ))}

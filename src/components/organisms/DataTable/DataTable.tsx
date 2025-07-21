@@ -1,9 +1,35 @@
 'use client'
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
-import { Card, Button, Spinner, ErrorBoundary, LoadingOverlay, EmptyState, Skeleton } from '@/components/atoms'
-import { Pagination, SearchAndFilters, applyAdvancedFilters, TableSkeleton, RowActions, BulkActions, MobileDataTable, SwipeActions } from '@/components/molecules'
-import type { FilterConfig, FilterValue, FilterPreset, AdvancedFilterConfig, FilterGroup, RowAction, BulkAction, SwipeAction } from '@/components/molecules'
+import {
+  Card,
+  Button,
+  Spinner,
+  ErrorBoundary,
+  LoadingOverlay,
+  EmptyState,
+  Skeleton,
+} from '@/components/atoms'
+import {
+  Pagination,
+  SearchAndFilters,
+  applyAdvancedFilters,
+  TableSkeleton,
+  RowActions,
+  BulkActions,
+  MobileDataTable,
+  SwipeActions,
+} from '@/components/molecules'
+import type {
+  FilterConfig,
+  FilterValue,
+  FilterPreset,
+  AdvancedFilterConfig,
+  FilterGroup,
+  RowAction,
+  BulkAction,
+  SwipeAction,
+} from '@/components/molecules'
 import { useBreakpoint } from '@/hooks'
 import { clsx } from 'clsx'
 
@@ -44,7 +70,7 @@ export interface DataTableProps<T = any> {
   onRetry?: () => void
   showErrorDetails?: boolean
   errorBoundary?: boolean
-  
+
   // Pagination
   pagination?: {
     current: number
@@ -62,7 +88,7 @@ export interface DataTableProps<T = any> {
     onChange?: (page: number, pageSize: number) => void
     onShowSizeChange?: (current: number, size: number) => void
   }
-  
+
   // Sorting
   sortable?: boolean
   defaultSort?: {
@@ -72,13 +98,13 @@ export interface DataTableProps<T = any> {
   multiSort?: boolean
   sortConfig?: SortConfig<T>[]
   onSort?: (sortConfig: SortConfig<T>[]) => void
-  
+
   // Selection
   selectable?: boolean
   selectedRowKeys?: (string | number)[]
   onSelectionChange?: (selectedRowKeys: (string | number)[], selectedRows: T[]) => void
   rowKey?: keyof T | ((record: T) => string | number)
-  
+
   // Row actions (legacy)
   actions?: {
     render: (record: T, index: number) => React.ReactNode
@@ -101,18 +127,18 @@ export interface DataTableProps<T = any> {
     variant?: 'bar' | 'dropdown'
     position?: 'top' | 'bottom' | 'floating'
   }
-  
+
   // Styling
   size?: 'small' | 'medium' | 'large'
   bordered?: boolean
   striped?: boolean
   hover?: boolean
   className?: string
-  
+
   // Events
   onRowClick?: (record: T, index: number) => void
   onRowDoubleClick?: (record: T, index: number) => void
-  
+
   // Empty state
   emptyText?: string
   emptyIcon?: React.ReactNode
@@ -225,89 +251,104 @@ const DataTable = <T extends Record<string, any>>({
   const currentSortConfig = externalSortConfig || internalSortConfig
 
   // Get row key function
-  const getRowKey = useCallback((record: T, index: number): string | number => {
-    if (typeof rowKey === 'function') {
-      return rowKey(record)
-    }
-    return record[rowKey] ?? index
-  }, [rowKey])
+  const getRowKey = useCallback(
+    (record: T, index: number): string | number => {
+      if (typeof rowKey === 'function') {
+        return rowKey(record)
+      }
+      return record[rowKey] ?? index
+    },
+    [rowKey]
+  )
 
   // Handle sorting with multi-column support
-  const handleSort = useCallback((key: keyof T | string, event?: React.MouseEvent) => {
-    if (!sortable) return
+  const handleSort = useCallback(
+    (key: keyof T | string, event?: React.MouseEvent) => {
+      if (!sortable) return
 
-    const isMultiSort = multiSort && event?.shiftKey
-    let newSortConfig: SortConfig<T>[]
+      const isMultiSort = multiSort && event?.shiftKey
+      let newSortConfig: SortConfig<T>[]
 
-    if (isMultiSort) {
-      // Multi-column sorting
-      const existingSort = currentSortConfig.find(sort => sort.key === key)
+      if (isMultiSort) {
+        // Multi-column sorting
+        const existingSort = currentSortConfig.find((sort) => sort.key === key)
 
-      if (existingSort) {
-        // Update existing sort direction or remove if cycling through
-        if (existingSort.direction === 'asc') {
-          newSortConfig = currentSortConfig.map(sort =>
-            sort.key === key ? { ...sort, direction: 'desc' as const } : sort
-          )
+        if (existingSort) {
+          // Update existing sort direction or remove if cycling through
+          if (existingSort.direction === 'asc') {
+            newSortConfig = currentSortConfig.map((sort) =>
+              sort.key === key ? { ...sort, direction: 'desc' as const } : sort
+            )
+          } else {
+            // Remove this sort
+            newSortConfig = currentSortConfig.filter((sort) => sort.key !== key)
+          }
         } else {
-          // Remove this sort
-          newSortConfig = currentSortConfig.filter(sort => sort.key !== key)
+          // Add new sort
+          newSortConfig = [
+            ...currentSortConfig,
+            { key, direction: 'asc' as const, priority: currentSortConfig.length },
+          ]
         }
       } else {
-        // Add new sort
-        newSortConfig = [
-          ...currentSortConfig,
-          { key, direction: 'asc' as const, priority: currentSortConfig.length }
-        ]
+        // Single column sorting
+        const existingSort = currentSortConfig.find((sort) => sort.key === key)
+        const newDirection = existingSort?.direction === 'asc' ? 'desc' : 'asc'
+
+        newSortConfig = [{ key, direction: newDirection, priority: 0 }]
       }
-    } else {
-      // Single column sorting
-      const existingSort = currentSortConfig.find(sort => sort.key === key)
-      const newDirection = existingSort?.direction === 'asc' ? 'desc' : 'asc'
 
-      newSortConfig = [{ key, direction: newDirection, priority: 0 }]
-    }
+      // Update internal state if not controlled
+      if (!externalSortConfig) {
+        setInternalSortConfig(newSortConfig)
+      }
 
-    // Update internal state if not controlled
-    if (!externalSortConfig) {
-      setInternalSortConfig(newSortConfig)
-    }
-
-    // Call external handler
-    if (onSort) {
-      onSort(newSortConfig)
-    }
-  }, [sortable, multiSort, currentSortConfig, externalSortConfig, onSort])
+      // Call external handler
+      if (onSort) {
+        onSort(newSortConfig)
+      }
+    },
+    [sortable, multiSort, currentSortConfig, externalSortConfig, onSort]
+  )
 
   // Handle selection
-  const handleSelectAll = useCallback((checked: boolean) => {
-    if (!selectable || !onSelectionChange) return
+  const handleSelectAll = useCallback(
+    (checked: boolean) => {
+      if (!selectable || !onSelectionChange) return
 
-    if (checked) {
-      const allKeys = data.map((record, index) => getRowKey(record, index))
-      onSelectionChange(allKeys, data)
-    } else {
-      onSelectionChange([], [])
-    }
-  }, [selectable, onSelectionChange, data, getRowKey])
+      if (checked) {
+        const allKeys = data.map((record, index) => getRowKey(record, index))
+        onSelectionChange(allKeys, data)
+      } else {
+        onSelectionChange([], [])
+      }
+    },
+    [selectable, onSelectionChange, data, getRowKey]
+  )
 
-  const handleSelectRow = useCallback((record: T, index: number, checked: boolean) => {
-    if (!selectable || !onSelectionChange) return
+  const handleSelectRow = useCallback(
+    (record: T, index: number, checked: boolean) => {
+      if (!selectable || !onSelectionChange) return
 
-    const key = getRowKey(record, index)
-    let newSelectedKeys: (string | number)[]
-    let newSelectedRows: T[]
+      const key = getRowKey(record, index)
+      let newSelectedKeys: (string | number)[]
+      let newSelectedRows: T[]
 
-    if (checked) {
-      newSelectedKeys = [...selectedRowKeys, key]
-      newSelectedRows = [...data.filter((_, i) => selectedRowKeys.includes(getRowKey(data[i], i))), record]
-    } else {
-      newSelectedKeys = selectedRowKeys.filter(k => k !== key)
-      newSelectedRows = data.filter((_, i) => newSelectedKeys.includes(getRowKey(data[i], i)))
-    }
+      if (checked) {
+        newSelectedKeys = [...selectedRowKeys, key]
+        newSelectedRows = [
+          ...data.filter((_, i) => selectedRowKeys.includes(getRowKey(data[i], i))),
+          record,
+        ]
+      } else {
+        newSelectedKeys = selectedRowKeys.filter((k) => k !== key)
+        newSelectedRows = data.filter((_, i) => newSelectedKeys.includes(getRowKey(data[i], i)))
+      }
 
-    onSelectionChange(newSelectedKeys, newSelectedRows)
-  }, [selectable, onSelectionChange, selectedRowKeys, data, getRowKey])
+      onSelectionChange(newSelectedKeys, newSelectedRows)
+    },
+    [selectable, onSelectionChange, selectedRowKeys, data, getRowKey]
+  )
 
   // Memoized filtered data based on search and filters
   const filteredData = useMemo(() => {
@@ -316,8 +357,8 @@ const DataTable = <T extends Record<string, any>>({
     // Apply search filter
     if (searchValue.trim()) {
       const searchTerm = searchValue.toLowerCase().trim()
-      result = result.filter(record => {
-        return columns.some(column => {
+      result = result.filter((record) => {
+        return columns.some((column) => {
           const value = record[column.key]
           if (value == null) return false
           return String(value).toLowerCase().includes(searchTerm)
@@ -329,16 +370,18 @@ const DataTable = <T extends Record<string, any>>({
     Object.entries(filterValues).forEach(([key, value]) => {
       if (value === '' || value == null) return
 
-      const filter = filters.find(f => f.key === key)
+      const filter = filters.find((f) => f.key === key)
       if (!filter) return
 
-      result = result.filter(record => {
+      result = result.filter((record) => {
         const recordValue = record[key]
 
         switch (filter.type) {
           case 'text':
-            return recordValue != null &&
+            return (
+              recordValue != null &&
               String(recordValue).toLowerCase().includes(String(value).toLowerCase())
+            )
 
           case 'select':
           case 'boolean':
@@ -380,7 +423,7 @@ const DataTable = <T extends Record<string, any>>({
     return [...filteredData].sort((a, b) => {
       // Sort by each column in priority order
       for (const sort of currentSortConfig.sort((x, y) => x.priority - y.priority)) {
-        const column = columns.find(col => col.key === sort.key)
+        const column = columns.find((col) => col.key === sort.key)
         let aValue = a[sort.key]
         let bValue = b[sort.key]
 
@@ -444,7 +487,7 @@ const DataTable = <T extends Record<string, any>>({
   const renderSortIcon = (columnKey: keyof T | string) => {
     if (!sortable) return null
 
-    const sortInfo = currentSortConfig.find(sort => sort.key === columnKey)
+    const sortInfo = currentSortConfig.find((sort) => sort.key === columnKey)
     const isActive = !!sortInfo
     const direction = sortInfo?.direction
     const priority = sortInfo?.priority
@@ -452,16 +495,20 @@ const DataTable = <T extends Record<string, any>>({
     return (
       <span className="ml-2 inline-flex items-center space-x-1">
         <span className="inline-flex flex-col">
-          <span className={clsx(
-            'text-xs leading-none transition-colors',
-            isActive && direction === 'asc' ? 'text-primary-green' : 'text-gray-400'
-          )}>
+          <span
+            className={clsx(
+              'text-xs leading-none transition-colors',
+              isActive && direction === 'asc' ? 'text-primary-green' : 'text-gray-400'
+            )}
+          >
             ▲
           </span>
-          <span className={clsx(
-            'text-xs leading-none transition-colors',
-            isActive && direction === 'desc' ? 'text-primary-green' : 'text-gray-400'
-          )}>
+          <span
+            className={clsx(
+              'text-xs leading-none transition-colors',
+              isActive && direction === 'desc' ? 'text-primary-green' : 'text-gray-400'
+            )}
+          >
             ▼
           </span>
         </span>
@@ -516,7 +563,12 @@ const DataTable = <T extends Record<string, any>>({
   if (error) {
     const errorIcon = (
       <svg className="w-16 h-16 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+        />
       </svg>
     )
 
@@ -526,15 +578,19 @@ const DataTable = <T extends Record<string, any>>({
           icon={errorIcon}
           title="Error al cargar datos"
           description={error}
-          action={onRetry ? {
-            label: 'Reintentar',
-            onClick: onRetry,
-            variant: 'primary'
-          } : undefined}
+          action={
+            onRetry
+              ? {
+                  label: 'Reintentar',
+                  onClick: onRetry,
+                  variant: 'primary',
+                }
+              : undefined
+          }
           secondaryAction={{
             label: 'Recargar página',
             onClick: () => window.location.reload(),
-            variant: 'outline'
+            variant: 'outline',
           }}
         />
         {showErrorDetails && (
@@ -543,9 +599,7 @@ const DataTable = <T extends Record<string, any>>({
               <summary className="cursor-pointer text-sm text-red-600 hover:text-red-800">
                 Ver detalles del error
               </summary>
-              <div className="mt-2 text-xs text-red-800 font-mono">
-                {error}
-              </div>
+              <div className="mt-2 text-xs text-red-800 font-mono">{error}</div>
             </details>
           </div>
         )}
@@ -556,8 +610,18 @@ const DataTable = <T extends Record<string, any>>({
   // Empty state
   if (!data || data.length === 0) {
     const defaultEmptyIcon = (
-      <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+      <svg
+        className="w-16 h-16 text-gray-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+        />
       </svg>
     )
 
@@ -576,21 +640,27 @@ const DataTable = <T extends Record<string, any>>({
   const shouldUseMobileLayout = isMobile && mobileLayout !== 'table'
 
   // Filter columns for mobile if specified
-  const mobileVisibleColumns = shouldUseMobileLayout && mobileColumns?.hidden
-    ? columns.filter(col => !mobileColumns.hidden!.includes(String(col.key)))
-    : columns
+  const mobileVisibleColumns =
+    shouldUseMobileLayout && mobileColumns?.hidden
+      ? columns.filter((col) => !mobileColumns.hidden!.includes(String(col.key)))
+      : columns
 
   // Convert row actions to swipe actions for mobile
-  const mobileSwipeActions = shouldUseMobileLayout && swipeActions ? {
-    left: swipeActions.left || [],
-    right: swipeActions.right || rowActions.slice(0, 2).map(action => ({
-      key: action.key,
-      label: action.label,
-      icon: action.icon,
-      color: action.variant === 'danger' ? 'red' as const : 'blue' as const,
-      onClick: () => action.onClick(displayData[0], 0), // This will be properly handled in the mobile component
-    }))
-  } : undefined
+  const mobileSwipeActions =
+    shouldUseMobileLayout && swipeActions
+      ? {
+          left: swipeActions.left || [],
+          right:
+            swipeActions.right ||
+            rowActions.slice(0, 2).map((action) => ({
+              key: action.key,
+              label: action.label,
+              icon: action.icon,
+              color: action.variant === 'danger' ? ('red' as const) : ('blue' as const),
+              onClick: () => action.onClick(displayData[0], 0), // This will be properly handled in the mobile component
+            })),
+        }
+      : undefined
 
   const tableContent = (
     <LoadingOverlay
@@ -603,348 +673,368 @@ const DataTable = <T extends Record<string, any>>({
       <Card className={clsx('overflow-hidden', className)}>
         {/* Search and Filters */}
         {showSearchAndFilters && (
-        <div className="p-4 border-b border-gray-200">
-          <SearchAndFilters
-            searchValue={searchValue}
-            onSearchChange={onSearchChange}
-            searchPlaceholder={searchPlaceholder}
-            filters={filters}
-            filterValues={filterValues}
-            onFiltersChange={onFiltersChange}
-            presets={filterPresets}
-            onPresetSelect={onFilterPresetSelect}
-            onPresetSave={onFilterPresetSave}
-            showAdvancedFilters={showAdvancedFilters}
-            advancedFilterFields={advancedFilterFields}
-            advancedFilterGroup={advancedFilterGroup}
-            onAdvancedFiltersChange={onAdvancedFiltersChange}
-            onAdvancedFilterValidate={onAdvancedFilterValidate}
-            showAdvancedFilterExport={true}
-            loading={loading}
-            size={size === 'small' ? 'small' : size === 'large' ? 'large' : 'medium'}
-          />
-        </div>
-      )}
+          <div className="p-4 border-b border-gray-200">
+            <SearchAndFilters
+              searchValue={searchValue}
+              onSearchChange={onSearchChange}
+              searchPlaceholder={searchPlaceholder}
+              filters={filters}
+              filterValues={filterValues}
+              onFiltersChange={onFiltersChange}
+              presets={filterPresets}
+              onPresetSelect={onFilterPresetSelect}
+              onPresetSave={onFilterPresetSave}
+              showAdvancedFilters={showAdvancedFilters}
+              advancedFilterFields={advancedFilterFields}
+              advancedFilterGroup={advancedFilterGroup}
+              onAdvancedFiltersChange={onAdvancedFiltersChange}
+              onAdvancedFilterValidate={onAdvancedFilterValidate}
+              showAdvancedFilterExport={true}
+              loading={loading}
+              size={size === 'small' ? 'small' : size === 'large' ? 'large' : 'medium'}
+            />
+          </div>
+        )}
 
-      {/* Top Pagination */}
-      {pagination && (pagination.position === 'top' || pagination.position === 'both') && (
-        <div className="p-4 border-b border-gray-200">
-          <Pagination
-            current={pagination.current}
-            pageSize={pagination.pageSize}
-            total={pagination.total || sortedData.length}
-            showSizeChanger={pagination.showSizeChanger}
-            showQuickJumper={pagination.showQuickJumper}
-            showTotal={pagination.showTotal}
-            showFirstLast={pagination.showFirstLast}
-            pageSizeOptions={pagination.pageSizeOptions}
-            size={pagination.size}
-            simple={pagination.simple}
-            hideOnSinglePage={pagination.hideOnSinglePage}
-            disabled={loading}
-            onChange={pagination.onChange}
-            onShowSizeChange={pagination.onShowSizeChange}
-          />
-        </div>
-      )}
+        {/* Top Pagination */}
+        {pagination && (pagination.position === 'top' || pagination.position === 'both') && (
+          <div className="p-4 border-b border-gray-200">
+            <Pagination
+              current={pagination.current}
+              pageSize={pagination.pageSize}
+              total={pagination.total || sortedData.length}
+              showSizeChanger={pagination.showSizeChanger}
+              showQuickJumper={pagination.showQuickJumper}
+              showTotal={pagination.showTotal}
+              showFirstLast={pagination.showFirstLast}
+              pageSizeOptions={pagination.pageSizeOptions}
+              size={pagination.size}
+              simple={pagination.simple}
+              hideOnSinglePage={pagination.hideOnSinglePage}
+              disabled={loading}
+              onChange={pagination.onChange}
+              onShowSizeChange={pagination.onShowSizeChange}
+            />
+          </div>
+        )}
 
-      {/* Bulk Actions */}
-      {bulkActions.length > 0 && selectedRowKeys.length > 0 && (
-        bulkActionsConfig.position === 'top' || bulkActionsConfig.position === 'floating'
-      ) && (
-        <div className="p-4 border-b border-gray-200">
-          <BulkActions
-            selectedRecords={displayData.filter(record =>
-              selectedRowKeys.includes(record[rowKey])
-            )}
-            selectedKeys={selectedRowKeys}
-            actions={bulkActions}
-            variant={bulkActionsConfig.variant}
-            position={bulkActionsConfig.position}
-            onActionStart={(action, selectedRecords) => {
-              console.log('Bulk action started:', action.key, selectedRecords)
-            }}
-            onActionComplete={(action, selectedRecords, result) => {
-              console.log('Bulk action completed:', action.key, selectedRecords, result)
-            }}
-            onActionError={(action, selectedRecords, error) => {
-              console.error('Bulk action error:', action.key, selectedRecords, error)
-            }}
-            onClearSelection={() => {
-              if (onSelectionChange) {
-                onSelectionChange([], [])
-              }
-            }}
-          />
-        </div>
-      )}
-
-      {/* Mobile Layout */}
-      {shouldUseMobileLayout ? (
-        <div className="p-4">
-          <MobileDataTable
-            data={displayData}
-            columns={mobileVisibleColumns}
-            rowKey={rowKey}
-            selectable={selectable}
-            selectedRowKeys={selectedRowKeys}
-            onSelectionChange={onSelectionChange}
-            rowActions={rowActions}
-            onRowClick={onRowClick}
-            onRowDoubleClick={onRowDoubleClick}
-            layout={mobileLayout}
-            primaryField={mobileColumns?.primary}
-            secondaryField={mobileColumns?.secondary}
-            showImages={true}
-          />
-        </div>
-      ) : (
-        /* Desktop Table Layout */
-        <div className={clsx(
-          'overflow-auto',
-          responsive && 'w-full'
-        )} style={{ maxHeight: scrollY }}>
-          <table className={clsx(
-            'w-full table-auto',
-            sizeClasses[size],
-            bordered && 'border-collapse',
-          )} style={{ minWidth: scrollX }}>
-            {/* Table Header */}
-            <thead className="bg-gray-50">
-              <tr>
-              {/* Selection column */}
-              {selectable && (
-                <th className={clsx(
-                  'text-left font-medium text-gray-900',
-                  cellPaddingClasses[size],
-                  bordered && 'border border-gray-200'
-                )}>
-                  <input
-                    type="checkbox"
-                    checked={isAllSelected}
-                    ref={input => {
-                      if (input) input.indeterminate = isIndeterminate
-                    }}
-                    onChange={(e) => handleSelectAll(e.target.checked)}
-                    className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
-                  />
-                </th>
-              )}
-
-              {/* Data columns */}
-              {columns.map((column, index) => (
-                <th
-                  key={String(column.key) + index}
-                  className={clsx(
-                    'font-medium text-gray-900',
-                    cellPaddingClasses[size],
-                    bordered && 'border border-gray-200',
-                    column.align === 'center' && 'text-center',
-                    column.align === 'right' && 'text-right',
-                    column.align === 'left' && 'text-left',
-                    !column.align && 'text-left',
-                    column.sortable !== false && sortable && 'cursor-pointer hover:bg-gray-100',
-                    column.className
-                  )}
-                  style={{ width: column.width }}
-                  onClick={(e) => column.sortable !== false && handleSort(column.key, e)}
-                  onKeyDown={(e) => {
-                    if ((e.key === 'Enter' || e.key === ' ') && column.sortable !== false) {
-                      e.preventDefault()
-                      handleSort(column.key, e)
-                    }
-                  }}
-                  tabIndex={column.sortable !== false ? 0 : -1}
-                  role={column.sortable !== false ? 'button' : undefined}
-                  aria-label={
-                    column.sortable !== false
-                      ? `Ordenar por ${column.title}${multiSort ? '. Mantén Shift para ordenamiento múltiple' : ''}`
-                      : undefined
+        {/* Bulk Actions */}
+        {bulkActions.length > 0 &&
+          selectedRowKeys.length > 0 &&
+          (bulkActionsConfig.position === 'top' || bulkActionsConfig.position === 'floating') && (
+            <div className="p-4 border-b border-gray-200">
+              <BulkActions
+                selectedRecords={displayData.filter((record) =>
+                  selectedRowKeys.includes(record[rowKey])
+                )}
+                selectedKeys={selectedRowKeys}
+                actions={bulkActions}
+                variant={bulkActionsConfig.variant}
+                position={bulkActionsConfig.position}
+                onActionStart={(action, selectedRecords) => {
+                  console.log('Bulk action started:', action.key, selectedRecords)
+                }}
+                onActionComplete={(action, selectedRecords, result) => {
+                  console.log('Bulk action completed:', action.key, selectedRecords, result)
+                }}
+                onActionError={(action, selectedRecords, error) => {
+                  console.error('Bulk action error:', action.key, selectedRecords, error)
+                }}
+                onClearSelection={() => {
+                  if (onSelectionChange) {
+                    onSelectionChange([], [])
                   }
-                >
-                  <div className="flex items-center">
-                    <span>{column.title}</span>
-                    {column.sortable !== false && renderSortIcon(column.key)}
-                  </div>
-                </th>
-              ))}
+                }}
+              />
+            </div>
+          )}
 
-              {/* Actions column (legacy) */}
-              {actions && (
-                <th className={clsx(
-                  'text-center font-medium text-gray-900',
-                  cellPaddingClasses[size],
-                  bordered && 'border border-gray-200'
-                )} style={{ width: actions.width }}>
-                  Acciones
-                </th>
+        {/* Mobile Layout */}
+        {shouldUseMobileLayout ? (
+          <div className="p-4">
+            <MobileDataTable
+              data={displayData}
+              columns={mobileVisibleColumns}
+              rowKey={rowKey}
+              selectable={selectable}
+              selectedRowKeys={selectedRowKeys}
+              onSelectionChange={onSelectionChange}
+              rowActions={rowActions}
+              onRowClick={onRowClick}
+              onRowDoubleClick={onRowDoubleClick}
+              layout={mobileLayout}
+              primaryField={mobileColumns?.primary}
+              secondaryField={mobileColumns?.secondary}
+              showImages={true}
+            />
+          </div>
+        ) : (
+          /* Desktop Table Layout */
+          <div
+            className={clsx('overflow-auto', responsive && 'w-full')}
+            style={{ maxHeight: scrollY }}
+          >
+            <table
+              className={clsx(
+                'w-full table-auto',
+                sizeClasses[size],
+                bordered && 'border-collapse'
               )}
-
-              {/* Enhanced row actions column */}
-              {rowActions.length > 0 && (
-                <th className={clsx(
-                  'text-center font-medium text-gray-900',
-                  cellPaddingClasses[size],
-                  bordered && 'border border-gray-200'
-                )} style={{ width: rowActionsConfig.width || '120px' }}>
-                  Acciones
-                </th>
-              )}
-            </tr>
-          </thead>
-
-          {/* Table Body */}
-          <tbody>
-            {displayData.map((record, index) => {
-              const key = getRowKey(record, index)
-              const isSelected = selectedRowKeys.includes(key)
-
-              return (
-                <tr
-                  key={String(key)}
-                  className={clsx(
-                    'transition-colors',
-                    striped && index % 2 === 0 && 'bg-white',
-                    striped && index % 2 === 1 && 'bg-gray-50',
-                    hover && 'hover:bg-gray-100',
-                    isSelected && 'bg-primary-green/10',
-                    onRowClick && 'cursor-pointer'
-                  )}
-                  onClick={() => onRowClick?.(record, index)}
-                  onDoubleClick={() => onRowDoubleClick?.(record, index)}
-                >
-                  {/* Selection cell */}
+              style={{ minWidth: scrollX }}
+            >
+              {/* Table Header */}
+              <thead className="bg-gray-50">
+                <tr>
+                  {/* Selection column */}
                   {selectable && (
-                    <td className={clsx(
-                      cellPaddingClasses[size],
-                      bordered && 'border border-gray-200'
-                    )}>
+                    <th
+                      className={clsx(
+                        'text-left font-medium text-gray-900',
+                        cellPaddingClasses[size],
+                        bordered && 'border border-gray-200'
+                      )}
+                    >
                       <input
                         type="checkbox"
-                        checked={isSelected}
-                        onChange={(e) => handleSelectRow(record, index, e.target.checked)}
+                        checked={isAllSelected}
+                        ref={(input) => {
+                          if (input) input.indeterminate = isIndeterminate
+                        }}
+                        onChange={(e) => handleSelectAll(e.target.checked)}
                         className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
                       />
-                    </td>
+                    </th>
                   )}
 
-                  {/* Data cells */}
-                  {columns.map((column, colIndex) => (
-                    <td
-                      key={String(column.key) + colIndex}
+                  {/* Data columns */}
+                  {columns.map((column, index) => (
+                    <th
+                      key={String(column.key) + index}
                       className={clsx(
+                        'font-medium text-gray-900',
                         cellPaddingClasses[size],
                         bordered && 'border border-gray-200',
                         column.align === 'center' && 'text-center',
                         column.align === 'right' && 'text-right',
                         column.align === 'left' && 'text-left',
                         !column.align && 'text-left',
+                        column.sortable !== false && sortable && 'cursor-pointer hover:bg-gray-100',
                         column.className
                       )}
-                    >
-                      {column.render 
-                        ? column.render(record[column.key], record, index)
-                        : String(record[column.key] ?? '')
+                      style={{ width: column.width }}
+                      onClick={(e) => column.sortable !== false && handleSort(column.key, e)}
+                      onKeyDown={(e) => {
+                        if ((e.key === 'Enter' || e.key === ' ') && column.sortable !== false) {
+                          e.preventDefault()
+                          handleSort(column.key, e)
+                        }
+                      }}
+                      tabIndex={column.sortable !== false ? 0 : -1}
+                      role={column.sortable !== false ? 'button' : undefined}
+                      aria-label={
+                        column.sortable !== false
+                          ? `Ordenar por ${column.title}${multiSort ? '. Mantén Shift para ordenamiento múltiple' : ''}`
+                          : undefined
                       }
-                    </td>
+                    >
+                      <div className="flex items-center">
+                        <span>{column.title}</span>
+                        {column.sortable !== false && renderSortIcon(column.key)}
+                      </div>
+                    </th>
                   ))}
 
-                  {/* Actions cell (legacy) */}
+                  {/* Actions column (legacy) */}
                   {actions && (
-                    <td className={clsx(
-                      'text-center',
-                      cellPaddingClasses[size],
-                      bordered && 'border border-gray-200'
-                    )}>
-                      {actions.render(record, index)}
-                    </td>
+                    <th
+                      className={clsx(
+                        'text-center font-medium text-gray-900',
+                        cellPaddingClasses[size],
+                        bordered && 'border border-gray-200'
+                      )}
+                      style={{ width: actions.width }}
+                    >
+                      Acciones
+                    </th>
                   )}
 
-                  {/* Enhanced row actions cell */}
+                  {/* Enhanced row actions column */}
                   {rowActions.length > 0 && (
-                    <td className={clsx(
-                      'text-center',
-                      cellPaddingClasses[size],
-                      bordered && 'border border-gray-200'
-                    )}>
-                      <RowActions
-                        record={record}
-                        index={index}
-                        actions={rowActions}
-                        variant={rowActionsConfig.variant}
-                        maxVisibleActions={rowActionsConfig.maxVisibleActions}
-                        size={size === 'small' ? 'sm' : size === 'large' ? 'lg' : 'md'}
-                        onActionStart={(action, record) => {
-                          console.log('Action started:', action.key, record)
-                        }}
-                        onActionComplete={(action, record, result) => {
-                          console.log('Action completed:', action.key, record, result)
-                        }}
-                        onActionError={(action, record, error) => {
-                          console.error('Action error:', action.key, record, error)
-                        }}
-                      />
-                    </td>
+                    <th
+                      className={clsx(
+                        'text-center font-medium text-gray-900',
+                        cellPaddingClasses[size],
+                        bordered && 'border border-gray-200'
+                      )}
+                      style={{ width: rowActionsConfig.width || '120px' }}
+                    >
+                      Acciones
+                    </th>
                   )}
                 </tr>
-              )
-            })}
-          </tbody>
-        </table>
-        </div>
-      )}
+              </thead>
 
-      {/* Pagination */}
-      {pagination && (pagination.position === 'bottom' || pagination.position === 'both' || !pagination.position) && (
-        <div className="p-4 border-t border-gray-200">
-          <Pagination
-            current={pagination.current}
-            pageSize={pagination.pageSize}
-            total={pagination.total || sortedData.length}
-            showSizeChanger={pagination.showSizeChanger}
-            showQuickJumper={pagination.showQuickJumper}
-            showTotal={pagination.showTotal}
-            showFirstLast={pagination.showFirstLast}
-            pageSizeOptions={pagination.pageSizeOptions}
-            size={pagination.size}
-            simple={pagination.simple}
-            hideOnSinglePage={pagination.hideOnSinglePage}
-            disabled={loading}
-            onChange={pagination.onChange}
-            onShowSizeChange={pagination.onShowSizeChange}
-          />
-        </div>
-      )}
+              {/* Table Body */}
+              <tbody>
+                {displayData.map((record, index) => {
+                  const key = getRowKey(record, index)
+                  const isSelected = selectedRowKeys.includes(key)
 
-      {/* Bottom Bulk Actions */}
-      {bulkActions.length > 0 && selectedRowKeys.length > 0 &&
-        bulkActionsConfig.position === 'bottom' && (
-        <div className="p-4 border-t border-gray-200">
-          <BulkActions
-            selectedRecords={displayData.filter(record =>
-              selectedRowKeys.includes(record[rowKey])
-            )}
-            selectedKeys={selectedRowKeys}
-            actions={bulkActions}
-            variant={bulkActionsConfig.variant}
-            position={bulkActionsConfig.position}
-            onActionStart={(action, selectedRecords) => {
-              console.log('Bulk action started:', action.key, selectedRecords)
-            }}
-            onActionComplete={(action, selectedRecords, result) => {
-              console.log('Bulk action completed:', action.key, selectedRecords, result)
-            }}
-            onActionError={(action, selectedRecords, error) => {
-              console.error('Bulk action error:', action.key, selectedRecords, error)
-            }}
-            onClearSelection={() => {
-              if (onSelectionChange) {
-                onSelectionChange([], [])
-              }
-            }}
-          />
-        </div>
-      )}
+                  return (
+                    <tr
+                      key={String(key)}
+                      className={clsx(
+                        'transition-colors',
+                        striped && index % 2 === 0 && 'bg-white',
+                        striped && index % 2 === 1 && 'bg-gray-50',
+                        hover && 'hover:bg-gray-100',
+                        isSelected && 'bg-primary-green/10',
+                        onRowClick && 'cursor-pointer'
+                      )}
+                      onClick={() => onRowClick?.(record, index)}
+                      onDoubleClick={() => onRowDoubleClick?.(record, index)}
+                    >
+                      {/* Selection cell */}
+                      {selectable && (
+                        <td
+                          className={clsx(
+                            cellPaddingClasses[size],
+                            bordered && 'border border-gray-200'
+                          )}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) => handleSelectRow(record, index, e.target.checked)}
+                            className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
+                          />
+                        </td>
+                      )}
+
+                      {/* Data cells */}
+                      {columns.map((column, colIndex) => (
+                        <td
+                          key={String(column.key) + colIndex}
+                          className={clsx(
+                            cellPaddingClasses[size],
+                            bordered && 'border border-gray-200',
+                            column.align === 'center' && 'text-center',
+                            column.align === 'right' && 'text-right',
+                            column.align === 'left' && 'text-left',
+                            !column.align && 'text-left',
+                            column.className
+                          )}
+                        >
+                          {column.render
+                            ? column.render(record[column.key], record, index)
+                            : String(record[column.key] ?? '')}
+                        </td>
+                      ))}
+
+                      {/* Actions cell (legacy) */}
+                      {actions && (
+                        <td
+                          className={clsx(
+                            'text-center',
+                            cellPaddingClasses[size],
+                            bordered && 'border border-gray-200'
+                          )}
+                        >
+                          {actions.render(record, index)}
+                        </td>
+                      )}
+
+                      {/* Enhanced row actions cell */}
+                      {rowActions.length > 0 && (
+                        <td
+                          className={clsx(
+                            'text-center',
+                            cellPaddingClasses[size],
+                            bordered && 'border border-gray-200'
+                          )}
+                        >
+                          <RowActions
+                            record={record}
+                            index={index}
+                            actions={rowActions}
+                            variant={rowActionsConfig.variant}
+                            maxVisibleActions={rowActionsConfig.maxVisibleActions}
+                            size={size === 'small' ? 'sm' : size === 'large' ? 'lg' : 'md'}
+                            onActionStart={(action, record) => {
+                              console.log('Action started:', action.key, record)
+                            }}
+                            onActionComplete={(action, record, result) => {
+                              console.log('Action completed:', action.key, record, result)
+                            }}
+                            onActionError={(action, record, error) => {
+                              console.error('Action error:', action.key, record, error)
+                            }}
+                          />
+                        </td>
+                      )}
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {pagination &&
+          (pagination.position === 'bottom' ||
+            pagination.position === 'both' ||
+            !pagination.position) && (
+            <div className="p-4 border-t border-gray-200">
+              <Pagination
+                current={pagination.current}
+                pageSize={pagination.pageSize}
+                total={pagination.total || sortedData.length}
+                showSizeChanger={pagination.showSizeChanger}
+                showQuickJumper={pagination.showQuickJumper}
+                showTotal={pagination.showTotal}
+                showFirstLast={pagination.showFirstLast}
+                pageSizeOptions={pagination.pageSizeOptions}
+                size={pagination.size}
+                simple={pagination.simple}
+                hideOnSinglePage={pagination.hideOnSinglePage}
+                disabled={loading}
+                onChange={pagination.onChange}
+                onShowSizeChange={pagination.onShowSizeChange}
+              />
+            </div>
+          )}
+
+        {/* Bottom Bulk Actions */}
+        {bulkActions.length > 0 &&
+          selectedRowKeys.length > 0 &&
+          bulkActionsConfig.position === 'bottom' && (
+            <div className="p-4 border-t border-gray-200">
+              <BulkActions
+                selectedRecords={displayData.filter((record) =>
+                  selectedRowKeys.includes(record[rowKey])
+                )}
+                selectedKeys={selectedRowKeys}
+                actions={bulkActions}
+                variant={bulkActionsConfig.variant}
+                position={bulkActionsConfig.position}
+                onActionStart={(action, selectedRecords) => {
+                  console.log('Bulk action started:', action.key, selectedRecords)
+                }}
+                onActionComplete={(action, selectedRecords, result) => {
+                  console.log('Bulk action completed:', action.key, selectedRecords, result)
+                }}
+                onActionError={(action, selectedRecords, error) => {
+                  console.error('Bulk action error:', action.key, selectedRecords, error)
+                }}
+                onClearSelection={() => {
+                  if (onSelectionChange) {
+                    onSelectionChange([], [])
+                  }
+                }}
+              />
+            </div>
+          )}
       </Card>
     </LoadingOverlay>
   )

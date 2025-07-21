@@ -28,7 +28,8 @@ export class FAQsClientService {
   async getAll(filters?: SearchFilters & { page?: number; limit?: number }) {
     let query = supabase
       .from('faqs')
-      .select(`
+      .select(
+        `
         *,
         dependencias (
           id,
@@ -41,7 +42,9 @@ export class FAQsClientService {
           nombre,
           dependencia_id
         )
-      `, { count: 'exact' })
+      `,
+        { count: 'exact' }
+      )
       .order('created_at', { ascending: false })
 
     // Apply filters
@@ -90,7 +93,8 @@ export class FAQsClientService {
   async getById(id: string) {
     const { data, error } = await supabase
       .from('faqs')
-      .select(`
+      .select(
+        `
         *,
         dependencias (
           id,
@@ -103,7 +107,8 @@ export class FAQsClientService {
           nombre,
           dependencia_id
         )
-      `)
+      `
+      )
       .eq('id', id)
       .single()
 
@@ -115,11 +120,7 @@ export class FAQsClientService {
   }
 
   async create(faq: Omit<FAQ, 'id' | 'created_at' | 'updated_at'>) {
-    const { data, error } = await supabase
-      .from('faqs')
-      .insert(faq)
-      .select()
-      .single()
+    const { data, error } = await supabase.from('faqs').insert(faq).select().single()
 
     if (error) {
       throw new Error(`Error creating FAQ: ${error.message}`)
@@ -144,10 +145,7 @@ export class FAQsClientService {
   }
 
   async delete(id: string) {
-    const { error } = await supabase
-      .from('faqs')
-      .delete()
-      .eq('id', id)
+    const { error } = await supabase.from('faqs').delete().eq('id', id)
 
     if (error) {
       throw new Error(`Error deleting FAQ: ${error.message}`)
@@ -159,12 +157,14 @@ export class FAQsClientService {
   async search(query: string, limit = 10) {
     const { data, error } = await supabase
       .from('faqs')
-      .select(`
+      .select(
+        `
         *,
         dependencias (
           nombre
         )
-      `)
+      `
+      )
       .or(`pregunta.ilike.%${query}%,respuesta.ilike.%${query}%`)
       .eq('activa', true)
       .limit(limit)
@@ -188,7 +188,7 @@ export class FAQsClientService {
     }
 
     // Flatten and deduplicate tags
-    const allTags = data?.flatMap(faq => faq.tags || []) || []
+    const allTags = data?.flatMap((faq) => faq.tags || []) || []
     const uniqueTags = [...new Set(allTags)]
 
     return uniqueTags.sort()
@@ -198,7 +198,8 @@ export class FAQsClientService {
   async getHierarchical(): Promise<FAQHierarchy[]> {
     const { data, error } = await supabase
       .from('faqs')
-      .select(`
+      .select(
+        `
         *,
         dependencias (
           id,
@@ -216,7 +217,8 @@ export class FAQsClientService {
             nombre
           )
         )
-      `)
+      `
+      )
       .eq('activo', true)
       .order('dependencias(nombre)')
       .order('subdependencias(nombre)')
@@ -230,7 +232,7 @@ export class FAQsClientService {
     // Group FAQs by dependencia -> subdependencia -> tema
     const hierarchyMap = new Map<string, any>()
 
-    data?.forEach(faq => {
+    data?.forEach((faq) => {
       const dependencia = faq.subdependencias?.dependencias
       const subdependencia = faq.subdependencias
 
@@ -244,9 +246,9 @@ export class FAQsClientService {
           dependencia: {
             id: dependencia.id,
             nombre: dependencia.nombre,
-            codigo: dependencia.codigo
+            codigo: dependencia.codigo,
           },
-          subdependencias: new Map()
+          subdependencias: new Map(),
         })
       }
 
@@ -258,7 +260,7 @@ export class FAQsClientService {
           id: subdependencia.id,
           nombre: subdependencia.nombre,
           codigo: subdependencia.codigo,
-          temas: new Map()
+          temas: new Map(),
         })
       }
 
@@ -271,7 +273,7 @@ export class FAQsClientService {
           id: `tema-${subdependencia.id}-${temaName.toLowerCase().replace(/\s+/g, '-')}`,
           nombre: temaName,
           descripcion: `Preguntas sobre ${temaName}`,
-          faqs: []
+          faqs: [],
         })
       }
 
@@ -290,12 +292,12 @@ export class FAQsClientService {
         }
         subdependencias.push({
           ...subData,
-          temas: temas.sort((a, b) => a.nombre.localeCompare(b.nombre))
+          temas: temas.sort((a, b) => a.nombre.localeCompare(b.nombre)),
         })
       }
       result.push({
         dependencia: depData.dependencia,
-        subdependencias: subdependencias.sort((a, b) => a.nombre.localeCompare(b.nombre))
+        subdependencias: subdependencias.sort((a, b) => a.nombre.localeCompare(b.nombre)),
       })
     }
 
@@ -306,7 +308,8 @@ export class FAQsClientService {
   async getByTema(subdependenciaId: string, tema: string): Promise<FAQ[]> {
     const { data, error } = await supabase
       .from('faqs')
-      .select(`
+      .select(
+        `
         *,
         dependencias (
           id,
@@ -319,7 +322,8 @@ export class FAQsClientService {
           nombre,
           dependencia_id
         )
-      `)
+      `
+      )
       .eq('subdependencia_id', subdependenciaId)
       .eq('tema', tema)
       .eq('activo', true)

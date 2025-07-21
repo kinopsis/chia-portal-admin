@@ -26,8 +26,8 @@ export interface QuickActionsProps {
 }
 
 const QuickActions: React.FC<QuickActionsProps> = ({
-  title = "Acciones Rápidas",
-  description = "Accede rápidamente a las funcionalidades más utilizadas",
+  title = 'Acciones Rápidas',
+  description = 'Accede rápidamente a las funcionalidades más utilizadas',
   actions,
   columns = 3,
   variant = 'default',
@@ -106,7 +106,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({
   const actionsToShow = actions || defaultActions
 
   // Filter actions based on user role
-  const visibleActions = actionsToShow.filter(action => {
+  const visibleActions = actionsToShow.filter((action) => {
     if (!action.roles || action.roles.length === 0) return true
     return userProfile && action.roles.includes(userProfile.rol)
   })
@@ -181,7 +181,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({
 
   const renderAction = (action: QuickActionItem, index: number) => {
     const colors = colorClasses[action.color || 'blue']
-    
+
     const content = (
       <Card
         className={clsx(
@@ -193,15 +193,14 @@ const QuickActions: React.FC<QuickActionsProps> = ({
       >
         <div className="flex items-start space-x-4">
           {/* Icon */}
-          <div className={clsx(
-            'flex-shrink-0 rounded-lg flex items-center justify-center',
-            variant === 'compact' ? 'w-10 h-10' : 'w-12 h-12',
-            colors.iconBg
-          )}>
-            <span className={clsx(
-              colors.text,
-              variant === 'compact' ? 'text-lg' : 'text-xl'
-            )}>
+          <div
+            className={clsx(
+              'flex-shrink-0 rounded-lg flex items-center justify-center',
+              variant === 'compact' ? 'w-10 h-10' : 'w-12 h-12',
+              colors.iconBg
+            )}
+          >
+            <span className={clsx(colors.text, variant === 'compact' ? 'text-lg' : 'text-xl')}>
               {action.icon}
             </span>
           </div>
@@ -209,29 +208,27 @@ const QuickActions: React.FC<QuickActionsProps> = ({
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
-              <h3 className={clsx(
-                'font-semibold truncate',
-                variant === 'compact' ? 'text-sm' : 'text-base',
-                'text-gray-900'
-              )}>
+              <h3
+                className={clsx(
+                  'font-semibold truncate',
+                  variant === 'compact' ? 'text-sm' : 'text-base',
+                  'text-gray-900'
+                )}
+              >
                 {action.title}
               </h3>
-              
+
               {action.badge && (
                 <span className="ml-2 px-2 py-1 text-xs font-medium bg-red-500 text-white rounded-full">
                   {action.badge}
                 </span>
               )}
-              
-              {action.external && (
-                <span className="ml-2 text-gray-400 text-xs">↗</span>
-              )}
+
+              {action.external && <span className="ml-2 text-gray-400 text-xs">↗</span>}
             </div>
-            
+
             {variant !== 'compact' && (
-              <p className="text-sm text-gray-600 mt-1">
-                {action.description}
-              </p>
+              <p className="text-sm text-gray-600 mt-1">{action.description}</p>
             )}
           </div>
         </div>
@@ -271,23 +268,13 @@ const QuickActions: React.FC<QuickActionsProps> = ({
       {/* Header */}
       {(title || description) && (
         <div className="mb-6">
-          {title && (
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {title}
-            </h2>
-          )}
-          {description && (
-            <p className="text-gray-600">
-              {description}
-            </p>
-          )}
+          {title && <h2 className="text-2xl font-bold text-gray-900 mb-2">{title}</h2>}
+          {description && <p className="text-gray-600">{description}</p>}
         </div>
       )}
 
       {/* Actions Grid */}
-      <div className={getGridClasses()}>
-        {visibleActions.map(renderAction)}
-      </div>
+      <div className={getGridClasses()}>{visibleActions.map(renderAction)}</div>
     </div>
   )
 }

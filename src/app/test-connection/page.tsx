@@ -47,21 +47,14 @@ export default function TestConnectionPage() {
     <div className="container-custom py-8">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Prueba de Conexión Supabase
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Prueba de Conexión Supabase</h1>
           <p className="text-gray-600">
             Verifica la conexión con la base de datos y las tablas principales del sistema.
           </p>
         </div>
 
         <div className="flex justify-center mb-8">
-          <Button
-            onClick={runConnectionTest}
-            isLoading={isLoading}
-            disabled={isLoading}
-            size="lg"
-          >
+          <Button onClick={runConnectionTest} isLoading={isLoading} disabled={isLoading} size="lg">
             {isLoading ? 'Probando Conexión...' : 'Probar Conexión'}
           </Button>
         </div>
@@ -75,13 +68,9 @@ export default function TestConnectionPage() {
               </Badge>
             </div>
 
-            {testResult.message && (
-              <p className="text-gray-700 mb-4">{testResult.message}</p>
-            )}
+            {testResult.message && <p className="text-gray-700 mb-4">{testResult.message}</p>}
 
-            {testResult.error && (
-              <p className="text-red-600 mb-4">{testResult.error}</p>
-            )}
+            {testResult.error && <p className="text-red-600 mb-4">{testResult.error}</p>}
 
             {testResult.timestamp && (
               <p className="text-sm text-gray-500 mb-4">
@@ -121,14 +110,12 @@ export default function TestConnectionPage() {
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-medium capitalize">{tableName}</h4>
                         <Badge
-                          variant={
-                            result.error ? 'error' : result.data ? 'success' : 'warning'
-                          }
+                          variant={result.error ? 'error' : result.data ? 'success' : 'warning'}
                         >
                           {result.error ? 'Error' : result.data ? 'OK' : 'Sin datos'}
                         </Badge>
                       </div>
-                      
+
                       {result.error ? (
                         <p className="text-sm text-red-600">
                           Error: {result.error.message || 'Error desconocido'}

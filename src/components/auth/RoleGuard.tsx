@@ -49,7 +49,13 @@ export default function RoleGuard({
 }
 
 // Convenience components for specific roles
-export function AdminOnly({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) {
+export function AdminOnly({
+  children,
+  fallback,
+}: {
+  children: React.ReactNode
+  fallback?: React.ReactNode
+}) {
   return (
     <RoleGuard requiredRole="admin" fallback={fallback}>
       {children}
@@ -57,7 +63,13 @@ export function AdminOnly({ children, fallback }: { children: React.ReactNode; f
   )
 }
 
-export function FuncionarioOnly({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) {
+export function FuncionarioOnly({
+  children,
+  fallback,
+}: {
+  children: React.ReactNode
+  fallback?: React.ReactNode
+}) {
   return (
     <RoleGuard allowedRoles={['funcionario', 'admin']} fallback={fallback}>
       {children}
@@ -65,7 +77,13 @@ export function FuncionarioOnly({ children, fallback }: { children: React.ReactN
   )
 }
 
-export function CiudadanoOnly({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) {
+export function CiudadanoOnly({
+  children,
+  fallback,
+}: {
+  children: React.ReactNode
+  fallback?: React.ReactNode
+}) {
   return (
     <RoleGuard requiredRole="ciudadano" fallback={fallback}>
       {children}
@@ -73,7 +91,13 @@ export function CiudadanoOnly({ children, fallback }: { children: React.ReactNod
   )
 }
 
-export function AuthenticatedOnly({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) {
+export function AuthenticatedOnly({
+  children,
+  fallback,
+}: {
+  children: React.ReactNode
+  fallback?: React.ReactNode
+}) {
   return (
     <RoleGuard requireAuth={true} fallback={fallback}>
       {children}
@@ -81,7 +105,13 @@ export function AuthenticatedOnly({ children, fallback }: { children: React.Reac
   )
 }
 
-export function GuestOnly({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) {
+export function GuestOnly({
+  children,
+  fallback,
+}: {
+  children: React.ReactNode
+  fallback?: React.ReactNode
+}) {
   return (
     <RoleGuard requireAuth={false} fallback={fallback}>
       {children}

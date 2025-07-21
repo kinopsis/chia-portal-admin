@@ -15,26 +15,22 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse
   }
 
-  const supabase = createServerClient(
-    config.supabase.url,
-    config.supabase.anonKey,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({
-            request,
-          })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
-        },
+  const supabase = createServerClient(config.supabase.url, config.supabase.anonKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll()
       },
-    }
-  )
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+        supabaseResponse = NextResponse.next({
+          request,
+        })
+        cookiesToSet.forEach(({ name, value, options }) =>
+          supabaseResponse.cookies.set(name, value, options)
+        )
+      },
+    },
+  })
 
   // IMPORTANT: Avoid writing any logic between createServerClient and
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug
@@ -46,15 +42,13 @@ export async function updateSession(request: NextRequest) {
 
   // Protected routes that require authentication
   const protectedRoutes = ['/dashboard', '/profile']
-  const isProtectedRoute = protectedRoutes.some(route =>
+  const isProtectedRoute = protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   )
 
   // Admin-only routes
   const adminRoutes = ['/admin']
-  const isAdminRoute = adminRoutes.some(route =>
-    request.nextUrl.pathname.startsWith(route)
-  )
+  const isAdminRoute = adminRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
 
   // Redirect to login if accessing protected route without authentication
   if (isProtectedRoute && !user) {
@@ -82,9 +76,7 @@ export async function updateSession(request: NextRequest) {
 
   // Redirect authenticated users away from auth pages
   const authRoutes = ['/auth/login', '/auth/register', '/auth/reset-password']
-  const isAuthRoute = authRoutes.some(route => 
-    request.nextUrl.pathname.startsWith(route)
-  )
+  const isAuthRoute = authRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
 
   if (isAuthRoute && user) {
     const url = request.nextUrl.clone()

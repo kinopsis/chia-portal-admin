@@ -88,7 +88,13 @@ export interface OPA {
   }
 }
 
-export type OPAEstado = 'borrador' | 'en_revision' | 'aprobado' | 'rechazado' | 'publicado' | 'archivado'
+export type OPAEstado =
+  | 'borrador'
+  | 'en_revision'
+  | 'aprobado'
+  | 'rechazado'
+  | 'publicado'
+  | 'archivado'
 
 export type OPATipo = 'servicio' | 'tramite' | 'consulta' | 'informacion' | 'otro'
 

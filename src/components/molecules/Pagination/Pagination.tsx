@@ -93,20 +93,26 @@ const Pagination: React.FC<PaginationProps> = ({
   }, [current, totalPages])
 
   // Handle page change
-  const handlePageChange = useCallback((page: number) => {
-    if (page < 1 || page > totalPages || page === current || disabled) return
-    onChange?.(page, pageSize)
-  }, [current, totalPages, pageSize, disabled, onChange])
+  const handlePageChange = useCallback(
+    (page: number) => {
+      if (page < 1 || page > totalPages || page === current || disabled) return
+      onChange?.(page, pageSize)
+    },
+    [current, totalPages, pageSize, disabled, onChange]
+  )
 
   // Handle page size change
-  const handlePageSizeChange = useCallback((newPageSize: number) => {
-    if (newPageSize === pageSize || disabled) return
-    
-    // Calculate new current page to maintain position
-    const newCurrent = Math.ceil((startRecord - 1) / newPageSize) + 1
-    onShowSizeChange?.(newCurrent, newPageSize)
-    onChange?.(newCurrent, newPageSize)
-  }, [pageSize, startRecord, disabled, onShowSizeChange, onChange])
+  const handlePageSizeChange = useCallback(
+    (newPageSize: number) => {
+      if (newPageSize === pageSize || disabled) return
+
+      // Calculate new current page to maintain position
+      const newCurrent = Math.ceil((startRecord - 1) / newPageSize) + 1
+      onShowSizeChange?.(newCurrent, newPageSize)
+      onChange?.(newCurrent, newPageSize)
+    },
+    [pageSize, startRecord, disabled, onShowSizeChange, onChange]
+  )
 
   // Handle quick jump
   const handleQuickJump = useCallback(() => {
@@ -164,7 +170,12 @@ const Pagination: React.FC<PaginationProps> = ({
   }
 
   return (
-    <div className={clsx('flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4', className)}>
+    <div
+      className={clsx(
+        'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4',
+        className
+      )}
+    >
       {/* Total info and page size selector */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         {showTotal && (
@@ -172,12 +183,10 @@ const Pagination: React.FC<PaginationProps> = ({
             Mostrando {startRecord}-{endRecord} de {total} registros
           </span>
         )}
-        
+
         {showSizeChanger && (
           <div className="flex items-center space-x-2">
-            <span className={clsx('text-gray-600', textSize)}>
-              Mostrar:
-            </span>
+            <span className={clsx('text-gray-600', textSize)}>Mostrar:</span>
             <select
               value={pageSize}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
@@ -189,15 +198,13 @@ const Pagination: React.FC<PaginationProps> = ({
               )}
               aria-label="Registros por página"
             >
-              {pageSizeOptions.map(option => (
+              {pageSizeOptions.map((option) => (
                 <option key={option} value={option}>
                   {option}
                 </option>
               ))}
             </select>
-            <span className={clsx('text-gray-600', textSize)}>
-              por página
-            </span>
+            <span className={clsx('text-gray-600', textSize)}>por página</span>
           </div>
         )}
       </div>
@@ -236,9 +243,7 @@ const Pagination: React.FC<PaginationProps> = ({
         {getVisiblePages.map((page, index) => (
           <React.Fragment key={index}>
             {page === '...' ? (
-              <span className={clsx('px-2 text-gray-400', textSize)}>
-                ...
-              </span>
+              <span className={clsx('px-2 text-gray-400', textSize)}>...</span>
             ) : (
               <Button
                 variant={page === current ? 'primary' : 'outline'}
@@ -248,9 +253,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 onKeyDown={(e) => handleKeyDown(e, () => handlePageChange(page as number))}
                 aria-label={`Página ${page}`}
                 aria-current={page === current ? 'page' : undefined}
-                className={clsx(
-                  page === current && 'font-semibold'
-                )}
+                className={clsx(page === current && 'font-semibold')}
               >
                 {page}
               </Button>
@@ -289,9 +292,7 @@ const Pagination: React.FC<PaginationProps> = ({
         {/* Quick jumper */}
         {showQuickJumper && (
           <div className="flex items-center space-x-2 ml-4">
-            <span className={clsx('text-gray-600', textSize)}>
-              Ir a:
-            </span>
+            <span className={clsx('text-gray-600', textSize)}>Ir a:</span>
             <input
               type="number"
               min={1}

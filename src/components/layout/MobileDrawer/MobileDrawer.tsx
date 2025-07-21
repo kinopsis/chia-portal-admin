@@ -2,12 +2,7 @@
 
 import React, { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { 
-  XMarkIcon, 
-  MagnifyingGlassIcon,
-  UserIcon,
-  BellIcon,
-} from '@heroicons/react/24/outline'
+import { XMarkIcon, MagnifyingGlassIcon, UserIcon, BellIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/atoms'
 import Navigation, { getMainNavigation, getUserNavigation } from '../Navigation'
 import { useAuth } from '@/hooks'
@@ -19,11 +14,7 @@ export interface MobileDrawerProps {
   className?: string
 }
 
-const MobileDrawer: React.FC<MobileDrawerProps> = ({
-  isOpen,
-  onClose,
-  className,
-}) => {
+const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, className }) => {
   const { user, userProfile, signOut } = useAuth()
   const drawerRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -32,13 +23,16 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
   const userNavItems = getUserNavigation()
 
   // Add admin navigation for authorized users
-  const adminNavItem = user && userProfile && ['funcionario', 'admin'].includes(userProfile.rol) 
-    ? [{ 
-        label: userProfile.rol === 'admin' ? 'Administración' : 'Panel', 
-        href: '/admin', 
-        icon: <span className="text-base">{userProfile.rol === 'admin' ? '⚙️' : '📊'}</span> 
-      }]
-    : []
+  const adminNavItem =
+    user && userProfile && ['funcionario', 'admin'].includes(userProfile.rol)
+      ? [
+          {
+            label: userProfile.rol === 'admin' ? 'Administración' : 'Panel',
+            href: '/admin',
+            icon: <span className="text-base">{userProfile.rol === 'admin' ? '⚙️' : '📊'}</span>,
+          },
+        ]
+      : []
 
   const allNavItems = [...mainNavItems, ...adminNavItem]
 
@@ -181,16 +175,15 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-primary-green rounded-full flex items-center justify-center">
                 <span className="text-white font-semibold">
-                  {userProfile.nombre.charAt(0)}{userProfile.apellido.charAt(0)}
+                  {userProfile.nombre.charAt(0)}
+                  {userProfile.apellido.charAt(0)}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">
                   {userProfile.nombre} {userProfile.apellido}
                 </p>
-                <p className="text-xs text-gray-500 capitalize">
-                  {userProfile.rol}
-                </p>
+                <p className="text-xs text-gray-500 capitalize">{userProfile.rol}</p>
               </div>
               <Button variant="ghost" size="sm" className="p-1">
                 <BellIcon className="w-5 h-5 text-gray-400" />
@@ -206,9 +199,9 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
               Navegación Principal
             </h3>
-            <Navigation 
-              items={allNavItems} 
-              orientation="vertical" 
+            <Navigation
+              items={allNavItems}
+              orientation="vertical"
               variant="pills"
               className="space-y-1"
             />
@@ -220,9 +213,9 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
               <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
                 Mi Cuenta
               </h3>
-              <Navigation 
-                items={userNavItems} 
-                orientation="vertical" 
+              <Navigation
+                items={userNavItems}
+                orientation="vertical"
                 variant="pills"
                 className="space-y-1"
               />
@@ -234,12 +227,12 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
               Acciones Rápidas
             </h3>
-            
+
             <Button variant="ghost" size="sm" className="w-full justify-start">
               <MagnifyingGlassIcon className="w-5 h-5 mr-3" />
               Buscar
             </Button>
-            
+
             {user ? (
               <Button variant="ghost" size="sm" className="w-full justify-start">
                 <UserIcon className="w-5 h-5 mr-3" />
@@ -265,9 +258,9 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
         {/* Footer */}
         <div className="p-4 border-t border-gray-200">
           {user ? (
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
               onClick={() => {
                 signOut()
@@ -278,12 +271,8 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
             </Button>
           ) : (
             <div className="text-center">
-              <p className="text-xs text-gray-500">
-                Portal de Atención Ciudadana
-              </p>
-              <p className="text-xs text-gray-400">
-                Alcaldía de Chía © 2025
-              </p>
+              <p className="text-xs text-gray-500">Portal de Atención Ciudadana</p>
+              <p className="text-xs text-gray-400">Alcaldía de Chía © 2025</p>
             </div>
           )}
         </div>

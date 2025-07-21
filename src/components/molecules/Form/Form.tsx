@@ -70,46 +70,58 @@ const Form = <T extends Record<string, any>>({
     return () => clearTimeout(timeoutId)
   }, [formData, autoSave, autoSaveDelay])
 
-  const validateFormData = useCallback((data: Partial<T>) => {
-    const result = validateForm(data as T, validationSchema)
-    setErrors(result.fieldErrors)
-    onValidationChange?.(result)
-    return result
-  }, [validationSchema, onValidationChange])
+  const validateFormData = useCallback(
+    (data: Partial<T>) => {
+      const result = validateForm(data as T, validationSchema)
+      setErrors(result.fieldErrors)
+      onValidationChange?.(result)
+      return result
+    },
+    [validationSchema, onValidationChange]
+  )
 
-  const handleInputChange = useCallback((name: string, value: any) => {
-    const newData = { ...formData, [name]: value }
-    setFormData(newData)
+  const handleInputChange = useCallback(
+    (name: string, value: any) => {
+      const newData = { ...formData, [name]: value }
+      setFormData(newData)
 
-    if (validateOnChange && touched[name]) {
-      validateFormData(newData)
-    }
-  }, [formData, validateOnChange, touched, validateFormData])
+      if (validateOnChange && touched[name]) {
+        validateFormData(newData)
+      }
+    },
+    [formData, validateOnChange, touched, validateFormData]
+  )
 
-  const handleInputBlur = useCallback((name: string) => {
-    setTouched(prev => ({ ...prev, [name]: true }))
-    
-    if (validateOnBlur) {
-      validateFormData(formData)
-    }
-  }, [formData, validateOnBlur, validateFormData])
+  const handleInputBlur = useCallback(
+    (name: string) => {
+      setTouched((prev) => ({ ...prev, [name]: true }))
+
+      if (validateOnBlur) {
+        validateFormData(formData)
+      }
+    },
+    [formData, validateOnBlur, validateFormData]
+  )
 
   const handleSubmit = async (e: React.FormEvent, isAutoSave = false) => {
     e.preventDefault()
-    
+
     if (!isAutoSave) {
       setIsSubmitting(true)
     }
 
     // Mark all fields as touched for validation display
-    const allTouched = fields.reduce((acc, field) => {
-      acc[field.name] = true
-      return acc
-    }, {} as Record<string, boolean>)
+    const allTouched = fields.reduce(
+      (acc, field) => {
+        acc[field.name] = true
+        return acc
+      },
+      {} as Record<string, boolean>
+    )
     setTouched(allTouched)
 
     const validationResult = validateFormData(formData)
-    
+
     try {
       await onSubmit(formData as T, validationResult.isValid)
     } finally {
@@ -132,12 +144,15 @@ const Form = <T extends Record<string, any>>({
       required: field.required,
       disabled: isFieldDisabled,
       value: fieldValue,
-      onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const value = field.type === 'checkbox'
-          ? (e.target as HTMLInputElement).checked
-          : field.type === 'number'
-          ? parseFloat(e.target.value) || 0
-          : e.target.value
+      onChange: (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+      ) => {
+        const value =
+          field.type === 'checkbox'
+            ? (e.target as HTMLInputElement).checked
+            : field.type === 'number'
+              ? parseFloat(e.target.value) || 0
+              : e.target.value
 
         // Use custom onChange if provided, otherwise use default handler
         if (field.onChange) {
@@ -175,7 +190,9 @@ const Form = <T extends Record<string, any>>({
                 isFieldDisabled && 'bg-gray-50 cursor-not-allowed'
               )}
             />
-            {componentProps.error && <p className="mt-1 text-sm text-red-600">{componentProps.error}</p>}
+            {componentProps.error && (
+              <p className="mt-1 text-sm text-red-600">{componentProps.error}</p>
+            )}
             {componentProps.helperText && !componentProps.error && (
               <p className="mt-1 text-sm text-gray-500">{componentProps.helperText}</p>
             )}
@@ -212,12 +229,24 @@ const Form = <T extends Record<string, any>>({
                 ))}
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <svg
+                  className="w-5 h-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </div>
             </div>
-            {componentProps.error && <p className="mt-1 text-sm text-red-600">{componentProps.error}</p>}
+            {componentProps.error && (
+              <p className="mt-1 text-sm text-red-600">{componentProps.error}</p>
+            )}
             {componentProps.helperText && !componentProps.error && (
               <p className="mt-1 text-sm text-gray-500">{componentProps.helperText}</p>
             )}
@@ -242,7 +271,9 @@ const Form = <T extends Record<string, any>>({
                 {field.required && <span className="text-red-500 ml-1">*</span>}
               </label>
             </div>
-            {componentProps.error && <p className="mt-1 text-sm text-red-600">{componentProps.error}</p>}
+            {componentProps.error && (
+              <p className="mt-1 text-sm text-red-600">{componentProps.error}</p>
+            )}
             {componentProps.helperText && !componentProps.error && (
               <p className="mt-1 text-sm text-gray-500">{componentProps.helperText}</p>
             )}
@@ -267,7 +298,9 @@ const Form = <T extends Record<string, any>>({
                 isFieldDisabled && 'bg-gray-50 cursor-not-allowed'
               )}
             />
-            {componentProps.error && <p className="mt-1 text-sm text-red-600">{componentProps.error}</p>}
+            {componentProps.error && (
+              <p className="mt-1 text-sm text-red-600">{componentProps.error}</p>
+            )}
             {componentProps.helperText && !componentProps.error && (
               <p className="mt-1 text-sm text-gray-500">{componentProps.helperText}</p>
             )}
@@ -284,7 +317,9 @@ const Form = <T extends Record<string, any>>({
       {showErrorSummary && hasErrors && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
           <h3 className="text-sm font-medium text-red-800 mb-2">
-            {errorCount === 1 ? 'Hay 1 error en el formulario:' : `Hay ${errorCount} errores en el formulario:`}
+            {errorCount === 1
+              ? 'Hay 1 error en el formulario:'
+              : `Hay ${errorCount} errores en el formulario:`}
           </h3>
           <ul className="text-sm text-red-700 space-y-1">
             {Object.entries(errors).map(([field, error]) => (
@@ -295,7 +330,7 @@ const Form = <T extends Record<string, any>>({
       )}
 
       {fields.map(renderField)}
-      
+
       {children}
     </form>
   )

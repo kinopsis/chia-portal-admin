@@ -20,13 +20,16 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
   const mainNavItems = getMainNavigation()
 
   // Add admin navigation for authorized users
-  const adminNavItem = user && userProfile && ['funcionario', 'admin'].includes(userProfile.rol)
-    ? [{
-        label: userProfile.rol === 'admin' ? 'Administración' : 'Panel',
-        href: '/admin',
-        icon: <span className="text-base">{userProfile.rol === 'admin' ? '⚙️' : '📊'}</span>
-      }]
-    : []
+  const adminNavItem =
+    user && userProfile && ['funcionario', 'admin'].includes(userProfile.rol)
+      ? [
+          {
+            label: userProfile.rol === 'admin' ? 'Administración' : 'Panel',
+            href: '/admin',
+            icon: <span className="text-base">{userProfile.rol === 'admin' ? '⚙️' : '📊'}</span>,
+          },
+        ]
+      : []
 
   const allNavItems = [...mainNavItems, ...adminNavItem]
 
@@ -40,7 +43,10 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
         <div className="flex items-center justify-between h-16">
           {/* Logo Section */}
           <div className="flex items-center space-x-4">
-            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+            <Link
+              href="/"
+              className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+            >
               <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-lg">🏛️</span>
               </div>
@@ -167,10 +173,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
         </div>
 
         {/* Mobile Drawer */}
-        <MobileDrawer
-          isOpen={isMobileMenuOpen}
-          onClose={() => setIsMobileMenuOpen(false)}
-        />
+        <MobileDrawer isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
       </div>
     </header>
   )

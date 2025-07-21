@@ -92,9 +92,7 @@ export default function OPAsAdminPage() {
       sortable: true,
       width: '140px',
       render: (value, record) => (
-        <div className="font-mono text-sm">
-          {record?.codigo_opa || 'N/A'}
-        </div>
+        <div className="font-mono text-sm">{record?.codigo_opa || 'N/A'}</div>
       ),
     },
     {
@@ -147,14 +145,14 @@ export default function OPAsAdminPage() {
 
   // Handle dependencia selection change
   const handleDependenciaChange = (dependenciaValue: string) => {
-    let dependencia = dependencias.find(dep => dep.id === dependenciaValue)
+    let dependencia = dependencias.find((dep) => dep.id === dependenciaValue)
     if (!dependencia) {
-      dependencia = dependencias.find(dep => dep.nombre === dependenciaValue)
+      dependencia = dependencias.find((dep) => dep.nombre === dependenciaValue)
     }
 
     if (dependencia) {
       setSelectedDependenciaId(dependencia.id)
-      const filtered = subdependencias.filter(sub => sub.dependencia_id === dependencia.id)
+      const filtered = subdependencias.filter((sub) => sub.dependencia_id === dependencia.id)
       setFilteredSubdependencias(filtered)
     } else {
       setSelectedDependenciaId('')
@@ -187,7 +185,7 @@ export default function OPAsAdminPage() {
       required: true,
       options: [
         { value: '', label: 'Seleccionar dependencia', disabled: true },
-        ...dependencias.map(dep => ({
+        ...dependencias.map((dep) => ({
           value: dep.id,
           label: dep.nombre,
         })),
@@ -201,8 +199,14 @@ export default function OPAsAdminPage() {
       required: true,
       disabled: !selectedDependenciaId,
       options: [
-        { value: '', label: selectedDependenciaId ? 'Seleccionar subdependencia' : 'Primero seleccione una dependencia', disabled: true },
-        ...filteredSubdependencias.map(sub => ({
+        {
+          value: '',
+          label: selectedDependenciaId
+            ? 'Seleccionar subdependencia'
+            : 'Primero seleccione una dependencia',
+          disabled: true,
+        },
+        ...filteredSubdependencias.map((sub) => ({
           value: sub.id,
           label: sub.nombre,
         })),
@@ -228,7 +232,9 @@ export default function OPAsAdminPage() {
     setSelectedOPA(opa)
     if (opa.subdependencias?.dependencia_id) {
       setSelectedDependenciaId(opa.subdependencias.dependencia_id)
-      const filtered = subdependencias.filter(sub => sub.dependencia_id === opa.subdependencias?.dependencia_id)
+      const filtered = subdependencias.filter(
+        (sub) => sub.dependencia_id === opa.subdependencias?.dependencia_id
+      )
       setFilteredSubdependencias(filtered)
     }
     setIsEditModalOpen(true)
@@ -324,11 +330,12 @@ export default function OPAsAdminPage() {
   ]
 
   // Filter data based on search
-  const filteredOpas = opas.filter(opa =>
-    opa.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    opa.codigo_opa.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    opa.subdependencias?.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    opa.subdependencias?.dependencias?.nombre.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredOpas = opas.filter(
+    (opa) =>
+      opa.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      opa.codigo_opa.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      opa.subdependencias?.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      opa.subdependencias?.dependencias?.nombre.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   return (
@@ -340,11 +347,7 @@ export default function OPAsAdminPage() {
             <h1 className="text-2xl font-bold text-gray-900">Gestión de OPAs</h1>
             <p className="text-gray-600">Administrar Órdenes de Pago y Autorización</p>
           </div>
-          <Button
-            variant="primary"
-            onClick={handleCreate}
-            className="flex items-center space-x-2"
-          >
+          <Button variant="primary" onClick={handleCreate} className="flex items-center space-x-2">
             <span>➕</span>
             <span>Nueva OPA</span>
           </Button>
@@ -366,10 +369,7 @@ export default function OPAsAdminPage() {
               title: 'No hay OPAs',
               description: 'No se encontraron OPAs. Crea la primera OPA.',
               action: (
-                <Button
-                  variant="primary"
-                  onClick={handleCreate}
-                >
+                <Button variant="primary" onClick={handleCreate}>
                   Crear OPA
                 </Button>
               ),
@@ -428,12 +428,7 @@ export default function OPAsAdminPage() {
               >
                 Cancelar
               </Button>
-              <Button
-                type="submit"
-                form="edit-opa-form"
-                variant="primary"
-                isLoading={isSubmitting}
-              >
+              <Button type="submit" form="edit-opa-form" variant="primary" isLoading={isSubmitting}>
                 Guardar Cambios
               </Button>
             </>
@@ -471,12 +466,9 @@ export default function OPAsAdminPage() {
           {selectedOPA && (
             <>
               <p className="text-gray-600">
-                ¿Estás seguro de que deseas eliminar la OPA{' '}
-                <strong>{selectedOPA.nombre}</strong>?
+                ¿Estás seguro de que deseas eliminar la OPA <strong>{selectedOPA.nombre}</strong>?
               </p>
-              <p className="text-sm text-red-600 mt-2">
-                Esta acción no se puede deshacer.
-              </p>
+              <p className="text-sm text-red-600 mt-2">Esta acción no se puede deshacer.</p>
             </>
           )}
         </ConfirmDialog>

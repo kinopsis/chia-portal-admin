@@ -10,7 +10,7 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
-  
+
   const { resetPassword } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,8 +39,8 @@ export default function ForgotPasswordPage() {
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Correo Enviado</h2>
             <p className="text-gray-600 mb-6">
-              Hemos enviado un enlace de recuperación a <strong>{email}</strong>. 
-              Por favor, revisa tu bandeja de entrada y sigue las instrucciones para restablecer tu contraseña.
+              Hemos enviado un enlace de recuperación a <strong>{email}</strong>. Por favor, revisa
+              tu bandeja de entrada y sigue las instrucciones para restablecer tu contraseña.
             </p>
             <div className="space-y-3">
               <Link href="/auth/login">
@@ -48,9 +48,9 @@ export default function ForgotPasswordPage() {
                   Volver al Login
                 </Button>
               </Link>
-              <Button 
-                variant="ghost" 
-                size="lg" 
+              <Button
+                variant="ghost"
+                size="lg"
                 fullWidth
                 onClick={() => {
                   setSuccess(false)
@@ -134,7 +134,10 @@ export default function ForgotPasswordPage() {
         <div className="text-center">
           <p className="text-sm text-gray-500">
             ¿No tienes cuenta?{' '}
-            <Link href="/auth/register" className="text-primary-green hover:text-primary-green-dark font-medium">
+            <Link
+              href="/auth/register"
+              className="text-primary-green hover:text-primary-green-dark font-medium"
+            >
               Crear cuenta
             </Link>
           </p>
