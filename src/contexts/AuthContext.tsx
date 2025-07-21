@@ -34,37 +34,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Get initial session
+    // Get initial session with error handling
     const getInitialSession = async () => {
-      const {
-        data: { session: initialSession },
-      } = await supabase.auth.getSession()
-      setSession(initialSession)
-      setUser(initialSession?.user ?? null)
+      try {
+        const {
+          data: { session: initialSession },
+        } = await supabase.auth.getSession()
+        setSession(initialSession)
+        setUser(initialSession?.user ?? null)
 
-      if (initialSession?.user) {
-        await fetchUserProfile(initialSession.user.id)
+        if (initialSession?.user) {
+          await fetchUserProfile(initialSession.user.id)
+        }
+      } catch (error) {
+        console.warn('Error getting initial session:', error)
+        // Set default values on error
+        setSession(null)
+        setUser(null)
+        setUserProfile(null)
+      } finally {
+        setLoading(false)
       }
-
-      setLoading(false)
     }
 
     getInitialSession()
 
-    // Listen for auth changes
+    // Listen for auth changes with error handling
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
+      try {
+        setSession(session)
+        setUser(session?.user ?? null)
 
-      if (session?.user) {
-        await fetchUserProfile(session.user.id)
-      } else {
-        setUserProfile(null)
+        if (session?.user) {
+          await fetchUserProfile(session.user.id)
+        } else {
+          setUserProfile(null)
+        }
+      } catch (error) {
+        console.warn('Error in auth state change:', error)
+      } finally {
+        setLoading(false)
       }
-
-      setLoading(false)
     })
 
     return () => subscription.unsubscribe()
