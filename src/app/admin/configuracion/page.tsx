@@ -198,7 +198,7 @@ export default function ConfiguracionAdminPage() {
     return settings.map((setting) => ({
       name: setting.key,
       label: setting.label,
-      type: setting.type,
+      type: setting.type === 'boolean' ? 'checkbox' : setting.type as FormField['type'],
       required: false,
       defaultValue: setting.value,
       helpText: setting.description,

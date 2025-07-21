@@ -2,9 +2,7 @@
 
 // Dependencias services
 export {
-  DependenciasServerService,
   DependenciasClientService,
-  dependenciasServerService,
   dependenciasClientService,
 } from './dependencias'
 
