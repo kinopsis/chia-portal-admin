@@ -131,7 +131,7 @@ export default function NotificacionesAdminPage() {
       type: 'select',
       required: true,
       options: [
-        { value: '', label: 'Seleccionar tipo', disabled: true },
+        { value: '', label: 'Seleccionar tipo', },
         { value: 'info', label: 'Información' },
         { value: 'success', label: 'Éxito' },
         { value: 'warning', label: 'Advertencia' },
@@ -144,7 +144,7 @@ export default function NotificacionesAdminPage() {
       type: 'select',
       required: true,
       options: [
-        { value: '', label: 'Seleccionar destinatarios', disabled: true },
+        { value: '', label: 'Seleccionar destinatarios', },
         { value: 'all', label: 'Todos los usuarios' },
         { value: 'admins', label: 'Solo administradores' },
         { value: 'users', label: 'Solo usuarios' },
@@ -154,9 +154,9 @@ export default function NotificacionesAdminPage() {
     {
       name: 'scheduled_for',
       label: 'Programar para (opcional)',
-      type: 'datetime-local',
+      type: "text",
       required: false,
-      helpText: 'Dejar vacío para enviar inmediatamente',
+      helperText: 'Dejar vacío para enviar inmediatamente',
     },
   ]
 
@@ -331,10 +331,10 @@ export default function NotificacionesAdminPage() {
                           Enviar
                         </Button>
                       )}
-                      <Button variant="outline" size="sm">
+                      <Button variant="neutral" size="sm">
                         Editar
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button variant="neutral" size="sm">
                         Eliminar
                       </Button>
                     </div>
@@ -354,7 +354,7 @@ export default function NotificacionesAdminPage() {
           footer={
             <>
               <Button
-                variant="outline"
+                variant="neutral"
                 onClick={() => setIsCreateModalOpen(false)}
                 disabled={isSubmitting}
               >

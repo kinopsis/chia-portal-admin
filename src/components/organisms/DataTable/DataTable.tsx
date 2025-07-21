@@ -52,6 +52,8 @@ export interface Column<T = any> {
   sorter?: boolean | ((a: T, b: T) => number)
   defaultSortOrder?: 'asc' | 'desc'
   sortDirections?: ('asc' | 'desc')[]
+  hidden?: boolean
+  dataType?: string
 }
 
 export interface DataTableProps<T = any> {
@@ -142,10 +144,19 @@ export interface DataTableProps<T = any> {
   // Empty state
   emptyText?: string
   emptyIcon?: React.ReactNode
+  emptyMessage?: string
+  emptyStateProps?: {
+    title?: string
+    description?: string
+    icon?: React.ReactNode
+    action?: React.ReactNode
+  }
 
   // Search and Filters
   showSearchAndFilters?: boolean
+  searchable?: boolean
   searchValue?: string
+  searchQuery?: string
   onSearchChange?: (value: string) => void
   searchPlaceholder?: string
   filters?: FilterConfig[]

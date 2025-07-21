@@ -128,11 +128,12 @@ export interface FAQ {
   id: string
   pregunta: string
   respuesta: string
-  palabras_clave?: string[]
+  palabras_clave?: string[] | null
   dependencia_id: string
   subdependencia_id: string
-  tema?: string // Legacy field - will be replaced by tema_id
+  tema?: string | null // Legacy field - will be replaced by tema_id
   tema_id?: string // New field for hierarchical structure
+  categoria?: string // Category field
   orden?: number
   activo: boolean
   created_at: string
@@ -239,19 +240,41 @@ export interface Notification {
 export interface FormField {
   name: string
   label: string
-  type: 'text' | 'email' | 'password' | 'textarea' | 'select' | 'checkbox' | 'number'
+  type: 'text' | 'email' | 'password' | 'textarea' | 'select' | 'checkbox' | 'number' | 'datetime-local'
   required?: boolean
   placeholder?: string
-  options?: { value: string | number; label: string }[]
+  options?: { value: string | number; label: string; disabled?: boolean }[]
   validation?: {
-    pattern?: string
-    minLength?: number
-    maxLength?: number
+    pattern?: string | RegExp | { value: RegExp; message: string }
+    minLength?: number | { value: number; message: string }
+    maxLength?: number | { value: number; message: string }
+    required?: { value: boolean; message: string }
   }
   helperText?: string
   disabled?: boolean
   fullWidth?: boolean
   rows?: number // for textarea
+  defaultValue?: any
+  min?: number // for number inputs
+  max?: number // for number inputs
+  onChange?: (value: any) => void // Custom onChange handler
+}
+
+// Validation Types
+export interface ValidationRule {
+  required?: boolean | { value: boolean; message: string }
+  pattern?: string | RegExp | { value: RegExp; message: string }
+  minLength?: number | { value: number; message: string }
+  maxLength?: number | { value: number; message: string }
+  min?: number | { value: number; message: string }
+  max?: number | { value: number; message: string }
+  validate?: (value: any) => boolean | string
+}
+
+export interface ValidationError {
+  field: string
+  message: string
+  type: string
 }
 
 // Component Props Types

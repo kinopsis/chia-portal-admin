@@ -94,7 +94,7 @@ const TestDependenciasPage: React.FC = () => {
       type: 'text',
       required: true,
       placeholder: 'Código único de la dependencia (ej: DEP-001)',
-      helpText: 'Código único identificador de la dependencia',
+      helperText: 'Código único identificador de la dependencia',
       validation: {
         ...commonValidationRules.required,
         pattern: {
@@ -116,14 +116,13 @@ const TestDependenciasPage: React.FC = () => {
       label: 'Descripción',
       type: 'textarea',
       placeholder: 'Descripción de la dependencia y sus funciones',
-      helpText: 'Descripción detallada de las funciones y responsabilidades',
+      helperText: 'Descripción detallada de las funciones y responsabilidades',
     },
     {
       name: 'activa',
       label: 'Activa',
       type: 'checkbox',
-      defaultValue: true,
-      helpText: 'Indica si la dependencia está activa en el sistema',
+            helperText: 'Indica si la dependencia está activa en el sistema',
     },
   ]
 
@@ -416,7 +415,7 @@ const TestDependenciasPage: React.FC = () => {
         confirmLabel="Eliminar"
         cancelLabel="Cancelar"
         loading={formLoading}
-        variant="danger"
+        variant="error"
       />
     </div>
   )

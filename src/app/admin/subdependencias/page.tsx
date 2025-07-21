@@ -407,7 +407,7 @@ const SubdependenciasAdminPage: React.FC = () => {
           confirmLabel="Eliminar"
           cancelLabel="Cancelar"
           loading={formLoading}
-          variant="danger"
+          variant="error"
         />
       </div>
     </RoleGuard>

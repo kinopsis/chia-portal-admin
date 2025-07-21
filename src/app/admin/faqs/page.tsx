@@ -141,7 +141,7 @@ export default function FAQsAdminPage() {
       sortable: true,
       width: '140px',
       render: (value, record) => (
-        <Badge variant="outline" size="sm">
+        <Badge variant="neutral" size="sm">
           {record?.tema || 'Sin tema'}
         </Badge>
       ),
@@ -162,7 +162,7 @@ export default function FAQsAdminPage() {
       sortable: true,
       width: '140px',
       render: (value, record) => (
-        <Badge variant="outline" size="sm">
+        <Badge variant="neutral" size="sm">
           {record?.categoria || 'Sin categoría'}
         </Badge>
       ),
@@ -222,7 +222,7 @@ export default function FAQsAdminPage() {
       type: 'select',
       required: true,
       options: [
-        { value: '', label: 'Seleccionar dependencia', disabled: true },
+        { value: '', label: 'Seleccionar dependencia', },
         ...dependencias.map((dep) => ({
           value: dep.id,
           label: dep.nombre,
@@ -242,8 +242,7 @@ export default function FAQsAdminPage() {
           label: selectedDependenciaId
             ? 'Seleccionar subdependencia'
             : 'Primero seleccione una dependencia',
-          disabled: true,
-        },
+          },
         ...filteredSubdependencias.map((sub) => ({
           value: sub.id,
           label: sub.nombre,
@@ -274,7 +273,7 @@ export default function FAQsAdminPage() {
       type: 'select',
       required: true,
       options: [
-        { value: '', label: 'Seleccionar categoría', disabled: true },
+        { value: '', label: 'Seleccionar categoría', },
         { value: 'general', label: 'General' },
         { value: 'tramites', label: 'Trámites' },
         { value: 'pagos', label: 'Pagos' },
@@ -291,15 +290,13 @@ export default function FAQsAdminPage() {
       required: false,
       placeholder: '0',
       helperText: 'Orden en que aparecerá la FAQ (menor número = mayor prioridad)',
-      min: 0,
-      max: 999,
+            max: 999,
     },
     {
       name: 'activo',
       label: 'Activo',
       type: 'checkbox',
-      defaultValue: true,
-    },
+          },
   ]
 
   // Event handlers
@@ -498,7 +495,7 @@ export default function FAQsAdminPage() {
           footer={
             <>
               <Button
-                variant="outline"
+                variant="neutral"
                 onClick={() => setIsCreateModalOpen(false)}
                 disabled={isSubmitting}
               >
@@ -534,7 +531,7 @@ export default function FAQsAdminPage() {
           footer={
             <>
               <Button
-                variant="outline"
+                variant="neutral"
                 onClick={() => setIsEditModalOpen(false)}
                 disabled={isSubmitting}
               >
@@ -578,7 +575,7 @@ export default function FAQsAdminPage() {
           title="Eliminar FAQ"
           confirmText="Eliminar"
           cancelText="Cancelar"
-          confirmVariant="danger"
+          confirmVariant="error"
           loading={isSubmitting}
         >
           {selectedFAQ && (

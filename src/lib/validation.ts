@@ -169,24 +169,28 @@ export function validateForm<T extends Record<string, any>>(
 // Common validation rules
 export const commonValidationRules = {
   email: {
+    required: 'El email es requerido',
     pattern: {
       value: VALIDATION.EMAIL_REGEX,
       message: 'Ingresa un email válido',
     },
   },
   phone: {
+    required: 'El teléfono es requerido',
     pattern: {
       value: VALIDATION.PHONE_REGEX,
       message: 'Ingresa un teléfono válido (ej: +57 300 123 4567)',
     },
   },
   password: {
+    required: 'La contraseña es requerida',
     minLength: {
       value: VALIDATION.PASSWORD_MIN_LENGTH,
       message: `La contraseña debe tener al menos ${VALIDATION.PASSWORD_MIN_LENGTH} caracteres`,
     },
   },
   name: {
+    required: 'El nombre es requerido',
     minLength: {
       value: VALIDATION.NAME_MIN_LENGTH,
       message: `Debe tener al menos ${VALIDATION.NAME_MIN_LENGTH} caracteres`,
@@ -197,6 +201,7 @@ export const commonValidationRules = {
     },
   },
   codigo: {
+    required: 'El código es requerido',
     pattern: {
       value: VALIDATION.CODIGO_REGEX,
       message: 'Solo se permiten letras mayúsculas, números y guiones',
