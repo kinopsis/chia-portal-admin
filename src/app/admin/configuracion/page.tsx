@@ -314,17 +314,16 @@ export default function ConfiguracionAdminPage() {
                     )}
                     validateOnChange
                     validateOnBlur
-                    submitButton={
-                      <Button
-                        type="submit"
-                        variant="primary"
-                        isLoading={loading}
-                        className="w-full sm:w-auto"
-                      >
-                        Guardar Configuración
-                      </Button>
-                    }
-                  />
+                  >
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      isLoading={loading}
+                      className="w-full sm:w-auto"
+                    >
+                      Guardar Configuración
+                    </Button>
+                  </Form>
                 )}
               </Card>
             )}
