@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { jest } from '@jest/globals'
 import BulkActions from '@/components/molecules/BulkActions'
 import type { BulkAction } from '@/components/molecules/BulkActions'
@@ -357,7 +357,9 @@ describe('BulkActions', () => {
       />
     )
 
-    fireEvent.click(screen.getByText('Async Action'))
+    await act(async () => {
+      fireEvent.click(screen.getByText('Async Action'))
+    })
 
     await waitFor(() => {
       expect(onActionStart).toHaveBeenCalledWith(asyncAction, mockSelectedRecords)
@@ -384,7 +386,9 @@ describe('BulkActions', () => {
       />
     )
 
-    fireEvent.click(screen.getByText('Failing Action'))
+    await act(async () => {
+      fireEvent.click(screen.getByText('Failing Action'))
+    })
 
     await waitFor(() => {
       expect(onActionError).toHaveBeenCalledWith(failingAction, mockSelectedRecords, error)

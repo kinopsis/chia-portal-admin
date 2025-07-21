@@ -1,12 +1,23 @@
-import { renderHook, waitFor } from '@testing-library/react'
+import { renderHook, waitFor, act } from '@testing-library/react'
 import { useSystemMetrics } from '@/hooks'
 import { supabase } from '@/lib/supabase'
 
+// Create mock query builder
+const createMockQueryBuilder = (data: any[] = []) => ({
+  select: jest.fn().mockReturnThis(),
+  eq: jest.fn().mockReturnThis(),
+  gte: jest.fn().mockReturnThis(),
+  lte: jest.fn().mockReturnThis(),
+  then: jest.fn().mockResolvedValue({ data, error: null }),
+})
+
 // Mock Supabase
+const mockSupabase = {
+  from: jest.fn(),
+}
+
 jest.mock('@/lib/supabase', () => ({
-  supabase: {
-    from: jest.fn(),
-  },
+  supabase: mockSupabase,
 }))
 
 // Mock useAuth hook
@@ -24,8 +35,6 @@ jest.mock('@/hooks/useAuth', () => ({
     },
   }),
 }))
-
-const mockSupabase = supabase as jest.Mocked<typeof supabase>
 
 const mockUserProfilesData = [
   { rol: 'ciudadano', activo: true, created_at: '2024-01-01' },
@@ -60,40 +69,45 @@ describe('useSystemMetrics', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     
-    // Setup default mock responses
-    const mockSelect = jest.fn().mockReturnThis()
-    const mockOrder = jest.fn().mockReturnThis()
-    const mockLimit = jest.fn().mockReturnThis()
-
+    // Setup mock responses for different tables
     mockSupabase.from.mockImplementation((table: string) => {
-      const mockResponse = {
-        select: mockSelect,
-        order: mockOrder,
-        limit: mockLimit,
+      const mockQueryBuilder = {
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        gte: jest.fn().mockReturnThis(),
+        lte: jest.fn().mockReturnThis(),
+        order: jest.fn().mockReturnThis(),
+        limit: jest.fn(),
       }
 
       // Configure responses based on table
       switch (table) {
         case 'user_profiles':
-          mockLimit.mockResolvedValue({ data: mockUserProfilesData, error: null })
+          mockQueryBuilder.limit.mockResolvedValue({ data: mockUserProfilesData, error: null })
+          mockQueryBuilder.select.mockResolvedValue({ data: mockUserProfilesData, error: null })
           break
         case 'tramites':
-          mockLimit.mockResolvedValue({ data: mockTramitesData, error: null })
+          mockQueryBuilder.limit.mockResolvedValue({ data: mockTramitesData, error: null })
+          mockQueryBuilder.select.mockResolvedValue({ data: mockTramitesData, error: null })
           break
         case 'opas':
-          mockLimit.mockResolvedValue({ data: mockOpasData, error: null })
+          mockQueryBuilder.limit.mockResolvedValue({ data: mockOpasData, error: null })
+          mockQueryBuilder.select.mockResolvedValue({ data: mockOpasData, error: null })
           break
         case 'faqs':
-          mockLimit.mockResolvedValue({ data: mockFaqsData, error: null })
+          mockQueryBuilder.limit.mockResolvedValue({ data: mockFaqsData, error: null })
+          mockQueryBuilder.select.mockResolvedValue({ data: mockFaqsData, error: null })
           break
         case 'dependencias':
-          mockSelect.mockResolvedValue({ data: mockDependenciasData, error: null })
+          mockQueryBuilder.select.mockResolvedValue({ data: mockDependenciasData, error: null })
+          mockQueryBuilder.limit.mockResolvedValue({ data: mockDependenciasData, error: null })
           break
         default:
-          mockLimit.mockResolvedValue({ data: [], error: null })
+          mockQueryBuilder.limit.mockResolvedValue({ data: [], error: null })
+          mockQueryBuilder.select.mockResolvedValue({ data: [], error: null })
       }
 
-      return mockResponse
+      return mockQueryBuilder
     })
   })
 
@@ -136,9 +150,12 @@ describe('useSystemMetrics', () => {
 
   it('handles errors correctly', async () => {
     const mockError = new Error('Database error')
-    
+
     mockSupabase.from.mockImplementation(() => ({
       select: jest.fn().mockReturnThis(),
+      eq: jest.fn().mockReturnThis(),
+      gte: jest.fn().mockReturnThis(),
+      lte: jest.fn().mockReturnThis(),
       order: jest.fn().mockReturnThis(),
       limit: jest.fn().mockResolvedValue({ data: null, error: mockError }),
     }))
@@ -147,7 +164,7 @@ describe('useSystemMetrics', () => {
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false)
-    })
+    }, { timeout: 3000 })
 
     expect(result.current.error).toBe('Database error')
     expect(result.current.metrics).toBe(null)
@@ -163,8 +180,23 @@ describe('useSystemMetrics', () => {
     // Clear previous calls
     jest.clearAllMocks()
 
+    // Re-setup mocks for refresh
+    mockSupabase.from.mockImplementation((table: string) => {
+      const mockQueryBuilder = {
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        gte: jest.fn().mockReturnThis(),
+        lte: jest.fn().mockReturnThis(),
+        order: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockResolvedValue({ data: [], error: null }),
+      }
+      return mockQueryBuilder
+    })
+
     // Call refresh
-    await result.current.refreshMetrics()
+    await act(async () => {
+      await result.current.refreshMetrics()
+    })
 
     // Should have made new API calls
     expect(mockSupabase.from).toHaveBeenCalled()
@@ -185,7 +217,9 @@ describe('useSystemMetrics', () => {
       userRole: 'admin',
     }
 
-    result.current.applyFilters(filters)
+    await act(async () => {
+      result.current.applyFilters(filters)
+    })
 
     expect(result.current.filters).toEqual(filters)
   })

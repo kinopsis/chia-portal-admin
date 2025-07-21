@@ -6,13 +6,13 @@ import { useSystemMetrics } from '@/hooks'
 import { useAuth } from '@/hooks'
 
 // Mock the hooks
-jest.mock('@/hooks', () => ({
-  useSystemMetrics: jest.fn(),
-  useAuth: jest.fn(),
-}))
+const mockUseSystemMetrics = jest.fn()
+const mockUseAuth = jest.fn()
 
-const mockUseSystemMetrics = useSystemMetrics as jest.MockedFunction<typeof useSystemMetrics>
-const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>
+jest.mock('@/hooks', () => ({
+  useSystemMetrics: mockUseSystemMetrics,
+  useAuth: mockUseAuth,
+}))
 
 const mockMetrics = {
   users: {

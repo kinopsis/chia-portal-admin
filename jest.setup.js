@@ -101,6 +101,37 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 })
 
+// Mock useBreakpoint hook
+jest.mock('@/hooks/useBreakpoint', () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    width: 1024,
+    breakpoint: 'lg',
+    isMobile: false,
+    isTablet: false,
+    isDesktop: true,
+    isXs: false,
+    isSm: false,
+    isMd: false,
+    isLg: true,
+    isXl: false,
+    is2xl: false,
+  })),
+}))
+
+// Mock useAuth hook
+jest.mock('@/hooks/useAuth', () => ({
+  __esModule: true,
+  useAuth: jest.fn(() => ({
+    user: null,
+    userProfile: null,
+    loading: false,
+    signIn: jest.fn(),
+    signOut: jest.fn(),
+    signUp: jest.fn(),
+  })),
+}))
+
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
   constructor() {}

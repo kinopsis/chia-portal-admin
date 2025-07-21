@@ -1,5 +1,5 @@
 import { performance } from 'perf_hooks'
-import { renderHook } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
 import { useSystemMetrics } from '@/hooks'
 
 // Mock Supabase for performance testing
@@ -44,13 +44,15 @@ describe('Dashboard Performance Tests', () => {
 
   it('should fetch metrics within acceptable time limits', async () => {
     const startTime = performance.now()
-    
-    const { result, waitForNextUpdate } = renderHook(() => 
+
+    const { result } = renderHook(() =>
       useSystemMetrics(false)
     )
 
-    await waitForNextUpdate()
-    
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+
     const endTime = performance.now()
     const executionTime = endTime - startTime
 
@@ -61,13 +63,15 @@ describe('Dashboard Performance Tests', () => {
 
   it('should handle large datasets efficiently', async () => {
     const startTime = performance.now()
-    
-    const { result, waitForNextUpdate } = renderHook(() => 
+
+    const { result } = renderHook(() =>
       useSystemMetrics(false)
     )
 
-    await waitForNextUpdate()
-    
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+
     const endTime = performance.now()
     const executionTime = endTime - startTime
 

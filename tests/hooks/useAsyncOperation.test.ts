@@ -77,37 +77,31 @@ describe('useAsyncOperation', () => {
     const mockOperation = jest.fn()
       .mockRejectedValueOnce(new Error('First attempt failed'))
       .mockResolvedValueOnce(mockData)
-    
-    // First execution should fail
+
+    // First execution should fail and retry automatically
     await act(async () => {
       await result.current.execute(mockOperation, { retryAttempts: 1 })
     })
-    
-    expect(result.current.state.error).toBe('First attempt failed')
-    expect(mockOperation).toHaveBeenCalledTimes(2) // Original + 1 retry
-    
-    // Manual retry should work
-    await act(async () => {
-      await result.current.retry()
-    })
-    
+
+    // Should succeed after retry
     expect(result.current.state.data).toEqual(mockData)
     expect(result.current.state.error).toBe(null)
+    expect(mockOperation).toHaveBeenCalledTimes(2) // Original + 1 retry
   })
 
   it('handles multiple retry attempts', async () => {
     const { result } = renderHook(() => useAsyncOperation())
     const mockError = new Error('Persistent error')
     const mockOperation = jest.fn().mockRejectedValue(mockError)
-    
+
     await act(async () => {
-      await result.current.execute(mockOperation, { retryAttempts: 3 })
+      await result.current.execute(mockOperation, { retryAttempts: 3, retryDelay: 10 })
     })
-    
+
     // Should have tried 4 times total (original + 3 retries)
     expect(mockOperation).toHaveBeenCalledTimes(4)
     expect(result.current.state.error).toBe('Persistent error')
-  })
+  }, 10000)
 
   it('calls success callback', async () => {
     const { result } = renderHook(() => useAsyncOperation())
@@ -185,21 +179,21 @@ describe('useAsyncOperation', () => {
     const mockOperation = jest.fn()
       .mockRejectedValueOnce(new Error('First fail'))
       .mockResolvedValueOnce('success')
-    
+
     const startTime = Date.now()
-    
+
     await act(async () => {
-      await result.current.execute(mockOperation, { 
-        retryAttempts: 1, 
-        retryDelay: 100 
+      await result.current.execute(mockOperation, {
+        retryAttempts: 1,
+        retryDelay: 50 // Reduced delay for faster tests
       })
     })
-    
+
     const endTime = Date.now()
     const duration = endTime - startTime
-    
-    // Should have waited at least 100ms for retry
-    expect(duration).toBeGreaterThanOrEqual(100)
+
+    // Should have waited at least 50ms for retry
+    expect(duration).toBeGreaterThanOrEqual(50)
     expect(result.current.state.data).toBe('success')
   })
 

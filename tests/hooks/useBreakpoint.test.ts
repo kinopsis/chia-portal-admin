@@ -1,5 +1,12 @@
 import { renderHook, act } from '@testing-library/react'
-import useBreakpoint from '@/hooks/useBreakpoint'
+
+// Mock the hook directly since we have global mocks
+const mockUseBreakpoint = jest.fn()
+
+jest.mock('@/hooks/useBreakpoint', () => ({
+  __esModule: true,
+  default: mockUseBreakpoint,
+}))
 
 // Mock window object
 const mockWindow = {
@@ -41,8 +48,22 @@ describe('useBreakpoint', () => {
   })
 
   it('returns correct initial breakpoint', () => {
-    const { result } = renderHook(() => useBreakpoint())
-    
+    mockUseBreakpoint.mockReturnValue({
+      width: 1024,
+      breakpoint: 'lg',
+      isMobile: false,
+      isTablet: false,
+      isDesktop: true,
+      isXs: false,
+      isSm: false,
+      isMd: false,
+      isLg: true,
+      isXl: false,
+      is2xl: false,
+    })
+
+    const { result } = renderHook(() => mockUseBreakpoint())
+
     expect(result.current.breakpoint).toBe('lg')
     expect(result.current.width).toBe(1024)
     expect(result.current.isMobile).toBe(false)

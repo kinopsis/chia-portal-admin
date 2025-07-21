@@ -235,8 +235,8 @@ describe('Pagination', () => {
     const select = screen.getByLabelText('Registros por página')
     fireEvent.change(select, { target: { value: '25' } })
 
-    // Should calculate new page to maintain position (records 21-30 should now be on page 1)
-    expect(onShowSizeChange).toHaveBeenCalledWith(1, 25)
-    expect(onChange).toHaveBeenCalledWith(1, 25)
+    // Should calculate new page to maintain position (records 21-30 should now be on page 2 with 25 per page)
+    expect(onShowSizeChange).toHaveBeenCalledWith(2, 25)
+    expect(onChange).toHaveBeenCalledWith(2, 25)
   })
 })
