@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid build-time data fetching issues
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useEffect } from 'react'
 import { Card, Button, Badge } from '@/components/atoms'
 import { SearchBar, Breadcrumb, MetricCard } from '@/components/molecules'

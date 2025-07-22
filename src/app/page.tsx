@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid build-time data fetching issues
+export const dynamic = 'force-dynamic'
+
 import { SearchBar, MetricCard } from '@/components'
 import { useHomepageMetrics } from '@/hooks/useHomepageMetrics'
 

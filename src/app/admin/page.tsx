@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid build-time data fetching issues
+export const dynamic = 'force-dynamic'
+
 import { PageHeader, DashboardStats, QuickActions, ActivityFeed, Card, Button } from '@/components'
 import { ConnectionStatus } from '@/components/atoms/ConnectionStatus'
 import { useAuth, useAdminBreadcrumbs } from '@/hooks'

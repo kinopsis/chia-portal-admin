@@ -1,6 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+// Force dynamic rendering to avoid build-time data fetching issues
+export const dynamic = 'force-dynamic'
+
+import React, { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Card, Button, Badge, Select } from '@/components/atoms'
 import { SearchBar, Breadcrumb, MetricCard } from '@/components/molecules'
@@ -40,9 +43,10 @@ const tiposPagoOptions = [
   { value: 'con_pago', label: 'Con pago' },
 ]
 
-export default function TramitesPage() {
+// Component that uses useSearchParams - needs to be wrapped in Suspense
+function TramitesContent() {
   const searchParams = useSearchParams()
-  const initialQuery = searchParams.get('q') || ''
+  const initialQuery = searchParams?.get('q') || ''
 
   // Service instances
   const subdependenciasService = new SubdependenciasClientService()
@@ -585,5 +589,36 @@ export default function TramitesPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+// Loading component for Suspense fallback
+function TramitesLoading() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-white p-6 rounded-lg shadow">
+                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+                <div className="h-20 bg-gray-200 rounded"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Main component with Suspense wrapper
+export default function TramitesPage() {
+  return (
+    <Suspense fallback={<TramitesLoading />}>
+      <TramitesContent />
+    </Suspense>
   )
 }
