@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Button, Input, Card } from '@/components'
+import { Button, Input, Card, ErrorMessage, ProgressIndicator, ResponsiveContainer } from '@/components'
 import { useAuth } from '@/hooks'
 import { getPostLoginRedirect } from '@/utils/auth'
 
@@ -69,29 +69,68 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-yellow/10 to-primary-green/10 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-xl flex items-center justify-center mb-6">
-            <span className="text-white text-2xl font-bold">🏛️</span>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-yellow/10 to-primary-green/10 py-mobile-lg xs:py-12 px-mobile-sm xs:px-6 lg:px-8">
+      <ResponsiveContainer
+        layout="stack"
+        padding="adaptive"
+        touchOptimized={true}
+        className="max-w-sm xs:max-w-md w-full"
+      >
+        <div className="text-center space-y-mobile-sm xs:space-y-6">
+          <div className="mx-auto w-12 h-12 xs:w-16 xs:h-16 bg-gradient-primary rounded-xl flex items-center justify-center">
+            <span className="text-white text-xl xs:text-2xl font-bold" aria-hidden="true">🏛️</span>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Iniciar Sesión</h2>
-          <p className="mt-2 text-gray-600">Accede al Portal de Atención Ciudadana de Chía</p>
+          <div>
+            <h2 id="login-title" className="text-2xl xs:text-3xl font-bold text-gray-900">
+              Iniciar Sesión
+            </h2>
+            <p className="mt-2 text-sm xs:text-base text-gray-600">
+              Accede al Portal de Atención Ciudadana de Chía
+            </p>
+          </div>
         </div>
 
         <Card className="mt-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6"
+            aria-labelledby="login-title"
+            aria-describedby="login-description"
+            noValidate
+          >
+            <div id="login-description" className="sr-only">
+              Formulario de inicio de sesión para acceder al Portal de Atención Ciudadana
+            </div>
+
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-sm text-red-600">{error}</p>
-              </div>
+              <ErrorMessage
+                message="Error de inicio de sesión"
+                context={error}
+                type="validation"
+                severity="error"
+                showRetry={true}
+                onRetry={() => setError('')}
+                showDismiss={true}
+                onDismiss={() => setError('')}
+              />
             )}
 
             {redirecting && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600 mr-3"></div>
-                  <p className="text-sm text-green-600">¡Inicio de sesión exitoso! Redirigiendo...</p>
+              <div
+                className="bg-green-50 border border-green-200 rounded-lg p-mobile-sm xs:p-mobile-md"
+                role="status"
+                aria-live="polite"
+              >
+                <div className="flex items-center space-x-3">
+                  <ProgressIndicator
+                    type="dots"
+                    size="sm"
+                    color="success"
+                    indeterminate={true}
+                  />
+                  <p className="text-sm xs:text-base text-green-600 font-medium">
+                    ¡Inicio de sesión exitoso! Redirigiendo...
+                  </p>
                 </div>
               </div>
             )}
@@ -105,7 +144,12 @@ export default function LoginPage() {
               required
               fullWidth
               disabled={isSubmitting || redirecting}
+              aria-describedby="email-help"
+              autoComplete="email"
             />
+            <div id="email-help" className="sr-only">
+              Ingresa tu dirección de correo electrónico registrada
+            </div>
 
             <Input
               label="Contraseña"
@@ -116,7 +160,12 @@ export default function LoginPage() {
               required
               fullWidth
               disabled={isSubmitting || redirecting}
+              aria-describedby="password-help"
+              autoComplete="current-password"
             />
+            <div id="password-help" className="sr-only">
+              Ingresa tu contraseña. Debe tener al menos 8 caracteres
+            </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center">
@@ -196,7 +245,7 @@ export default function LoginPage() {
             </Link>
           </p>
         </div>
-      </div>
+      </ResponsiveContainer>
     </div>
   )
 }

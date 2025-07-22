@@ -2,7 +2,9 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Header, Footer } from '@/components'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { QueryProvider } from '@/providers/QueryProvider'
 import { ConditionalLayout } from '@/components/layout'
+import { SkipLink } from '@/components/atoms'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import './globals.css'
 
@@ -24,10 +26,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es">
       <body className={inter.className}>
+        {/* Skip Links for Keyboard Navigation - WCAG 2.1 SC 2.4.1 */}
+        <SkipLink targetId="main-content">
+          Saltar al contenido principal
+        </SkipLink>
+        <SkipLink targetId="main-navigation">
+          Saltar a la navegación
+        </SkipLink>
+
         <ErrorBoundary>
-          <AuthProvider>
-            <ConditionalLayout>{children}</ConditionalLayout>
-          </AuthProvider>
+          <QueryProvider>
+            <AuthProvider>
+              <ConditionalLayout>{children}</ConditionalLayout>
+            </AuthProvider>
+          </QueryProvider>
         </ErrorBoundary>
       </body>
     </html>

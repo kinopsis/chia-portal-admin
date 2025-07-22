@@ -112,6 +112,17 @@ export const config = {
     helmetEnabled: process.env.HELMET_ENABLED !== 'false',
     httpsOnly: process.env.HTTPS_ONLY === 'true',
   },
+
+  // Analytics Configuration - Sprint 2.1
+  analytics: {
+    enableTracking: process.env.ANALYTICS_ENABLED !== 'false',
+    googleAnalyticsId: process.env.NEXT_PUBLIC_GA_ID || '',
+    trackingDomain: process.env.ANALYTICS_DOMAIN || 'localhost',
+    enableDebug: process.env.ANALYTICS_DEBUG === 'true',
+    sessionTimeout: parseInt(process.env.ANALYTICS_SESSION_TIMEOUT || '1800000'), // 30 minutes
+    enableSearchTracking: process.env.ANALYTICS_SEARCH_TRACKING !== 'false',
+    enablePerformanceTracking: process.env.ANALYTICS_PERFORMANCE_TRACKING !== 'false',
+  },
 } as const
 
 // Validation function to check required environment variables
