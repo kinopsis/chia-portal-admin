@@ -22,6 +22,13 @@ export const USER_ROLE_LABELS = {
   [USER_ROLES.ADMIN]: 'Administrador',
 } as const
 
+// Role-based default routes after login
+export const ROLE_DEFAULT_ROUTES = {
+  [USER_ROLES.ADMIN]: '/admin',
+  [USER_ROLES.FUNCIONARIO]: '/funcionario', // Future funcionario dashboard
+  [USER_ROLES.CIUDADANO]: '/dashboard',
+} as const
+
 // OPA States
 export const OPA_ESTADOS = {
   BORRADOR: 'borrador',

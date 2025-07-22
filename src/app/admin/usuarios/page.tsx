@@ -72,8 +72,10 @@ function UsuariosPage() {
 
   // Modal states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isPasswordChangeModalOpen, setIsPasswordChangeModalOpen] = useState(false)
+  const [viewingUser, setViewingUser] = useState<User | null>(null)
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [passwordChangeUser, setPasswordChangeUser] = useState<User | null>(null)
   const [formLoading, setFormLoading] = useState(false)
@@ -121,7 +123,7 @@ function UsuariosPage() {
   ]
 
   // Validation schema for user forms
-  const validationSchema: Record<string, any> = {
+  const validationSchema = {
     nombre: {
       ...commonValidationRules.name,
       required: 'El nombre es obligatorio',
@@ -257,7 +259,7 @@ function UsuariosPage() {
         const nameB = `${b.nombre} ${b.apellido}`.toLowerCase()
         return nameA.localeCompare(nameB)
       },
-      render: (value: any, record: User) => (
+      render: (value, record) => (
         <div>
           <div className="font-medium text-gray-900">
             {record.nombre} {record.apellido}
@@ -271,14 +273,14 @@ function UsuariosPage() {
       title: 'Rol',
       sortable: true,
       align: 'center',
-      render: (value: string) => {
-        const roleColors: Record<string, string> = {
+      render: (value) => {
+        const roleColors = {
           admin: 'bg-red-100 text-red-800',
           funcionario: 'bg-blue-100 text-blue-800',
           ciudadano: 'bg-green-100 text-green-800',
         }
 
-        const roleLabels: Record<string, string> = {
+        const roleLabels = {
           admin: 'Administrador',
           funcionario: 'Funcionario',
           ciudadano: 'Ciudadano',
@@ -286,9 +288,9 @@ function UsuariosPage() {
 
         return (
           <span
-            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${roleColors[value] || 'bg-gray-100 text-gray-800'}`}
+            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${roleColors[value]}`}
           >
-            {roleLabels[value] || value}
+            {roleLabels[value]}
           </span>
         )
       },
@@ -298,7 +300,7 @@ function UsuariosPage() {
       title: 'Estado',
       sortable: true,
       align: 'center',
-      render: (value: boolean) => (
+      render: (value) => (
         <span
           className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
             value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
@@ -313,7 +315,7 @@ function UsuariosPage() {
       title: 'Fecha de Registro',
       sortable: true,
       sorter: (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
-      render: (value: string) => new Date(value).toLocaleDateString('es-CO'),
+      render: (value) => new Date(value).toLocaleDateString('es-CO'),
     },
   ]
 
@@ -492,7 +494,7 @@ function UsuariosPage() {
       variant: 'ghost',
       onClick: (user) => {
         console.log('Ver usuario:', user)
-        // TODO: Navigate to user detail page
+        handleView(user)
       },
       tooltip: 'Ver detalles del usuario',
     },
@@ -503,7 +505,7 @@ function UsuariosPage() {
       variant: 'ghost',
       onClick: (user) => {
         console.log('Editar usuario:', user)
-        // TODO: Open edit modal or navigate to edit page
+        handleEdit(user)
       },
       tooltip: 'Editar usuario',
       shortcut: 'e',
@@ -665,6 +667,11 @@ function UsuariosPage() {
   }
 
   // Handle row actions
+  const handleView = (user: User) => {
+    setViewingUser(user)
+    setIsViewModalOpen(true)
+  }
+
   const handleEdit = (user: User) => {
     setEditingUser(user)
     setIsEditModalOpen(true)
@@ -869,6 +876,94 @@ function UsuariosPage() {
           onSubmit={handleCreateUser}
           initialData={{ activo: true, rol: 'ciudadano' }}
         />
+      </Modal>
+
+      {/* View User Modal */}
+      <Modal
+        isOpen={isViewModalOpen}
+        onClose={() => {
+          setIsViewModalOpen(false)
+          setViewingUser(null)
+        }}
+        title="Detalles del Usuario"
+        size="lg"
+        footer={
+          <Button
+            variant="neutral"
+            onClick={() => {
+              setIsViewModalOpen(false)
+              setViewingUser(null)
+            }}
+          >
+            Cerrar
+          </Button>
+        }
+      >
+        {viewingUser && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nombre Completo
+                </label>
+                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                  {viewingUser.nombre}
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                  {viewingUser.email}
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Rol
+                </label>
+                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                  {viewingUser.rol === 'admin' ? 'Administrador' :
+                   viewingUser.rol === 'funcionario' ? 'Funcionario' : 'Ciudadano'}
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Estado
+                </label>
+                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                  {viewingUser.activo ? 'Activo' : 'Inactivo'}
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Fecha de Registro
+                </label>
+                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                  {new Date(viewingUser.created_at).toLocaleDateString('es-ES')}
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Última Actualización
+                </label>
+                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                  {new Date(viewingUser.updated_at).toLocaleDateString('es-ES')}
+                </p>
+              </div>
+            </div>
+            {viewingUser.dependencia_id && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Dependencia
+                </label>
+                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                  {viewingUser.dependencia_id}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </Modal>
 
       {/* Edit User Modal */}
