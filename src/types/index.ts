@@ -21,20 +21,32 @@ export interface Dependencia {
   codigo: string
   nombre: string
   descripcion?: string
-  activa: boolean
+  activo: boolean
   created_at: string
   updated_at: string
+  // Relations
+  subdependencias?: Subdependencia[]
+  // Counts for display
+  subdependencias_count?: number
+  tramites_count?: number
+  opas_count?: number
 }
 
 export interface Subdependencia {
   id: string
   codigo: string
   nombre: string
-  descripcion?: string
+  sigla?: string
   dependencia_id: string
-  activa: boolean
+  activo: boolean
   created_at: string
   updated_at: string
+  // Relations
+  tramites?: Tramite[]
+  opas?: OPA[]
+  // Counts for display
+  tramites_count?: number
+  opas_count?: number
 }
 
 // Tramites Types
@@ -45,10 +57,11 @@ export interface Tramite {
   formulario?: string
   tiempo_respuesta?: string
   tiene_pago: boolean
-  visualizacion_suit: boolean
-  visualizacion_gov: boolean
+  visualizacion_suit?: string  // URL for SUIT portal from database
+  visualizacion_gov?: string   // URL for GOV.CO portal from database
   subdependencia_id: string
   activo: boolean
+  requisitos?: string[]        // Array of requirements from database
   created_at: string
   updated_at: string
   // Relations for display
@@ -175,6 +188,51 @@ export interface FAQHierarchy {
       faqs: FAQ[]
     }[]
   }[]
+}
+
+// PQRS Types
+export interface PQRS {
+  id: string
+  tipo: 'peticion' | 'queja' | 'reclamo' | 'sugerencia'
+  nombre: string
+  email: string
+  telefono?: string
+  dependencia_id: string
+  asunto: string
+  descripcion: string
+  estado: 'pendiente' | 'en_proceso' | 'resuelto' | 'cerrado'
+  numero_radicado: string
+  respuesta?: string
+  fecha_respuesta?: string
+  created_at: string
+  updated_at: string
+  // Relations for display
+  dependencias?: {
+    id: string
+    codigo: string
+    nombre: string
+  }
+}
+
+export interface CreatePQRSData {
+  tipo: 'peticion' | 'queja' | 'reclamo' | 'sugerencia'
+  nombre: string
+  email: string
+  telefono?: string
+  dependencia_id: string
+  asunto: string
+  descripcion: string
+}
+
+export interface PQRSFilters {
+  query?: string
+  tipo?: string
+  estado?: string
+  dependencia_id?: string
+  fecha_desde?: string
+  fecha_hasta?: string
+  page?: number
+  limit?: number
 }
 
 // API Response Types

@@ -2,6 +2,7 @@
 
 import { supabase } from '@/lib/supabase/client'
 import type { Tramite, SearchFilters, PaginatedResponse } from '@/types'
+import { getTramitesSelectQuery } from './databaseHelper'
 
 // Server-side service functions
 export class TramitesServerService {
@@ -31,6 +32,9 @@ export class TramitesClientService {
       .select(
         `
         *,
+        requisitos,
+        visualizacion_suit,
+        visualizacion_gov,
         subdependencias (
           id,
           nombre,
@@ -46,7 +50,7 @@ export class TramitesClientService {
 
     // Apply filters
     if (filters?.query) {
-      query = query.or(`nombre.ilike.%${filters.query}%,descripcion.ilike.%${filters.query}%`)
+      query = query.or(`nombre.ilike.%${filters.query}%,formulario.ilike.%${filters.query}%`)
     }
 
     if (filters?.subdependencia_id) {
@@ -147,7 +151,7 @@ export class TramitesClientService {
         )
       `
       )
-      .or(`nombre.ilike.%${query}%,descripcion.ilike.%${query}%`)
+      .or(`nombre.ilike.%${query}%,formulario.ilike.%${query}%`)
       .eq('activo', true)
       .limit(limit)
 
