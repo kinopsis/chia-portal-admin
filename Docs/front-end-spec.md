@@ -154,8 +154,8 @@ const config: Config = {
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                                   HEADER                                        │
 │ ┌─────────────────┐ ┌─────────────────────────────────────┐ ┌─────────────────┐ │
-│ │ [🏛️] Portal     │ │ [Inicio] [Dependencias] [Tramites]  │ │ [👤] [🔍] [⚙️] │ │
-│ │ Ciudadano Chía  │ │ [FAQs] [Admin]                      │ │ Usuario/Login   │ │
+│ │ [🏛️] Portal     │ │ [Inicio] [Dependencias] [Trámites y │ │ [👤] [🔍] [⚙️] │ │
+│ │ Ciudadano Chía  │ │ Servicios] [FAQ] [PQRS]             │ │ Usuario/Login   │ │
 │ └─────────────────┘ └─────────────────────────────────────┘ └─────────────────┘ │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                              BREADCRUMB                                         │
@@ -196,8 +196,8 @@ HEADER DESKTOP (h-16 = 64px)
 │ LOGO SECTION (w-64)     │ NAVIGATION (flex-1)        │ USER SECTION (w-48)      │
 │ ┌─────────────────────┐ │ ┌─────────────────────────┐ │ ┌─────────────────────┐ │
 │ │ [🏛️] (40x40px)      │ │ │ [Inicio] [Dependencias] │ │ │ [🔍] [👤] [⚙️]      │ │
-│ │ Portal Ciudadano    │ │ │ [Buscar] [FAQs] [Admin] │ │ │ SearchBtn UserMenu  │ │
-│ │ Alcaldía de Chía    │ │ │ (gap-6, text-sm)        │ │ │ (gap-3)             │ │
+│ │ Portal Ciudadano    │ │ │ [Trámites y Servicios]  │ │ │ SearchBtn UserMenu  │ │
+│ │ Alcaldía de Chía    │ │ │ [FAQ] [PQRS]            │ │ │ (gap-3)             │ │
 │ └─────────────────────┘ │ └─────────────────────────┘ │ └─────────────────────┘ │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
@@ -211,7 +211,7 @@ HEADER MOBILE (h-16 = 64px)
 └─────────────────────────────────────────────────────────────────────────────────┘
 │                        MOBILE MENU (cuando está abierto)                       │
 │ ┌─────────────────────────────────────────────────────────────────────────────┐ │
-│ │ [Inicio] [Dependencias] [Buscar] [FAQs] [Admin]                             │ │
+│ │ [Inicio] [Dependencias] [Trámites y Servicios] [FAQ] [PQRS]                 │ │
 │ │ (vertical stack, py-2, border-t)                                            │ │
 │ └─────────────────────────────────────────────────────────────────────────────┘ │
 ```
@@ -529,6 +529,60 @@ DESKTOP (1024px+)
 │ │ 📞 Contacta con un funcionario                                              │ │
 │ │ Habla directamente con nuestro equipo de atención                          │ │
 │ │ [Ver opciones de contacto →]                                               │ │
+│ └─────────────────────────────────────────────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                 FOOTER                                          │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### **Página PQRS - Wireframe**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                                   HEADER                                        │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ [🏠 Inicio] > [📝 PQRS]                                                          │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                            TÍTULO Y ESTADÍSTICAS                                │
+│ ┌─────────────────────────────────────────────────────────────────────────────┐ │
+│ │                    PQRS - Peticiones, Quejas, Reclamos y Sugerencias       │ │
+│ │                  Sistema de atención ciudadana de Chía                      │ │
+│ └─────────────────────────────────────────────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                         CONSULTA DE ESTADO                                      │
+│ ┌─────────────────────────────────────────────────────────────────────────────┐ │
+│ │ [🔍] Buscar por número de radicado, asunto...          [Buscar]            │ │
+│ │ Ingrese el número de radicado para consultar el estado de su PQRS          │ │
+│ └─────────────────────────────────────────────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                           INFORMACIÓN Y TIEMPOS                                 │
+│ ┌─────────────────┐ ┌─────────────────────────────────────────────────────────┐ │
+│ │ ¿Qué es PQRS?   │ │ Tiempos de Respuesta                                    │ │
+│ │ • Petición      │ │ • Peticiones: 15 días hábiles                           │ │
+│ │ • Queja         │ │ • Quejas y Reclamos: 15 días hábiles                    │ │
+│ │ • Reclamo       │ │ • Sugerencias: 30 días hábiles                          │ │
+│ │ • Sugerencia    │ │ Nota: Recibirá confirmación por correo electrónico     │ │
+│ └─────────────────┘ └─────────────────────────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                           FORMULARIO PQRS                                       │
+│ ┌─────────────────────────────────────────────────────────────────────────────┐ │
+│ │ Enviar Nueva PQRS                                                           │ │
+│ │                                                                             │ │
+│ │ Tipo de PQRS: [Petición ⌄]                                                 │ │
+│ │                                                                             │ │
+│ │ Nombre Completo: [_________________________]                               │ │
+│ │ Email: [_________________________] Teléfono: [_____________]               │ │
+│ │                                                                             │ │
+│ │ Dependencia: [Seleccione dependencia ⌄]                                    │ │
+│ │                                                                             │ │
+│ │ Asunto: [_________________________________________________]                │ │
+│ │                                                                             │ │
+│ │ Descripción:                                                                │ │
+│ │ [_________________________________________________________________]        │ │
+│ │ [_________________________________________________________________]        │ │
+│ │ [_________________________________________________________________]        │ │
+│ │                                                                             │ │
+│ │                                           [Limpiar] [Enviar PQRS]          │ │
 │ └─────────────────────────────────────────────────────────────────────────────┘ │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                 FOOTER                                          │
@@ -943,7 +997,7 @@ PROGRESSIVE NAVIGATION WIREFRAME
 
 ---
 
-## �📱 3. Páginas Principales Documentadas
+## 📱 3. Páginas Principales Documentadas
 
 ### 3.1 Página Principal (Home) - `/`
 
@@ -951,14 +1005,16 @@ PROGRESSIVE NAVIGATION WIREFRAME
 
 - **Hero Section**: Título, descripción y búsqueda principal
 - **Búsquedas Populares**: Badges con términos frecuentes
-- **Accesos Rápidos**: Grid de servicios principales
-- **Estadísticas**: Métricas del sistema en tiempo real
+- **Sistema de Métricas**: Contadores de dependencias, trámites, OPAs, FAQs
+- **Servicios Más Utilizados**: Grid de 8 servicios principales
+- **Accesos Rápidos**: Enlaces directos a secciones principales
 
 #### **Funcionalidades**
 
-- Búsqueda global con redirección a `/buscar`
-- Navegación rápida a secciones principales
+- Búsqueda global integrada con redirección a `/tramites?q=query`
+- Navegación rápida a las 5 secciones principales
 - Responsive design mobile-first
+- Métricas del sistema en tiempo real
 
 #### **Código de Ejemplo**
 
@@ -1073,11 +1129,83 @@ export function useFormattedSystemMetrics() {
 - **Estadísticas**: Contadores de preguntas y temas
 - **Navegación por Categorías**: Filtrado inteligente
 
----
+### 3.6 PQRS - `/pqrs`
+
+#### **Funcionalidades**
+
+- **Formulario de PQRS**: Peticiones, Quejas, Reclamos y Sugerencias
+- **Consulta de Estado**: Búsqueda por número de radicado
+- **Clasificación por Tipo**: Petición, Queja, Reclamo, Sugerencia
+- **Seguimiento**: Sistema de notificaciones por email
+- **Tiempos de Respuesta**: Información clara sobre plazos
+
+### 3.7 Búsqueda Global Unificada - `/tramites`
+
+#### **Funcionalidades**
+
+- **Búsqueda Global**: Trámites, OPAs y FAQs en una sola interfaz
+- **Punto de Entrada Principal**: Todas las búsquedas del portal redirigen aquí
+- **Filtros Avanzados**: Por dependencia, tipo (Trámites/OPAs/FAQs), estado, costo
+- **Resultados Consolidados**: Vista unificada con badges de tipo diferenciados
+- **Paginación**: Manejo eficiente de grandes volúmenes
+- **Información Detallada**: Costos, tiempos estimados, vistas (FAQs), requisitos
+- **URL Parameters**: Soporte para `?q=search_term` desde homepage y otras páginas
 
 ---
 
-## 🧩 4. Componentes y Arquitectura
+---
+
+## 📋 4. Estado de Implementación Actual
+
+### 4.1 Navegación Principal Actualizada
+
+La navegación principal ha sido reestructurada para incluir 5 páginas principales:
+
+1. **Inicio** (`/`) - ✅ Implementado con métricas y servicios
+2. **Dependencias** (`/dependencias`) - ✅ Implementado con diseño de cinta
+3. **Trámites y Servicios** (`/tramites`) - ✅ Implementado con búsqueda unificada
+4. **FAQ** (`/faqs`) - ✅ Implementado con categorías y búsqueda
+5. **PQRS** (`/pqrs`) - ✅ Implementado con formulario completo
+
+### 4.2 Cambios Principales Realizados
+
+#### **Navegación Unificada**
+- Eliminación del menú separado "OPAs"
+- Integración de OPAs en "Trámites y Servicios"
+- Adición de página PQRS para atención ciudadana
+
+#### **Páginas Implementadas**
+- **Homepage**: Métricas del sistema, servicios populares, búsquedas sugeridas
+- **Dependencias**: Diseño de cinta expandible con 3 niveles de navegación
+- **Trámites y Servicios**: Búsqueda unificada con filtros avanzados
+- **FAQ**: Centro de ayuda con categorías y búsqueda
+- **PQRS**: Sistema completo de peticiones ciudadanas
+
+#### **Componentes Nuevos**
+- `PQRSForm`: Formulario completo para PQRS
+- `UnifiedSearch`: Búsqueda que combina trámites y OPAs
+- `DependenciasCinta`: Componente de cinta expandible
+- `FAQAccordion`: Acordeón para preguntas frecuentes
+
+### 4.3 Próximos Pasos
+
+#### **Funcionalidades Pendientes**
+1. Integración con base de datos real para métricas y contenido
+2. ✅ ~~Implementación de búsqueda global~~ **COMPLETADO** - Integrado en `/tramites`
+3. Conexión de formularios con Supabase
+4. Sistema de notificaciones para PQRS
+5. Chatbot de IA integrado
+6. Optimización de búsqueda con indexación full-text
+
+#### **Mejoras de UX/UI**
+1. Animaciones y transiciones suaves
+2. Estados de carga optimizados
+3. Mejoras de accesibilidad
+4. Optimización para dispositivos móviles
+
+---
+
+## 🧩 5. Componentes y Arquitectura
 
 ### 4.1 Jerarquía de Componentes (Atomic Design)
 

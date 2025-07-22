@@ -28,19 +28,19 @@ export async function GET() {
     // Test queries to main tables
     const tests = await Promise.allSettled([
       // Test dependencias table
-      supabase.from('dependencias').select('id, codigo, nombre, activa').limit(5),
+      supabase.from('dependencias').select('id, codigo, nombre, activo').limit(5),
 
       // Test subdependencias table
-      supabase.from('subdependencias').select('id, codigo, nombre, activa').limit(5),
+      supabase.from('subdependencias').select('id, codigo, nombre, activo').limit(5),
 
       // Test tramites table
-      supabase.from('tramites').select('id, codigo, nombre, activo').limit(5),
+      supabase.from('tramites').select('id, codigo_unico, nombre, activo').limit(5),
 
       // Test opas table
-      supabase.from('opas').select('id, codigo, nombre, activa').limit(5),
+      supabase.from('opas').select('id, codigo_opa, nombre, activo').limit(5),
 
       // Test faqs table
-      supabase.from('faqs').select('id, pregunta, activa').limit(5),
+      supabase.from('faqs').select('id, pregunta, activo').limit(5),
 
       // Test users table
       supabase.from('users').select('id, email, rol, activo').limit(5),

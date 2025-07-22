@@ -4,9 +4,14 @@ Sistema municipal moderno con IA integrada para la gestión de trámites, OPAs, 
 
 ## 🚀 Características Principales
 
-- **Dashboard Administrativo**: Gestión CRUD completa para funcionarios y administradores
+- **Portal Ciudadano**: Acceso completo a trámites y servicios municipales con datos en tiempo real
+- **Sistema PQRS**: Gestión integral de peticiones, quejas, reclamos y sugerencias con seguimiento por radicado
+- **Búsqueda Unificada**: Búsqueda inteligente en tiempo real across trámites, OPAs y FAQs con filtros avanzados
+- **Dashboard Administrativo**: Gestión CRUD completa para funcionarios y administradores con métricas en vivo
 - **Chatbot IA**: Asistente virtual con OpenAI GPT-4o-mini y búsqueda vectorial
 - **Sistema de Autenticación**: Roles granulares (ciudadano, funcionario, admin)
+- **Backend Integration**: Conexión completa a Supabase con datos reales y caching optimizado
+- **Performance Optimized**: React Query, debouncing, y error boundaries para experiencia fluida
 - **Accesibilidad WCAG AA**: Cumplimiento completo de estándares de accesibilidad
 - **Arquitectura Escalable**: Next.js 15 + Supabase + TypeScript
 
@@ -25,6 +30,9 @@ Sistema municipal moderno con IA integrada para la gestión de trámites, OPAs, 
 - **Supabase**: PostgreSQL + Auth + Storage + Realtime + Vector
 - **Row Level Security (RLS)**: Seguridad a nivel de datos
 - **pgvector**: Búsqueda vectorial para IA
+- **React Query**: Caching inteligente y gestión de estado del servidor
+- **Real-time Data**: Conexión en vivo con base de datos para métricas y búsquedas
+- **Error Boundaries**: Manejo robusto de errores en toda la aplicación
 
 ### IA y Chatbot
 
@@ -106,14 +114,29 @@ La aplicación estará disponible en `http://localhost:3000`
 
 ## 📝 Scripts Disponibles
 
+### Desarrollo
 - `npm run dev` - Ejecutar en modo desarrollo
 - `npm run build` - Construir para producción
 - `npm run start` - Ejecutar en modo producción
+
+### Calidad de Código
 - `npm run lint` - Ejecutar linting
 - `npm run lint:fix` - Corregir errores de linting
 - `npm run type-check` - Verificar tipos TypeScript
 - `npm run format` - Formatear código con Prettier
 - `npm run format:check` - Verificar formato de código
+
+### Testing y Verificación
+- `npm run test` - Ejecutar tests unitarios
+- `npm run test:watch` - Ejecutar tests en modo watch
+- `npm run test:coverage` - Ejecutar tests con cobertura
+- `npm run test:integration` - Ejecutar tests de integración backend
+- `npm run verify-database` - Verificar conexión y estructura de base de datos
+- `npm run verify-production` - Verificar deployment en producción
+
+### Deployment
+- `npm run deploy:check` - Verificar antes de deployment
+- `npm run deploy:vercel` - Deploy a Vercel
 
 ## 🎨 Colores Institucionales
 

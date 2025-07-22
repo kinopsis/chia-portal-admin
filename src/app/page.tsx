@@ -1,11 +1,16 @@
 'use client'
 
 import { SearchBar, MetricCard } from '@/components'
+import { useHomepageMetrics } from '@/hooks/useHomepageMetrics'
 
 export default function Home() {
+  const { metrics, loading, error } = useHomepageMetrics()
+
   const handleSearch = (query: string) => {
-    console.log('Searching for:', query)
-    // TODO: Implement search functionality
+    if (query.trim()) {
+      // Redirect to unified search page with query parameter
+      window.location.href = `/tramites?q=${encodeURIComponent(query.trim())}`
+    }
   }
 
   const popularSearches = ['Certificados', 'Licencias', 'Pagos', 'Permisos']
@@ -33,35 +38,88 @@ export default function Home() {
               suggestions={popularSearches}
               showSuggestions={true}
             />
+
+            {/* Popular Searches */}
+            <div className="mt-4 text-center">
+              <span className="text-sm text-gray-600 mr-2">Búsquedas populares:</span>
+              <div className="flex flex-wrap justify-center gap-2 mt-2">
+                {popularSearches.map((term) => (
+                  <button
+                    key={term}
+                    type="button"
+                    onClick={() => handleSearch(term)}
+                    className="px-3 py-1 text-sm bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
+                  >
+                    {term}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* System Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-16">
-            {[
-              {
-                icon: '🏛️',
-                number: '12',
-                label: 'Dependencias activas',
-                color: 'primary' as const,
-              },
-              { icon: '📂', number: '45', label: 'Subdependencias', color: 'secondary' as const },
-              {
-                icon: '📄',
-                number: '156',
-                label: 'Trámites disponibles',
-                color: 'success' as const,
-              },
-              { icon: '⚡', number: '89', label: 'OPAs gestionadas', color: 'warning' as const },
-              { icon: '❓', number: '234', label: 'FAQs publicadas', color: 'primary' as const },
-            ].map((metric, index) => (
-              <MetricCard
-                key={index}
-                icon={<span className="text-2xl">{metric.icon}</span>}
-                title={metric.label}
-                value={metric.number}
-                color={metric.color}
-              />
-            ))}
+            {loading ? (
+              Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="bg-white rounded-lg p-6 shadow-sm animate-pulse">
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-8 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                </div>
+              ))
+            ) : error ? (
+              <div className="col-span-full text-center py-8">
+                <p className="text-red-600 mb-4">Error al cargar métricas: {error}</p>
+                <button
+                  type="button"
+                  onClick={() => window.location.reload()}
+                  className="px-4 py-2 bg-primary-green text-white rounded hover:bg-green-600"
+                >
+                  Reintentar
+                </button>
+              </div>
+            ) : (
+              [
+                {
+                  icon: '🏛️',
+                  number: metrics?.dependencias?.toString() || '0',
+                  label: 'Dependencias activas',
+                  color: 'primary' as const,
+                },
+                {
+                  icon: '📂',
+                  number: metrics?.subdependencias?.toString() || '0',
+                  label: 'Subdependencias',
+                  color: 'secondary' as const
+                },
+                {
+                  icon: '📄',
+                  number: metrics?.tramites?.toString() || '0',
+                  label: 'Trámites disponibles',
+                  color: 'success' as const,
+                },
+                {
+                  icon: '⚡',
+                  number: metrics?.opas?.toString() || '0',
+                  label: 'OPAs gestionadas',
+                  color: 'warning' as const
+                },
+                {
+                  icon: '❓',
+                  number: metrics?.faqs?.toString() || '0',
+                  label: 'FAQs publicadas',
+                  color: 'primary' as const
+                },
+              ].map((metric, index) => (
+                <MetricCard
+                  key={index}
+                  icon={<span className="text-2xl">{metric.icon}</span>}
+                  title={metric.label}
+                  value={metric.number}
+                  color={metric.color}
+                />
+              ))
+            )}
           </div>
 
           {/* Quick Actions */}

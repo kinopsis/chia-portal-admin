@@ -104,3 +104,7 @@ dist
 # Temporary folders
 tmp/
 temp/
+
+# Documentation and configuration directories
+/Docs
+/.augment

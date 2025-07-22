@@ -166,7 +166,7 @@ export class FAQsClientService {
       `
       )
       .or(`pregunta.ilike.%${query}%,respuesta.ilike.%${query}%`)
-      .eq('activa', true)
+      .eq('activo', true)
       .limit(limit)
 
     if (error) {
@@ -180,7 +180,7 @@ export class FAQsClientService {
     const { data, error } = await supabase
       .from('faqs')
       .select('tags')
-      .eq('activa', true)
+      .eq('activo', true)
       .not('tags', 'is', null)
 
     if (error) {

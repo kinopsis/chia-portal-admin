@@ -52,7 +52,7 @@ export class SubdependenciasClientService {
     }
 
     if (filters?.activo !== undefined) {
-      query = query.eq('activa', filters.activo)
+      query = query.eq('activo', filters.activo)
     }
 
     // Apply pagination
@@ -115,7 +115,7 @@ export class SubdependenciasClientService {
         )
       `
       )
-      .eq('activa', true)
+      .eq('activo', true)
       .order('nombre', { ascending: true })
 
     if (error) {
@@ -130,7 +130,7 @@ export class SubdependenciasClientService {
       .from('subdependencias')
       .select('*')
       .eq('dependencia_id', dependenciaId)
-      .eq('activa', true)
+      .eq('activo', true)
       .order('nombre', { ascending: true })
 
     if (error) {
@@ -211,7 +211,7 @@ export class SubdependenciasClientService {
       `
       )
       .or(`nombre.ilike.%${query}%,descripcion.ilike.%${query}%`)
-      .eq('activa', true)
+      .eq('activo', true)
       .limit(limit)
 
     if (error) {

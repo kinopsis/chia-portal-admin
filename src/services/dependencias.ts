@@ -5,24 +5,41 @@ import type { Dependencia, SearchFilters, PaginatedResponse } from '@/types'
 
 // Client-side service functions
 export class DependenciasClientService {
-  async getAll(filters?: SearchFilters & { page?: number; limit?: number }) {
+  async getAll(filters?: SearchFilters & {
+    page?: number;
+    limit?: number;
+    includeSubdependencias?: boolean;
+    includeTramites?: boolean;
+    includeOPAs?: boolean;
+  }) {
+    // Build select query with relations
+    let selectQuery = `
+      *,
+      subdependencias:subdependencias!dependencia_id(
+        *,
+        tramites:tramites!subdependencia_id(*),
+        opas:opas!subdependencia_id(*)
+      )
+    `
+
     let query = supabase
       .from('dependencias')
-      .select('*', { count: 'exact' })
-      .order('nombre', { ascending: true })
+      .select(selectQuery, { count: 'exact' })
+      .order('codigo', { ascending: true })
 
     // Apply filters
     if (filters?.query) {
       query = query.or(`nombre.ilike.%${filters.query}%,descripcion.ilike.%${filters.query}%`)
     }
 
+    // Apply activo filter if specified
     if (filters?.activo !== undefined) {
       query = query.eq('activo', filters.activo)
     }
 
     // Apply pagination
     const page = filters?.page || 1
-    const limit = filters?.limit || 10
+    const limit = filters?.limit || 50 // Increase default limit for dependencias
     const from = (page - 1) * limit
     const to = from + limit - 1
 
@@ -34,8 +51,34 @@ export class DependenciasClientService {
       throw new Error(`Error fetching dependencias: ${error.message}`)
     }
 
+    // Process the data to calculate counts and ensure proper structure
+    const processedData = data?.map(dep => {
+      const subdependencias = dep.subdependencias || []
+
+      // Calculate counts
+      let tramites_count = 0
+      let opas_count = 0
+
+      subdependencias.forEach(subdep => {
+        tramites_count += (subdep.tramites?.length || 0)
+        opas_count += (subdep.opas?.length || 0)
+
+        // Add counts to subdependencia
+        subdep.tramites_count = subdep.tramites?.length || 0
+        subdep.opas_count = subdep.opas?.length || 0
+      })
+
+      return {
+        ...dep,
+        subdependencias,
+        subdependencias_count: subdependencias.length,
+        tramites_count,
+        opas_count
+      }
+    }) || []
+
     return {
-      data: data || [],
+      data: processedData,
       pagination: {
         page,
         limit,

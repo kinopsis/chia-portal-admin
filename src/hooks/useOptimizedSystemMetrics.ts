@@ -84,14 +84,14 @@ export function useOptimizedSystemMetrics(
           userProfile?.rol === 'admin'
             ? supabase
                 .from('faqs')
-                .select('activa, created_at, updated_at')
+                .select('activo, created_at, updated_at')
                 .order('updated_at', { ascending: false })
                 .limit(100)
             : Promise.resolve({ data: [], error: null }),
 
           // Dependencias query - only for admin/funcionario
           ['admin', 'funcionario'].includes(userProfile?.rol || '')
-            ? supabase.from('dependencias').select('activa')
+            ? supabase.from('dependencias').select('activo')
             : Promise.resolve({ data: [], error: null }),
         ])
 

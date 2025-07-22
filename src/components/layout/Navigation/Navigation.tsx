@@ -122,22 +122,22 @@ export const getMainNavigation = (): NavigationItem[] => [
     description: 'Directorio de dependencias municipales',
   },
   {
-    label: 'Trámites',
+    label: 'Trámites y Servicios',
     href: '/tramites',
     icon: <span className="text-base">📋</span>,
-    description: 'Consultar y realizar trámites en línea',
+    description: 'Búsqueda global: trámites, OPAs y FAQs',
   },
   {
-    label: 'OPAs',
-    href: '/opas',
-    icon: <span className="text-base">⚡</span>,
-    description: 'Órdenes de Pago y Autorización',
-  },
-  {
-    label: 'FAQs',
+    label: 'FAQ',
     href: '/faqs',
     icon: <span className="text-base">❓</span>,
-    description: 'Preguntas frecuentes',
+    description: 'Preguntas frecuentes y centro de ayuda',
+  },
+  {
+    label: 'PQRS',
+    href: '/pqrs',
+    icon: <span className="text-base">📝</span>,
+    description: 'Peticiones, Quejas, Reclamos y Sugerencias',
   },
 ]
 
