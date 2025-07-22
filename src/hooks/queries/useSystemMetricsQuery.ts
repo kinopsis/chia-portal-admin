@@ -1,3 +1,5 @@
+'use client'
+
 // React Query hook for system metrics with caching and background updates
 // Replaces useHomepageMetrics with optimized data fetching
 

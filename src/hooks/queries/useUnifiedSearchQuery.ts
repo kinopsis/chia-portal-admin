@@ -1,3 +1,5 @@
+'use client'
+
 // React Query hook for unified search with debouncing and caching
 // Optimizes search performance with intelligent caching and background updates
 

@@ -1156,7 +1156,220 @@
 
 ---
 
-**Última Actualización**: 21 de Julio de 2025 - Admin Dashboard completamente funcional con layout limpio y persistencia de autenticación
+## 📦 EPIC 9: IMPLEMENTACIÓN DEL ROL FUNCIONARIO
+**Sprint 3-5 | Esfuerzo Total: 89 SP**
+
+### 🎫 US-023: Configuración de Autenticación para Funcionarios
+**Como** administrador del sistema,
+**quiero** configurar las credenciales de autenticación para usuarios funcionarios,
+**para** que puedan acceder al sistema con sus roles específicos.
+
+**Prioridad**: Crítica
+**Esfuerzo**: 13 SP
+**Sprint**: 3
+**Estado**: 🔄 **PENDIENTE**
+
+#### Criterios de Aceptación:
+- [ ] Usuarios funcionarios pueden crear credenciales en Supabase Auth
+- [ ] Login funcional para usuarios con rol "funcionario"
+- [ ] Sesión persiste correctamente para funcionarios
+- [ ] Redirección automática al dashboard funcionario tras login
+- [ ] Manejo de errores específicos para funcionarios
+- [ ] Validación de rol funcionario en el proceso de autenticación
+
+#### Tareas Técnicas:
+- [ ] **T-023.1**: Configurar registro de funcionarios en Supabase Auth (3h)
+- [ ] **T-023.2**: Crear proceso de invitación para funcionarios (3h)
+- [ ] **T-023.3**: Implementar validación de rol en AuthContext (2h)
+- [ ] **T-023.4**: Configurar redirección por rol tras login (2h)
+- [ ] **T-023.5**: Testing de autenticación funcionario (2h)
+- [ ] **T-023.6**: Documentar proceso de creación de funcionarios (1h)
+
+#### Definición de Done:
+- ✅ Funcionarios pueden registrarse y hacer login
+- ✅ Sesión persiste entre navegaciones
+- ✅ Redirección automática funciona
+- ✅ Manejo de errores implementado
+- ✅ Testing de autenticación completo
+
+---
+
+### 🎫 US-024: Dashboard Funcionario con Navegación Departamental
+**Como** funcionario,
+**quiero** acceder a un dashboard específico para mi rol,
+**para** gestionar el contenido de mi dependencia de manera eficiente.
+
+**Prioridad**: Crítica
+**Esfuerzo**: 21 SP
+**Sprint**: 3-4
+**Estado**: 🔄 **PENDIENTE**
+
+#### Criterios de Aceptación:
+- [ ] Ruta `/funcionario` con layout específico implementada
+- [ ] Dashboard muestra métricas de la dependencia del funcionario
+- [ ] Navegación lateral con opciones específicas para funcionarios
+- [ ] Acceso restringido solo a contenido de su dependencia
+- [ ] Interfaz responsive y accesible
+- [ ] Breadcrumbs específicos para funcionarios
+
+#### Tareas Técnicas:
+- [ ] **T-024.1**: Crear layout `/funcionario` con estructura específica (5h)
+- [ ] **T-024.2**: Implementar FuncionarioLayout component (5h)
+- [ ] **T-024.3**: Desarrollar dashboard con métricas departamentales (5h)
+- [ ] **T-024.4**: Crear navegación lateral para funcionarios (3h)
+- [ ] **T-024.5**: Implementar breadcrumbs funcionario (2h)
+- [ ] **T-024.6**: Testing de acceso y navegación (1h)
+
+#### Definición de Done:
+- ✅ Dashboard funcionario accesible y funcional
+- ✅ Métricas muestran datos de la dependencia correcta
+- ✅ Navegación específica implementada
+- ✅ Acceso restringido verificado
+- ✅ Responsive en todos los dispositivos
+
+---
+
+### 🎫 US-025: Gestión de Trámites para Funcionarios
+**Como** funcionario,
+**quiero** gestionar los trámites de mi dependencia,
+**para** mantener actualizada la información de los servicios que ofrecemos.
+
+**Prioridad**: Alta
+**Esfuerzo**: 21 SP
+**Sprint**: 4
+**Estado**: 🔄 **PENDIENTE**
+
+#### Criterios de Aceptación:
+- [ ] CRUD completo de trámites con restricción departamental
+- [ ] Solo puede ver/editar trámites de subdependencias de su dependencia
+- [ ] Formularios de creación/edición con validación específica
+- [ ] Filtros por subdependencia dentro de su dependencia
+- [ ] Estados de trámite gestionables por funcionario
+- [ ] Historial de cambios visible para sus trámites
+
+#### Tareas Técnicas:
+- [ ] **T-025.1**: Crear página `/funcionario/tramites` (5h)
+- [ ] **T-025.2**: Implementar DataTable con filtros departamentales (5h)
+- [ ] **T-025.3**: Desarrollar formularios CRUD para funcionarios (5h)
+- [ ] **T-025.4**: Implementar validaciones específicas (3h)
+- [ ] **T-025.5**: Agregar gestión de estados de trámite (2h)
+- [ ] **T-025.6**: Testing de restricciones departamentales (1h)
+
+#### Definición de Done:
+- ✅ CRUD funcional con restricciones departamentales
+- ✅ Solo accede a trámites de su dependencia
+- ✅ Formularios validan correctamente
+- ✅ Estados de trámite gestionables
+- ✅ RLS policies funcionan correctamente
+
+---
+
+### 🎫 US-026: Gestión de FAQs para Funcionarios
+**Como** funcionario,
+**quiero** gestionar las FAQs de mi dependencia,
+**para** proporcionar respuestas actualizadas a los ciudadanos sobre nuestros servicios.
+
+**Prioridad**: Alta
+**Esfuerzo**: 13 SP
+**Sprint**: 4
+**Estado**: 🔄 **PENDIENTE**
+
+#### Criterios de Aceptación:
+- [ ] CRUD completo de FAQs con restricción departamental
+- [ ] Solo puede gestionar FAQs de su dependencia
+- [ ] Categorización automática por dependencia
+- [ ] Estados de FAQ (borrador, activo, inactivo)
+- [ ] Previsualización de FAQs antes de publicar
+- [ ] Búsqueda dentro de FAQs de su dependencia
+
+#### Tareas Técnicas:
+- [ ] **T-026.1**: Crear página `/funcionario/faqs` (3h)
+- [ ] **T-026.2**: Implementar DataTable con filtros departamentales (3h)
+- [ ] **T-026.3**: Desarrollar formularios CRUD para FAQs (3h)
+- [ ] **T-026.4**: Implementar gestión de estados de FAQ (2h)
+- [ ] **T-026.5**: Agregar previsualización de FAQs (1h)
+- [ ] **T-026.6**: Testing de restricciones y funcionalidad (1h)
+
+#### Definición de Done:
+- ✅ CRUD de FAQs funcional para funcionarios
+- ✅ Restricciones departamentales aplicadas
+- ✅ Estados de FAQ gestionables
+- ✅ Previsualización funciona correctamente
+- ✅ Búsqueda departamental operativa
+
+---
+
+### 🎫 US-027: Gestión de OPAs para Funcionarios
+**Como** funcionario,
+**quiero** gestionar las OPAs de mi dependencia,
+**para** mantener actualizados los procesos administrativos de mi área.
+
+**Prioridad**: Alta
+**Esfuerzo**: 21 SP
+**Sprint**: 4-5
+**Estado**: 🔄 **PENDIENTE**
+
+#### Criterios de Aceptación:
+- [ ] CRUD completo de OPAs con restricción departamental
+- [ ] Workflow de aprobaciones específico para funcionarios
+- [ ] Gestión de estados de OPA (borrador, en revisión, aprobado)
+- [ ] Sistema de documentos asociados a OPAs
+- [ ] Notificaciones de cambios de estado
+- [ ] Historial de versiones y cambios
+
+#### Tareas Técnicas:
+- [ ] **T-027.1**: Crear página `/funcionario/opas` (5h)
+- [ ] **T-027.2**: Implementar DataTable con workflow states (5h)
+- [ ] **T-027.3**: Desarrollar formularios CRUD para OPAs (5h)
+- [ ] **T-027.4**: Implementar sistema de aprobaciones (3h)
+- [ ] **T-027.5**: Agregar gestión de documentos (2h)
+- [ ] **T-027.6**: Testing de workflow y restricciones (1h)
+
+#### Definición de Done:
+- ✅ CRUD de OPAs funcional para funcionarios
+- ✅ Workflow de aprobaciones operativo
+- ✅ Estados de OPA gestionables
+- ✅ Sistema de documentos integrado
+- ✅ Notificaciones funcionan correctamente
+
+---
+
+### 🎫 US-028: Componentes UI Basados en Rol Funcionario
+**Como** desarrollador,
+**quiero** componentes UI que se adapten al rol funcionario,
+**para** mostrar/ocultar funcionalidades según los permisos específicos.
+
+**Prioridad**: Media
+**Esfuerzo**: 13 SP
+**Sprint**: 5
+**Estado**: 🔄 **PENDIENTE**
+
+#### Criterios de Aceptación:
+- [ ] Hook `useRole` para detectar rol funcionario
+- [ ] Componente `RoleGuard` para proteger elementos UI
+- [ ] Navegación adaptativa según rol funcionario
+- [ ] Botones y acciones condicionadas por permisos
+- [ ] Mensajes específicos para funcionarios
+- [ ] Componentes de restricción departamental
+
+#### Tareas Técnicas:
+- [ ] **T-028.1**: Crear hook `useRole` con detección de funcionario (2h)
+- [ ] **T-028.2**: Implementar componente `RoleGuard` (3h)
+- [ ] **T-028.3**: Desarrollar navegación adaptativa (3h)
+- [ ] **T-028.4**: Crear componentes de restricción departamental (3h)
+- [ ] **T-028.5**: Implementar mensajes específicos por rol (1h)
+- [ ] **T-028.6**: Testing de componentes UI (1h)
+
+#### Definición de Done:
+- ✅ Hook `useRole` funciona correctamente
+- ✅ `RoleGuard` protege elementos apropiadamente
+- ✅ Navegación se adapta al rol funcionario
+- ✅ Restricciones departamentales aplicadas
+- ✅ Mensajes específicos mostrados
+
+---
+
+**Última Actualización**: 22 de Julio de 2025 - Agregadas user stories para implementación completa del rol funcionario
 **Próxima Revisión**: Sprint Planning cada 2 semanas
 **Responsable**: Product Owner y Scrum Master
-**Estado**: ✅ Backend completado - ✅ Admin Dashboard funcional - ✅ Autenticación y CRUD implementados - Enfoque en funcionalidades avanzadas
+**Estado**: ✅ Backend completado - ✅ Admin Dashboard funcional - ✅ Autenticación y CRUD implementados - 🔄 Implementación rol funcionario pendiente - Enfoque en funcionalidades avanzadas

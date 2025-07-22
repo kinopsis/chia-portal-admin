@@ -31,6 +31,9 @@ export { OPAsServerService, OPAsClientService, opasServerService, opasClientServ
 // FAQs services
 export { FAQsServerService, FAQsClientService, faqsServerService, faqsClientService } from './faqs'
 
+// Users services
+export { UsersService, usersService } from './users'
+
 // Service types for convenience
 export type {
   Dependencia,

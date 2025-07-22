@@ -12,9 +12,10 @@ export interface MobileDrawerProps {
   isOpen: boolean
   onClose: () => void
   className?: string
+  id?: string
 }
 
-const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, className }) => {
+const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, className, id }) => {
   const { user, userProfile, signOut } = useAuth()
   const drawerRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -140,32 +141,37 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, className 
       {/* Drawer */}
       <div
         ref={drawerRef}
-        className="fixed inset-y-0 left-0 w-80 max-w-[85vw] bg-white shadow-xl transform transition-transform duration-300 ease-in-out flex flex-col"
+        id={id}
+        className="fixed inset-y-0 left-0 w-72 xs:w-80 sm:w-96 max-w-[85vw] xs:max-w-[80vw] sm:max-w-[75vw] bg-white shadow-xl transform transition-transform duration-300 ease-in-out flex flex-col reduced-motion:transition-none"
         role="dialog"
         aria-modal="true"
         aria-labelledby="drawer-title"
+        aria-describedby="drawer-description"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">🏛️</span>
+        {/* Header - Touch Optimized */}
+        <div className="flex items-center justify-between p-mobile-sm xs:p-mobile-md sm:p-4 border-b border-gray-200">
+          <div className="flex items-center space-x-2 xs:space-x-3 flex-1 min-w-0">
+            <div className="w-7 h-7 xs:w-8 xs:h-8 bg-gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
+              <span className="text-white font-bold text-xs xs:text-sm" aria-hidden="true">🏛️</span>
             </div>
-            <div>
-              <h2 id="drawer-title" className="text-lg font-semibold text-gray-900">
+            <div className="min-w-0 flex-1">
+              <h2 id="drawer-title" className="text-base xs:text-lg font-semibold text-gray-900 truncate">
                 Portal Ciudadano
               </h2>
-              <p className="text-sm text-gray-500">Alcaldía de Chía</p>
+              <p id="drawer-description" className="text-xs xs:text-sm text-gray-500 truncate">
+                Menú de navegación principal - Alcaldía de Chía
+              </p>
             </div>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="p-2"
-            aria-label="Cerrar menú"
+            className="min-h-touch-sm min-w-touch-sm p-2 ml-2 flex-shrink-0 no-touch:hover:bg-gray-100 focus:ring-2 focus:ring-primary-green"
+            aria-label="Cerrar menú de navegación"
+            title="Cerrar menú"
           >
-            <XMarkIcon className="w-5 h-5" />
+            <XMarkIcon className="w-5 h-5 xs:w-6 xs:h-6" aria-hidden="true" />
           </Button>
         </div>
 

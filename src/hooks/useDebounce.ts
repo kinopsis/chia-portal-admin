@@ -1,3 +1,5 @@
+'use client'
+
 // Debounce hook for optimizing search performance
 // Delays execution of expensive operations like API calls
 

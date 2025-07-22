@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { User } from '@/types'
-import { supabase } from '@/lib/supabase'
+import { usersService } from '@/services'
 
 export interface PasswordChangeModalProps {
   isOpen: boolean
@@ -42,7 +42,10 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
     setSuccess(false)
 
     try {
-      console.log('Attempting to change password for user:', user.email)
+      // Send password reset email instead of direct password change
+      await usersService.sendPasswordReset(user.email)
+
+      console.log('Password reset email sent for user:', user.email)
       setSuccess(true)
 
       // Show success message for a moment, then close
@@ -52,10 +55,10 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
         setSuccess(false)
         setNewPassword('')
         setConfirmPassword('')
-      }, 2000)
+      }, 3000)
     } catch (err) {
-      console.error('Error changing password:', err)
-      setError(err instanceof Error ? err.message : 'Error al cambiar la contraseña')
+      console.error('Error sending password reset:', err)
+      setError(err instanceof Error ? err.message : 'Error al enviar el correo de restablecimiento')
     } finally {
       setIsLoading(false)
     }
@@ -79,7 +82,7 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-900">
-              Cambiar Contraseña - {user?.nombre || 'Usuario'}
+              Restablecer Contraseña - {user?.nombre || 'Usuario'}
             </h2>
             <button
               type="button"
@@ -130,44 +133,30 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
                     <span className="text-green-400">✅</span>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm text-green-800">Contraseña cambiada exitosamente</p>
+                    <p className="text-sm text-green-800">Correo de restablecimiento enviado exitosamente</p>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Password Change Form */}
-            <form onSubmit={handlePasswordChange} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nueva Contraseña
-                </label>
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Mínimo 8 caracteres"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={isLoading || success}
-                  required
-                />
+            {/* Password Reset Confirmation */}
+            {!success && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <span className="text-yellow-400">📧</span>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-yellow-800">
+                      Se enviará un correo electrónico de restablecimiento de contraseña a <strong>{user?.email}</strong>
+                    </p>
+                    <p className="text-xs text-yellow-600 mt-1">
+                      El usuario recibirá un enlace para crear una nueva contraseña.
+                    </p>
+                  </div>
+                </div>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Confirmar Nueva Contraseña
-                </label>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirme la nueva contraseña"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={isLoading || success}
-                  required
-                />
-              </div>
-            </form>
+            )}
 
             {/* Security Notice */}
             <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
@@ -177,8 +166,8 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-blue-800">
-                    <strong>Nota de Seguridad:</strong> La nueva contraseña debe ser segura y única.
-                    El usuario deberá usar esta nueva contraseña en su próximo inicio de sesión.
+                    <strong>Nota de Seguridad:</strong> El usuario recibirá un enlace seguro para restablecer su contraseña.
+                    El enlace expirará en 24 horas por seguridad.
                   </p>
                 </div>
               </div>
@@ -202,10 +191,10 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
             >
               {isLoading
-                ? 'Cambiando...'
+                ? 'Enviando...'
                 : success
-                  ? '✅ Contraseña Cambiada'
-                  : 'Cambiar Contraseña'}
+                  ? '✅ Correo Enviado'
+                  : 'Enviar Correo de Restablecimiento'}
             </button>
           </div>
         </div>

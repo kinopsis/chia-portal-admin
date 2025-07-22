@@ -54,9 +54,8 @@ export async function GET() {
         .from('faqs')
         .select('*', { count: 'exact', head: true }),
       
-      supabase
-        .from('users')
-        .select('*', { count: 'exact', head: true }),
+      // Skip users count for now as it requires auth.users access
+      Promise.resolve({ count: 0 }),
 
       // Active counts
       supabase

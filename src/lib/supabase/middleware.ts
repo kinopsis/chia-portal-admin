@@ -80,8 +80,24 @@ export async function updateSession(request: NextRequest) {
   const isAuthRoute = authRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
 
   if (isAuthRoute && user) {
+    // Get user role from database for role-based redirect
+    const { data: userProfile } = await supabase
+      .from('users')
+      .select('rol')
+      .eq('id', user.id)
+      .single()
+
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
+
+    // Role-based redirect
+    if (userProfile?.rol === 'admin') {
+      url.pathname = '/admin'
+    } else if (userProfile?.rol === 'funcionario') {
+      url.pathname = '/funcionario' // Future funcionario dashboard
+    } else {
+      url.pathname = '/dashboard'
+    }
+
     return NextResponse.redirect(url)
   }
 

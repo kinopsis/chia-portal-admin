@@ -38,21 +38,30 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
   }
 
   return (
-    <header className={clsx('bg-white border-b border-gray-200 sticky top-0 z-50', className)}>
+    <header
+      className={clsx('bg-white border-b border-gray-200 sticky top-0 z-50', className)}
+      role="banner"
+      aria-label="Encabezado principal del sitio"
+    >
       <div className="container-custom">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo Section */}
-          <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-between h-16 xs:h-14 sm:h-16 md:h-18">
+          {/* Logo Section - Touch Optimized */}
+          <div className="flex items-center space-x-2 xs:space-x-3 sm:space-x-4">
             <Link
               href="/"
-              className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+              className="flex items-center space-x-2 xs:space-x-3 no-touch:hover:opacity-80 transition-opacity min-h-touch-sm min-w-touch-sm p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-green"
+              aria-label="Ir al inicio - Portal Ciudadano Alcaldía de Chía"
             >
-              <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center shadow-md">
-                <span className="text-white font-bold text-lg">🏛️</span>
+              <div className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 bg-gradient-primary rounded-lg flex items-center justify-center shadow-md">
+                <span className="text-white font-bold text-sm xs:text-base sm:text-lg" aria-hidden="true">🏛️</span>
               </div>
-              <div className="hidden sm:block">
-                <h1 className="text-lg font-bold text-gray-900">Portal Ciudadano</h1>
-                <p className="text-sm text-gray-600">Alcaldía de Chía</p>
+              <div className="hidden xs:block">
+                <h1 className="text-sm xs:text-base sm:text-lg font-bold text-gray-900 leading-tight">
+                  Portal Ciudadano
+                </h1>
+                <p className="text-xs xs:text-sm text-gray-600 leading-tight">
+                  Alcaldía de Chía
+                </p>
               </div>
             </Link>
           </div>
@@ -67,16 +76,21 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
             />
           </div>
 
-          {/* Right Section */}
-          <div className="flex items-center space-x-3">
-            {/* Search Button */}
+          {/* Right Section - Touch Optimized */}
+          <div className="flex items-center space-x-1 xs:space-x-2 sm:space-x-3">
+            {/* Search Button - Touch Friendly */}
             <Button
               variant="ghost"
               size="sm"
-              className="hidden sm:flex hover:bg-gray-100"
+              className="hidden xs:flex min-h-touch-sm min-w-touch-sm p-2 no-touch:hover:bg-gray-100 focus:ring-2 focus:ring-primary-green"
               title="Buscar"
+              aria-label="Abrir búsqueda"
+              aria-describedby="search-description"
             >
-              <MagnifyingGlassIcon className="w-5 h-5" />
+              <MagnifyingGlassIcon className="w-4 h-4 xs:w-5 xs:h-5" aria-hidden="true" />
+              <span id="search-description" className="sr-only">
+                Buscar trámites, servicios y información
+              </span>
             </Button>
 
             {/* Notifications (for authenticated users) */}
@@ -159,21 +173,27 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
               </div>
             )}
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Touch Optimized */}
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden"
+              className="md:hidden min-h-touch-sm min-w-touch-sm p-2 no-touch:hover:bg-gray-100 focus:ring-2 focus:ring-primary-green"
               onClick={toggleMobileMenu}
-              aria-label="Abrir menú de navegación"
+              aria-label={isMobileMenuOpen ? "Cerrar menú de navegación" : "Abrir menú de navegación"}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-navigation"
             >
-              <Bars3Icon className="w-5 h-5" />
+              <Bars3Icon className="w-5 h-5 xs:w-6 xs:h-6" aria-hidden="true" />
             </Button>
           </div>
         </div>
 
         {/* Mobile Drawer */}
-        <MobileDrawer isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+        <MobileDrawer
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+          id="mobile-navigation"
+        />
       </div>
     </header>
   )

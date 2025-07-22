@@ -3,7 +3,7 @@
 // Force dynamic rendering to avoid build-time data fetching issues
 export const dynamic = 'force-dynamic'
 
-import { SearchBar, MetricCard } from '@/components'
+import { SearchBar, MetricCard, ResponsiveContainer, SkeletonLoader, ErrorMessage } from '@/components'
 import { useHomepageMetrics } from '@/hooks/useHomepageMetrics'
 
 export default function Home() {
@@ -16,30 +16,53 @@ export default function Home() {
     }
   }
 
+  const handleSuggestionClick = (suggestion: string, type: string) => {
+    // Track suggestion click and redirect
+    handleSearch(suggestion)
+  }
+
   const popularSearches = ['Certificados', 'Licencias', 'Pagos', 'Permisos']
 
   return (
     <div className="bg-gradient-to-br from-primary-yellow/10 to-primary-green/10">
-      <div className="container-custom py-16">
-        <div className="text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            Portal de Atención Ciudadana
+      <ResponsiveContainer
+        layout="stack"
+        padding="adaptive"
+        touchOptimized={true}
+        className="container-custom py-mobile-lg xs:py-12 sm:py-16"
+      >
+        <div className="text-center space-y-mobile-md xs:space-y-6 sm:space-y-8">
+          {/* Single H1 for SEO - Sprint 2.1 requirement */}
+          <h1 className="text-display-md xs:text-display-lg sm:text-display-xl font-bold text-gray-900 leading-tight">
+            Portal de Atención Ciudadana de Chía
           </h1>
-          <h2 className="text-2xl md:text-3xl font-semibold text-primary-green mb-8">
-            Alcaldía de Chía
-          </h2>
-          <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
-            Servicios municipales al alcance de todos. El asistente virtual te guía paso a paso en
-            tus trámites y consultas.
+
+          {/* Subtitle using semantic typography - no longer H2 for better hierarchy */}
+          <p className="text-heading-lg xs:text-heading-xl font-semibold text-primary-green">
+            Alcaldía Municipal
           </p>
 
-          {/* Hero Search Bar */}
-          <div className="max-w-2xl mx-auto mb-16">
+          {/* Description with improved typography hierarchy */}
+          <p className="text-body-lg xs:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+            Servicios municipales al alcance de todos. Accede a trámites, información y servicios
+            de manera fácil, rápida y segura.
+          </p>
+
+          {/* Hero Search Bar - Enhanced with Sprint 2.1 Intelligence */}
+          <div className="max-w-2xl mx-auto mb-mobile-lg xs:mb-12 sm:mb-16">
             <SearchBar
               placeholder="Buscar trámite, OPA, ayuda..."
               onSearch={handleSearch}
               suggestions={popularSearches}
               showSuggestions={true}
+              // Sprint 2.1: Intelligent search features
+              enableSmartSuggestions={true}
+              debounceMs={500}
+              maxSuggestions={8}
+              source="homepage"
+              showPopularSearches={true}
+              showRecentSearches={true}
+              onSuggestionClick={handleSuggestionClick}
             />
 
             {/* Popular Searches */}
@@ -61,25 +84,31 @@ export default function Home() {
           </div>
 
           {/* System Metrics */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-16">
+          <ResponsiveContainer
+            layout="grid"
+            gridCols={{ xs: 2, sm: 3, md: 4, lg: 5 }}
+            gap="md"
+            className="mb-mobile-lg xs:mb-12 sm:mb-16"
+          >
             {loading ? (
               Array.from({ length: 5 }).map((_, index) => (
-                <div key={index} className="bg-white rounded-lg p-6 shadow-sm animate-pulse">
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-8 bg-gray-200 rounded w-1/2 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-                </div>
+                <SkeletonLoader
+                  key={index}
+                  variant="card"
+                  responsive={true}
+                  animation="pulse"
+                />
               ))
             ) : error ? (
-              <div className="col-span-full text-center py-8">
-                <p className="text-red-600 mb-4">Error al cargar métricas: {error}</p>
-                <button
-                  type="button"
-                  onClick={() => window.location.reload()}
-                  className="px-4 py-2 bg-primary-green text-white rounded hover:bg-green-600"
-                >
-                  Reintentar
-                </button>
+              <div className="col-span-full">
+                <ErrorMessage
+                  message="Error al cargar métricas del sistema"
+                  context={error}
+                  type="network"
+                  severity="error"
+                  showRetry={true}
+                  onRetry={() => window.location.reload()}
+                />
               </div>
             ) : (
               [
@@ -123,10 +152,26 @@ export default function Home() {
                 />
               ))
             )}
-          </div>
+          </ResponsiveContainer>
 
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {/* Sprint 2.1: F-Layout Pattern - Quick Actions Section */}
+          <div className="mt-mobile-lg xs:mt-12 sm:mt-16">
+            {/* Section Header with improved typography hierarchy */}
+            <div className="text-center mb-mobile-md xs:mb-8 sm:mb-12">
+              <h2 className="text-heading-xl xs:text-display-sm font-semibold text-gray-900 mb-mobile-xs xs:mb-4">
+                Servicios Más Solicitados
+              </h2>
+              <p className="text-body-md xs:text-body-lg text-gray-600 max-w-2xl mx-auto">
+                Accede rápidamente a los trámites y servicios más utilizados por los ciudadanos
+              </p>
+            </div>
+
+            {/* F-Layout: Services Grid */}
+            <ResponsiveContainer
+              layout="grid"
+              gridCols={{ xs: 1, sm: 2, md: 4 }}
+              gap="lg"
+            >
             {[
               {
                 icon: '📋',
@@ -140,22 +185,30 @@ export default function Home() {
             ].map((service, index) => (
               <div
                 key={index}
-                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                className="bg-white p-mobile-md xs:p-6 rounded-lg shadow-md no-touch:hover:shadow-lg transition-shadow"
               >
-                <div className="text-4xl mb-4">{service.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-                <p className="text-gray-600 mb-4">{service.desc}</p>
+                <div className="text-3xl xs:text-4xl mb-mobile-sm xs:mb-4" aria-hidden="true">
+                  {service.icon}
+                </div>
+                <h3 className="text-heading-md xs:text-heading-lg font-semibold mb-2 text-gray-900">
+                  {service.title}
+                </h3>
+                <p className="text-body-sm xs:text-body-md text-gray-600 mb-mobile-sm xs:mb-4">
+                  {service.desc}
+                </p>
                 <button
                   type="button"
-                  className="text-primary-green font-medium hover:text-primary-green-alt"
+                  className="min-h-touch-sm text-primary-green font-medium no-touch:hover:text-primary-green-alt focus:outline-none focus:ring-2 focus:ring-primary-green rounded px-2 py-1"
+                  aria-label={`${service.action} - ${service.title}`}
                 >
                   {service.action}
                 </button>
               </div>
             ))}
+            </ResponsiveContainer>
           </div>
         </div>
-      </div>
+      </ResponsiveContainer>
     </div>
   )
 }
