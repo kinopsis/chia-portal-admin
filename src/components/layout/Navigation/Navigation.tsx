@@ -78,11 +78,14 @@ const Navigation: React.FC<NavigationProps> = ({
 
   return (
     <nav
+      id="main-navigation"
       className={clsx(
         'flex',
         orientation === 'vertical' ? 'flex-col space-y-1' : 'flex-row space-x-1',
         className
       )}
+      role="navigation"
+      aria-label="Navegación principal"
     >
       {visibleItems.map((item) => (
         <Link
