@@ -19,8 +19,7 @@ const nextConfig = {
 
   // Disable static generation completely
   experimental: {
-    // Disable static optimization
-    isrMemoryCacheSize: 0,
+    // Other experimental features can be added here
   },
 
   // Environment variables for build
