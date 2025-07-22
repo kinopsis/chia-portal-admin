@@ -1,3 +1,5 @@
+'use client'
+
 // Hook for homepage metrics - simplified version for public display
 // Provides basic statistics for homepage dashboard
 
@@ -72,21 +74,19 @@ export function useHomepageMetrics(): UseHomepageMetricsReturn {
       console.error('Error fetching homepage metrics:', errorMessage)
       setError(errorMessage)
       
-      // Set fallback metrics
-      if (!metrics) {
-        setMetrics({
-          dependencias: 12,
-          subdependencias: 45,
-          tramites: 156,
-          opas: 89,
-          faqs: 234,
-          lastUpdated: new Date().toISOString()
-        })
-      }
+      // Set fallback metrics only if we don't have any metrics yet
+      setMetrics(prevMetrics => prevMetrics || {
+        dependencias: 12,
+        subdependencias: 45,
+        tramites: 156,
+        opas: 89,
+        faqs: 234,
+        lastUpdated: new Date().toISOString()
+      })
     } finally {
       setLoading(false)
     }
-  }, [metrics])
+  }, [])
 
   // Initial fetch
   useEffect(() => {
