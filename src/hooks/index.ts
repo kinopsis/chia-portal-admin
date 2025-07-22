@@ -20,7 +20,15 @@ export type { Breakpoint, BreakpointConfig, UseBreakpointReturn } from './useBre
 export { default as useSystemMetrics } from './useSystemMetrics'
 export type { SystemMetrics, MetricsFilters } from './useSystemMetrics'
 
+// Sprint 2.1: Smart Search and Enhanced UX Hooks
+export { useDebounce } from './useDebounce'
+export type {
+  SmartSearchConfig,
+  SmartSearchState,
+  SmartSearchActions
+} from './useSmartSearch'
+export { default as useSmartSearch } from './useSmartSearch'
+
 // Additional hooks can be added here as they are created
 // export { useLocalStorage } from './useLocalStorage'
-// export { useDebounce } from './useDebounce'
 // export { useApi } from './useApi'
