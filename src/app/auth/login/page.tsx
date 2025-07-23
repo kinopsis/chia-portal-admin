@@ -1,13 +1,51 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button, Input, Card, ErrorMessage, ProgressIndicator, ResponsiveContainer } from '@/components'
 import { useAuth } from '@/hooks'
 import { getPostLoginRedirect } from '@/utils/auth'
 
-export default function LoginPage() {
+// Loading component for Suspense fallback
+function LoginLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-yellow/10 to-primary-green/10 py-mobile-lg xs:py-12 px-mobile-sm xs:px-6 lg:px-8">
+      <ResponsiveContainer
+        layout="stack"
+        padding="adaptive"
+        touchOptimized={true}
+        className="max-w-sm xs:max-w-md w-full"
+      >
+        <div className="text-center space-y-mobile-sm xs:space-y-6">
+          <div className="mx-auto w-12 h-12 xs:w-16 xs:h-16 bg-gradient-primary rounded-xl flex items-center justify-center">
+            <span className="text-white text-xl xs:text-2xl font-bold" aria-hidden="true">🏛️</span>
+          </div>
+          <div>
+            <h2 className="text-2xl xs:text-3xl font-bold text-gray-900">
+              Iniciar Sesión
+            </h2>
+            <p className="mt-2 text-sm xs:text-base text-gray-600">
+              Accede al Portal de Atención Ciudadana de Chía
+            </p>
+          </div>
+        </div>
+
+        <Card className="mt-8">
+          <div className="animate-pulse space-y-6">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-10 bg-gray-200 rounded"></div>
+            <div className="h-10 bg-gray-200 rounded"></div>
+            <div className="h-12 bg-gray-200 rounded"></div>
+          </div>
+        </Card>
+      </ResponsiveContainer>
+    </div>
+  )
+}
+
+// Component that uses useSearchParams - needs to be wrapped in Suspense
+function LoginContent() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -247,5 +285,14 @@ export default function LoginPage() {
         </div>
       </ResponsiveContainer>
     </div>
+  )
+}
+
+// Main component with Suspense wrapper
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginLoading />}>
+      <LoginContent />
+    </Suspense>
   )
 }
