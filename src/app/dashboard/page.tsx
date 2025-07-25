@@ -22,7 +22,7 @@ function DashboardContent() {
     <div className="container-custom py-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">¡Bienvenido, {userProfile.nombre}!</h1>
+          <h1 className="text-3xl font-bold text-gray-900">¡Bienvenido, {userProfile.nombre || 'Usuario'}!</h1>
           <p className="text-gray-600 mt-2">
             Panel de control del Portal de Atención Ciudadana de Chía
           </p>
@@ -82,7 +82,7 @@ function DashboardContent() {
               <div className="flex justify-between">
                 <span className="text-gray-600">Nombre:</span>
                 <span className="font-medium">
-                  {userProfile.nombre} {userProfile.apellido}
+                  {userProfile.nombre || 'Usuario'} {userProfile.apellido || ''}
                 </span>
               </div>
               <div className="flex justify-between">

@@ -71,6 +71,7 @@ const TestTramitesPage: React.FC = () => {
   const [selectedDependenciaId, setSelectedDependenciaId] = useState<string>('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [searchValue, setSearchValue] = useState('')
 
   // Modal states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -501,6 +502,8 @@ const TestTramitesPage: React.FC = () => {
           loading={loading}
           error={error}
           rowActions={rowActions}
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
           searchPlaceholder="Buscar trámites..."
           showSearchAndFilters
           emptyStateProps={{

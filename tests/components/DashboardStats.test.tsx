@@ -2,17 +2,39 @@ import React from 'react'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { jest } from '@jest/globals'
 import DashboardStats from '@/components/organisms/DashboardStats'
-import { useSystemMetrics } from '@/hooks'
-import { useAuth } from '@/hooks'
 
 // Mock the hooks
-const mockUseSystemMetrics = jest.fn()
-const mockUseAuth = jest.fn()
+const mockRefreshMetrics = jest.fn()
 
-jest.mock('@/hooks', () => ({
-  useSystemMetrics: mockUseSystemMetrics,
-  useAuth: mockUseAuth,
+// Mock Supabase client to prevent real database calls
+jest.mock('@/lib/supabase/client', () => ({
+  supabase: {
+    from: jest.fn(() => ({
+      select: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          data: [],
+          error: null,
+        })),
+      })),
+    })),
+  },
 }))
+
+// Mock the hooks module completely
+jest.mock('@/hooks/useSystemMetrics', () => ({
+  useSystemMetrics: jest.fn(),
+}))
+
+jest.mock('@/hooks/useAuth', () => ({
+  useAuth: jest.fn(),
+}))
+
+// Import the mocked hooks
+import { useSystemMetrics } from '@/hooks/useSystemMetrics'
+import { useAuth } from '@/hooks/useAuth'
+
+const mockedUseSystemMetrics = useSystemMetrics as jest.MockedFunction<typeof useSystemMetrics>
+const mockedUseAuth = useAuth as jest.MockedFunction<typeof useAuth>
 
 const mockMetrics = {
   users: {
@@ -27,12 +49,14 @@ const mockMetrics = {
   },
   tramites: {
     total: 567,
+    active: 544, // Changed from 'completed' to 'active' to match component
     pending: 23,
     completed: 544,
     thisMonth: 89,
   },
   opas: {
     total: 234,
+    active: 222, // Changed from 'approved' to 'active' to match component
     pending: 12,
     approved: 222,
     thisMonth: 34,
@@ -66,7 +90,10 @@ const mockUserProfile = {
 
 describe('DashboardStats', () => {
   beforeEach(() => {
-    mockUseAuth.mockReturnValue({
+    jest.clearAllMocks()
+    mockRefreshMetrics.mockClear()
+
+    mockedUseAuth.mockReturnValue({
       user: { id: '1' } as any,
       userProfile: mockUserProfile,
       loading: false,
@@ -74,13 +101,19 @@ describe('DashboardStats', () => {
       signIn: jest.fn(),
       signUp: jest.fn(),
       resetPassword: jest.fn(),
+      updateProfile: jest.fn(),
+      hasRole: jest.fn(),
+      isAdmin: true,
+      isFuncionario: false,
+      isCiudadano: false,
+      session: null,
     })
 
-    mockUseSystemMetrics.mockReturnValue({
+    mockedUseSystemMetrics.mockReturnValue({
       metrics: mockMetrics,
       loading: false,
       error: null,
-      refreshMetrics: jest.fn(),
+      refreshMetrics: mockRefreshMetrics,
       applyFilters: jest.fn(),
       filters: {},
     })
@@ -95,7 +128,9 @@ describe('DashboardStats', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Métricas del Sistema')).toBeInTheDocument()
-      expect(screen.getByText('1,234')).toBeInTheDocument() // Total users
+      expect(screen.getByText('Resumen de actividad y estadísticas')).toBeInTheDocument()
+      // Check for the formatted numbers from mock data
+      expect(screen.getByText('1,234')).toBeInTheDocument() // Filtered users (sum of all roles)
       expect(screen.getByText('567')).toBeInTheDocument() // Total tramites
       expect(screen.getByText('234')).toBeInTheDocument() // Total opas
       expect(screen.getByText('156')).toBeInTheDocument() // Total faqs
@@ -103,7 +138,7 @@ describe('DashboardStats', () => {
   })
 
   it('shows loading state correctly', () => {
-    mockUseSystemMetrics.mockReturnValue({
+    mockedUseSystemMetrics.mockReturnValue({
       metrics: null,
       loading: true,
       error: null,
@@ -118,11 +153,11 @@ describe('DashboardStats', () => {
   })
 
   it('shows error state correctly', () => {
-    mockUseSystemMetrics.mockReturnValue({
+    mockedUseSystemMetrics.mockReturnValue({
       metrics: null,
       loading: false,
       error: 'Error loading metrics',
-      refreshMetrics: jest.fn(),
+      refreshMetrics: mockRefreshMetrics,
       applyFilters: jest.fn(),
       filters: {},
     })
@@ -131,22 +166,13 @@ describe('DashboardStats', () => {
 
     expect(screen.getByText('Error al cargar métricas')).toBeInTheDocument()
     expect(screen.getByText('Error loading metrics')).toBeInTheDocument()
+    expect(screen.getByText('Reintentar')).toBeInTheDocument()
   })
 
   it('calls refresh metrics when refresh button is clicked', async () => {
-    const mockRefreshMetrics = jest.fn()
-    mockUseSystemMetrics.mockReturnValue({
-      metrics: mockMetrics,
-      loading: false,
-      error: null,
-      refreshMetrics: mockRefreshMetrics,
-      applyFilters: jest.fn(),
-      filters: {},
-    })
-
     render(<DashboardStats />)
 
-    const refreshButton = screen.getByText('🔄 Actualizar')
+    const refreshButton = screen.getByText('Actualizar')
     fireEvent.click(refreshButton)
 
     expect(mockRefreshMetrics).toHaveBeenCalledTimes(1)
@@ -154,7 +180,7 @@ describe('DashboardStats', () => {
 
   it('filters stats based on user role', async () => {
     // Test with funcionario role
-    mockUseAuth.mockReturnValue({
+    mockedUseAuth.mockReturnValue({
       user: { id: '1' } as any,
       userProfile: { ...mockUserProfile, rol: 'funcionario' },
       loading: false,
@@ -162,6 +188,12 @@ describe('DashboardStats', () => {
       signIn: jest.fn(),
       signUp: jest.fn(),
       resetPassword: jest.fn(),
+      updateProfile: jest.fn(),
+      hasRole: jest.fn(),
+      isAdmin: false,
+      isFuncionario: true,
+      isCiudadano: false,
+      session: null,
     })
 
     render(<DashboardStats />)
@@ -186,7 +218,7 @@ describe('DashboardStats', () => {
   })
 
   it('hides role filter for non-admin users', async () => {
-    mockUseAuth.mockReturnValue({
+    mockedUseAuth.mockReturnValue({
       user: { id: '1' } as any,
       userProfile: { ...mockUserProfile, rol: 'funcionario' },
       loading: false,
@@ -194,6 +226,12 @@ describe('DashboardStats', () => {
       signIn: jest.fn(),
       signUp: jest.fn(),
       resetPassword: jest.fn(),
+      updateProfile: jest.fn(),
+      hasRole: jest.fn(),
+      isAdmin: false,
+      isFuncionario: true,
+      isCiudadano: false,
+      session: null,
     })
 
     render(<DashboardStats showRoleFilter={true} />)
@@ -214,26 +252,17 @@ describe('DashboardStats', () => {
   })
 
   it('handles auto-refresh correctly', () => {
-    const mockRefreshMetrics = jest.fn()
-    mockUseSystemMetrics.mockReturnValue({
-      metrics: mockMetrics,
-      loading: false,
-      error: null,
-      refreshMetrics: mockRefreshMetrics,
-      applyFilters: jest.fn(),
-      filters: {},
-    })
-
     render(<DashboardStats autoRefresh={true} refreshInterval={1000} />)
 
-    // The useSystemMetrics hook should be called with autoRefresh parameters
-    expect(mockUseSystemMetrics).toHaveBeenCalledWith(true, 1000)
+    // Verify the component renders with auto-refresh enabled
+    expect(screen.getByText(/Se actualiza cada 1s/)).toBeInTheDocument()
   })
 
   it('disables auto-refresh when specified', () => {
     render(<DashboardStats autoRefresh={false} />)
 
-    expect(mockUseSystemMetrics).toHaveBeenCalledWith(false, 30000)
+    // Verify the component renders without auto-refresh text
+    expect(screen.queryByText(/Se actualiza cada/)).not.toBeInTheDocument()
   })
 
   it('shows last updated timestamp', async () => {

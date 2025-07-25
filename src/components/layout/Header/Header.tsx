@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { MagnifyingGlassIcon, UserIcon, Bars3Icon } from '@heroicons/react/24/outline'
-import { Button } from '@/components/atoms'
+import { UserIcon, Bars3Icon } from '@heroicons/react/24/outline'
+import { Button, ThemeToggle } from '@/components/atoms'
 import Navigation, { getMainNavigation } from '../Navigation'
 import MobileDrawer from '../MobileDrawer'
 import { useAuth } from '@/hooks'
@@ -45,22 +45,35 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
     >
       <div className="container-custom">
         <div className="flex items-center justify-between h-16 xs:h-14 sm:h-16 md:h-18">
-          {/* Logo Section - Touch Optimized */}
-          <div className="flex items-center space-x-2 xs:space-x-3 sm:space-x-4">
+          {/* Logo Section - Enhanced Responsive Design */}
+          <div className="flex items-center space-x-2 xs:space-x-3 sm:space-x-4 flex-shrink-0">
             <Link
               href="/"
               className="flex items-center space-x-2 xs:space-x-3 no-touch:hover:opacity-80 transition-opacity min-h-touch-sm min-w-touch-sm p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-green"
               aria-label="Ir al inicio - Portal Ciudadano Alcaldía de Chía"
             >
-              <div className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 bg-gradient-primary rounded-lg flex items-center justify-center shadow-md">
-                <span className="text-white font-bold text-sm xs:text-base sm:text-lg" aria-hidden="true">🏛️</span>
+              {/* Logo Icon - Responsive sizing */}
+              <div className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 bg-gradient-primary rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
+                <span className="text-white font-bold text-sm xs:text-base sm:text-lg md:text-xl" aria-hidden="true">🏛️</span>
               </div>
-              <div className="hidden xs:block">
-                <h1 className="text-sm xs:text-base sm:text-lg font-bold text-gray-900 leading-tight">
+
+              {/* Logo Text - Progressive disclosure */}
+              <div className="hidden xs:block min-w-0">
+                <h1 className="text-sm xs:text-base sm:text-lg md:text-xl font-bold text-gray-900 leading-tight truncate">
                   Portal Ciudadano
                 </h1>
-                <p className="text-xs xs:text-sm text-gray-600 leading-tight">
+                <p className="text-xs xs:text-sm sm:text-base text-gray-600 leading-tight truncate">
                   Alcaldía de Chía
+                </p>
+              </div>
+
+              {/* Compact version for very small screens */}
+              <div className="xs:hidden">
+                <h1 className="text-xs font-bold text-gray-900 leading-tight">
+                  Portal
+                </h1>
+                <p className="text-xs text-gray-600 leading-tight">
+                  Chía
                 </p>
               </div>
             </Link>
@@ -76,22 +89,17 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
             />
           </div>
 
-          {/* Right Section - Touch Optimized */}
-          <div className="flex items-center space-x-1 xs:space-x-2 sm:space-x-3">
-            {/* Search Button - Touch Friendly */}
-            <Button
-              variant="ghost"
+          {/* Right Section - Symmetrical Icon Layout */}
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            {/* Search functionality moved to internal pages where relevant */}
+
+            {/* Theme Toggle - Always visible for symmetry */}
+            <ThemeToggle
+              variant="compact"
               size="sm"
-              className="hidden xs:flex min-h-touch-sm min-w-touch-sm p-2 no-touch:hover:bg-gray-100 focus:ring-2 focus:ring-primary-green"
-              title="Buscar"
-              aria-label="Abrir búsqueda"
-              aria-describedby="search-description"
-            >
-              <MagnifyingGlassIcon className="w-4 h-4 xs:w-5 xs:h-5" aria-hidden="true" />
-              <span id="search-description" className="sr-only">
-                Buscar trámites, servicios y información
-              </span>
-            </Button>
+              showLabels={false}
+              className="flex-shrink-0"
+            />
 
             {/* Notifications (for authenticated users) */}
             {user && (
@@ -112,7 +120,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
               <div className="flex items-center space-x-2">
                 <div className="hidden lg:block text-right">
                   <p className="text-sm font-medium text-gray-900">
-                    {userProfile.nombre} {userProfile.apellido}
+                    {userProfile.nombre || 'Usuario'} {userProfile.apellido || ''}
                   </p>
                   <p className="text-xs text-gray-500 capitalize">{userProfile.rol}</p>
                 </div>
@@ -130,7 +138,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
                   <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                     <div className="p-3 border-b border-gray-100">
                       <p className="text-sm font-medium text-gray-900">
-                        {userProfile.nombre} {userProfile.apellido}
+                        {userProfile.nombre || 'Usuario'} {userProfile.apellido || ''}
                       </p>
                       <p className="text-xs text-gray-500 capitalize">{userProfile.rol}</p>
                     </div>
@@ -159,15 +167,18 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
-                <Link href="/auth/register">
-                  <Button variant="ghost" size="sm" disabled={loading}>
-                    Registrarse
-                  </Button>
-                </Link>
+              <div className="flex items-center">
+                {/* Login button - Icon only for symmetrical design */}
                 <Link href="/auth/login">
-                  <Button variant="primary" size="sm" disabled={loading}>
-                    {loading ? 'Cargando...' : 'Iniciar Sesión'}
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    disabled={loading}
+                    className="w-10 h-10 p-2 flex-shrink-0"
+                    title={loading ? 'Cargando...' : 'Iniciar sesión en el portal'}
+                    aria-label={loading ? 'Cargando...' : 'Iniciar sesión'}
+                  >
+                    <UserIcon className="w-5 h-5" aria-hidden="true" />
                   </Button>
                 </Link>
               </div>

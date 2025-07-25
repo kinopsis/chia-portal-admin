@@ -52,3 +52,6 @@ export type { SwipeAction, SwipeActionsProps } from './SwipeActions'
 
 export { default as PasswordChangeModal } from './PasswordChangeModal'
 export type { PasswordChangeModalProps } from './PasswordChangeModal'
+
+export { ServiceCard, ServiceCardPresets } from './ServiceCard'
+export type { ServiceCardProps, ServiceCardColorScheme } from './ServiceCard'

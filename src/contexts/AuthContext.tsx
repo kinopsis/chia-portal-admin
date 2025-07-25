@@ -33,6 +33,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
+  // Cache for user profiles to avoid unnecessary refetches
+  const profileCache = React.useRef<Map<string, { profile: AppUser; timestamp: number }>>(new Map())
+
   useEffect(() => {
     // Get initial session with error handling
     const getInitialSession = async () => {
@@ -64,36 +67,85 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       try {
+        console.log('🔄 Auth state change:', event, session?.user?.id)
+
         setSession(session)
         setUser(session?.user ?? null)
 
         if (session?.user) {
-          await fetchUserProfile(session.user.id)
+          // Only fetch profile if we don't have it or if it's a different user
+          if (!userProfile || userProfile.id !== session.user.id) {
+            await fetchUserProfile(session.user.id)
+          }
         } else {
           setUserProfile(null)
         }
       } catch (error) {
         console.warn('Error in auth state change:', error)
       } finally {
-        setLoading(false)
+        // Only set loading to false if we're not in the middle of fetching profile
+        if (!session?.user || userProfile?.id === session.user.id) {
+          setLoading(false)
+        }
       }
     })
 
     return () => subscription.unsubscribe()
   }, [])
 
-  const fetchUserProfile = async (userId: string) => {
+  const fetchUserProfile = async (userId: string, retryCount = 0, forceRefresh = false) => {
+    // Check cache first (valid for 5 minutes)
+    const cached = profileCache.current.get(userId)
+    const cacheAge = cached ? Date.now() - cached.timestamp : Infinity
+    const cacheValid = cacheAge < 5 * 60 * 1000 // 5 minutes
+
+    if (cached && cacheValid && !forceRefresh) {
+      console.log('📋 Using cached user profile for:', userId)
+      setUserProfile(cached.profile)
+      return
+    }
+
     try {
+      console.log('🔄 Fetching user profile for:', userId)
       const { data, error } = await supabase.from('users').select('*').eq('id', userId).single()
 
       if (error) {
         console.error('Error fetching user profile:', error)
+
+        // Retry up to 3 times with exponential backoff
+        if (retryCount < 3) {
+          const delay = Math.pow(2, retryCount) * 1000 // 1s, 2s, 4s
+          setTimeout(() => {
+            fetchUserProfile(userId, retryCount + 1, forceRefresh)
+          }, delay)
+          return
+        }
+
+        // After 3 retries, set userProfile to null but keep user session
+        setUserProfile(null)
         return
       }
 
+      // Cache the profile
+      profileCache.current.set(userId, {
+        profile: data,
+        timestamp: Date.now()
+      })
+
       setUserProfile(data)
+      console.log('✅ User profile loaded successfully:', data.nombre)
     } catch (error) {
       console.error('Error fetching user profile:', error)
+
+      // Retry logic for network errors
+      if (retryCount < 3) {
+        const delay = Math.pow(2, retryCount) * 1000
+        setTimeout(() => {
+          fetchUserProfile(userId, retryCount + 1, forceRefresh)
+        }, delay)
+      } else {
+        setUserProfile(null)
+      }
     }
   }
 
@@ -181,8 +233,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('id', user.id)
 
       if (!error) {
-        // Refresh user profile
-        await fetchUserProfile(user.id)
+        // Invalidate cache and refresh user profile
+        profileCache.current.delete(user.id)
+        await fetchUserProfile(user.id, 0, true)
       }
 
       return { error }

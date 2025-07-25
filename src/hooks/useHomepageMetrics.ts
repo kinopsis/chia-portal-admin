@@ -29,8 +29,17 @@ interface MetricsResponse {
 }
 
 export function useHomepageMetrics(): UseHomepageMetricsReturn {
-  const [metrics, setMetrics] = useState<HomepageMetrics | null>(null)
-  const [loading, setLoading] = useState(true)
+  // Initialize with stable placeholder data to prevent layout shifts
+  // Using consistent values that match expected data structure
+  const [metrics, setMetrics] = useState<HomepageMetrics | null>({
+    dependencias: 14,
+    subdependencias: 75,
+    tramites: 109,
+    opas: 722,
+    faqs: 331,
+    lastUpdated: new Date().toISOString()
+  })
+  const [loading, setLoading] = useState(false) // Start as false to prevent skeleton flash
   const [error, setError] = useState<string | null>(null)
 
   const fetchMetrics = useCallback(async () => {

@@ -2,13 +2,21 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Header, Footer } from '@/components'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 import { QueryProvider } from '@/providers/QueryProvider'
 import { ConditionalLayout } from '@/components/layout'
 import { SkipLink } from '@/components/atoms'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import { MobileOptimizationProvider, PerformanceProvider, PerformanceMonitor, AccessibilityProvider } from '@/components/providers'
+import { initializeAccessibility } from '@/utils/accessibilityUtils'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap', // Prevent FOIT/FOUT and reduce CLS
+  preload: true,
+  fallback: ['system-ui', 'arial'] // Fallback fonts to prevent layout shifts
+})
 
 export const metadata: Metadata = {
   title: 'Portal de Atención Ciudadana - Chía',
@@ -35,11 +43,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </SkipLink>
 
         <ErrorBoundary>
-          <QueryProvider>
-            <AuthProvider>
-              <ConditionalLayout>{children}</ConditionalLayout>
-            </AuthProvider>
-          </QueryProvider>
+          <AccessibilityProvider>
+            <PerformanceProvider enableMonitoring={true}>
+              <MobileOptimizationProvider>
+                <ThemeProvider defaultTheme="system" enableTransitions={true}>
+                  <QueryProvider>
+                    <AuthProvider>
+                      <ConditionalLayout>{children}</ConditionalLayout>
+                      <PerformanceMonitor />
+                    </AuthProvider>
+                  </QueryProvider>
+                </ThemeProvider>
+              </MobileOptimizationProvider>
+            </PerformanceProvider>
+          </AccessibilityProvider>
         </ErrorBoundary>
       </body>
     </html>

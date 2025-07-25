@@ -204,9 +204,9 @@ describe('DataTable End-to-End Workflows', () => {
           onSelectionChange={onSelectionChange}
           rowActions={mockRowActions}
           bulkActions={mockBulkActions}
-          searchable={true}
-          filterable={true}
-          advancedFilters={true}
+          showSearchAndFilters={true}
+          searchPlaceholder="Buscar..."
+          showAdvancedFilters={true}
           pagination={{
             pageSize: 10,
             showSizeChanger: true,
@@ -285,8 +285,8 @@ describe('DataTable End-to-End Workflows', () => {
         <DataTable
           data={testUsers}
           columns={userColumns}
-          advancedFilters={true}
-          filterable={true}
+          showSearchAndFilters={true}
+          showAdvancedFilters={true}
         />
       )
 
@@ -444,8 +444,8 @@ describe('DataTable End-to-End Workflows', () => {
           data={testUsers}
           columns={userColumns}
           selectable={true}
-          searchable={true}
-          filterable={true}
+          showSearchAndFilters={true}
+          searchPlaceholder="Buscar..."
           pagination={{ pageSize: 20 }}
         />
       )

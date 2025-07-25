@@ -63,6 +63,7 @@ export async function GET() {
         .select('*', { count: 'exact', head: true })
         .eq('activo', true),
       
+      // Try 'activa' field first for OPAs (common in Spanish databases)
       supabase
         .from('opas')
         .select('*', { count: 'exact', head: true })
@@ -75,33 +76,64 @@ export async function GET() {
     ])
 
     // Helper function to extract count from settled promise
-    const getCount = (result: PromiseSettledResult<any>): number => {
-      if (result.status === 'fulfilled' && result.value.count !== null) {
-        return result.value.count
+    const getCount = (result: PromiseSettledResult<any>, tableName: string = 'unknown'): number => {
+      if (result.status === 'fulfilled') {
+        if (result.value.count !== null && result.value.count !== undefined) {
+          return result.value.count
+        }
+        console.warn(`Count is null for table ${tableName}:`, result.value)
+        return 0
       }
-      console.error('Failed to get count:', result.status === 'rejected' ? result.reason : 'null count')
+      console.error(`Failed to get count for table ${tableName}:`, result.reason)
       return 0
     }
 
     // Build metrics object
     const metrics: SystemMetrics = {
-      dependencias: getCount(dependenciasResult),
-      subdependencias: getCount(subdependenciasResult),
-      tramites: getCount(tramitesResult),
-      opas: getCount(opasResult),
-      faqs: getCount(faqsResult),
-      usuarios: getCount(usuariosResult),
-      tramitesActivos: getCount(tramitesActivosResult),
-      opasActivas: getCount(opasActivasResult),
-      faqsActivas: getCount(faqsActivasResult),
+      dependencias: getCount(dependenciasResult, 'dependencias'),
+      subdependencias: getCount(subdependenciasResult, 'subdependencias'),
+      tramites: getCount(tramitesResult, 'tramites'),
+      opas: getCount(opasResult, 'opas'),
+      faqs: getCount(faqsResult, 'faqs'),
+      usuarios: getCount(usuariosResult, 'usuarios'),
+      tramitesActivos: getCount(tramitesActivosResult, 'tramites_activos'),
+      opasActivas: getCount(opasActivasResult, 'opas_activas'),
+      faqsActivas: getCount(faqsActivasResult, 'faqs_activas'),
       lastUpdated: new Date().toISOString()
     }
 
-    // Log metrics for monitoring
-    console.log('System metrics generated:', {
-      ...metrics,
-      timestamp: new Date().toISOString()
-    })
+    // Fallback for OPAs activas if the field doesn't exist or returns 0
+    if (metrics.opasActivas === 0 && metrics.opas > 0) {
+      try {
+        const { count: opasActivoCount } = await supabase
+          .from('opas')
+          .select('*', { count: 'exact', head: true })
+          .eq('activo', true)
+
+        if (opasActivoCount && opasActivoCount > 0) {
+          metrics.opasActivas = opasActivoCount
+        } else {
+          // If no active field works, assume all are active
+          metrics.opasActivas = metrics.opas
+        }
+      } catch (error) {
+        console.warn('Failed to get OPAs activas with fallback field:', error)
+        // Fallback to total count if active field doesn't exist
+        metrics.opasActivas = metrics.opas
+      }
+    }
+
+    // Log metrics for monitoring (only in development or if there are issues)
+    if (process.env.NODE_ENV === 'development' || metrics.usuarios === 0 || metrics.opasActivas === 0) {
+      console.log('📊 System metrics generated:', {
+        summary: `${metrics.dependencias} deps, ${metrics.tramites} trámites, ${metrics.opas} opas, ${metrics.faqs} faqs`,
+        issues: {
+          ...(metrics.usuarios === 0 && { usuarios: 'No users count available' }),
+          ...(metrics.opasActivas === 0 && metrics.opas > 0 && { opasActivas: 'No active OPAs found' })
+        },
+        timestamp: new Date().toISOString()
+      })
+    }
 
     return NextResponse.json({
       success: true,

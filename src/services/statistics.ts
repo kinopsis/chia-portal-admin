@@ -92,22 +92,26 @@ export class StatisticsService {
       ])
 
       // Helper function to extract count from settled promise
-      const getCount = (result: PromiseSettledResult<any>): number => {
-        if (result.status === 'fulfilled' && result.value.count !== null) {
-          return result.value.count
+      const getCount = (result: PromiseSettledResult<any>, tableName: string = 'unknown'): number => {
+        if (result.status === 'fulfilled') {
+          if (result.value.count !== null && result.value.count !== undefined) {
+            return result.value.count
+          }
+          console.warn(`Count is null for table ${tableName}:`, result.value)
+          return 0
         }
-        console.warn('Failed to get count:', result.status === 'rejected' ? result.reason : 'null count')
+        console.warn(`Failed to get count for table ${tableName}:`, result.reason)
         return 0
       }
 
-      const dependencias = getCount(dependenciasResult)
-      const subdependencias = getCount(subdependenciasResult)
-      const tramites = getCount(tramitesResult)
-      const tramitesActivos = getCount(tramitesActivosResult)
-      const opas = getCount(opasResult)
-      let opasActivas = getCount(opasActivasResult)
-      const faqs = getCount(faqsResult)
-      const faqsActivas = getCount(faqsActivasResult)
+      const dependencias = getCount(dependenciasResult, 'dependencias')
+      const subdependencias = getCount(subdependenciasResult, 'subdependencias')
+      const tramites = getCount(tramitesResult, 'tramites')
+      const tramitesActivos = getCount(tramitesActivosResult, 'tramites_activos')
+      const opas = getCount(opasResult, 'opas')
+      let opasActivas = getCount(opasActivasResult, 'opas_activas')
+      const faqs = getCount(faqsResult, 'faqs')
+      const faqsActivas = getCount(faqsActivasResult, 'faqs_activas')
 
       // If 'activa' field failed, try 'activo' field for OPAs
       if (opasActivas === 0 && opas > 0) {

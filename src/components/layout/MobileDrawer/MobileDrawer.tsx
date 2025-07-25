@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { XMarkIcon, MagnifyingGlassIcon, UserIcon, BellIcon } from '@heroicons/react/24/outline'
+import { XMarkIcon, UserIcon, BellIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/atoms'
 import Navigation, { getMainNavigation, getUserNavigation } from '../Navigation'
 import { useAuth } from '@/hooks'
@@ -181,13 +181,13 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, className,
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-primary-green rounded-full flex items-center justify-center">
                 <span className="text-white font-semibold">
-                  {userProfile.nombre.charAt(0)}
-                  {userProfile.apellido.charAt(0)}
+                  {userProfile.nombre?.charAt(0) || '?'}
+                  {userProfile.apellido?.charAt(0) || ''}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">
-                  {userProfile.nombre} {userProfile.apellido}
+                  {userProfile.nombre || 'Usuario'} {userProfile.apellido || ''}
                 </p>
                 <p className="text-xs text-gray-500 capitalize">{userProfile.rol}</p>
               </div>
@@ -234,10 +234,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, className,
               Acciones Rápidas
             </h3>
 
-            <Button variant="ghost" size="sm" className="w-full justify-start">
-              <MagnifyingGlassIcon className="w-5 h-5 mr-3" />
-              Buscar
-            </Button>
+            {/* Search functionality available in internal pages */}
 
             {user ? (
               <Button variant="ghost" size="sm" className="w-full justify-start">
@@ -246,13 +243,10 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, className,
               </Button>
             ) : (
               <div className="space-y-2">
-                <Link href="/auth/register" onClick={onClose}>
-                  <Button variant="outline" size="sm" className="w-full">
-                    Registrarse
-                  </Button>
-                </Link>
+                {/* Login button - Consistent with header design */}
                 <Link href="/auth/login" onClick={onClose}>
                   <Button variant="primary" size="sm" className="w-full">
+                    <UserIcon className="w-4 h-4 mr-2" />
                     Iniciar Sesión
                   </Button>
                 </Link>
