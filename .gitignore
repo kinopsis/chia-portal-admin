@@ -1,74 +1,131 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# ===================================================================
+# Portal de Atención Ciudadana de Chía - .gitignore
+# Configuración optimizada para producción y despliegue en Coolify
+# ===================================================================
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
+# ===================================================================
+# DOCUMENTACIÓN Y ARCHIVOS NO ESENCIALES PARA PRODUCCIÓN
+# ===================================================================
 
-# testing
-/coverage
+# Directorios de documentación (excluidos para optimizar repositorio)
+/Docs/
+/docs/
+/documentation/
+/doc/
 
-# next.js
-/.next/
-/out/
+# Archivos de documentación adicionales (mantener README.md principal)
+README-*.md
+CHANGELOG-*.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+SECURITY.md
+*.draft.md
 
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env*.local
-.env
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# IDE
+# Archivos de configuración de desarrollo local
+.augment/
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
-# OS
-Thumbs.db
+# ===================================================================
+# DEPENDENCIAS Y MÓDULOS
+# ===================================================================
 
-# Logs
-logs
+# Node.js dependencies
+/node_modules/
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+jspm_packages/
+
+# Package manager files (mantener package.json y package-lock.json)
+.npm
+.yarn-integrity
+yarn-error.log*
+npm-debug.log*
+
+# ===================================================================
+# BUILD Y COMPILACIÓN
+# ===================================================================
+
+# Next.js build outputs
+/.next/
+/out/
+/build/
+.next
+
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts
+tsconfig.temp.tsbuildinfo
+
+# Production builds
+/dist/
+/build/
+
+# ===================================================================
+# TESTING Y COVERAGE
+# ===================================================================
+
+# Test coverage reports
+/coverage/
+.nyc_output
+test-report.json
+
+# Test artifacts y temporales
+/tests/screenshots/
+/tests/videos/
+/tests/reports/
+/tests/artifacts/
+playwright-report/
+test-results/
+
+# ===================================================================
+# LOGS Y ARCHIVOS TEMPORALES
+# ===================================================================
+
+# Log files
+logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # Runtime data
-pids
+pids/
 *.pid
 *.seed
 *.pid.lock
 
-# Coverage directory used by tools like istanbul
-coverage/
+# Temporary folders
+tmp/
+temp/
+.tmp/
 
-# nyc test coverage
-.nyc_output
+# ===================================================================
+# VARIABLES DE ENTORNO Y CONFIGURACIÓN SENSIBLE
+# ===================================================================
 
-# Dependency directories
-node_modules/
-jspm_packages/
+# Environment files (mantener .env.example)
+.env
+.env*.local
+.env.production
+.env.development
 
-# Optional npm cache directory
-.npm
+# Archivos de configuración local
+config.local.js
+config.local.json
 
-# Optional eslint cache
+# ===================================================================
+# CACHE Y ARCHIVOS GENERADOS
+# ===================================================================
+
+# Cache directories
+.cache/
+.parcel-cache/
 .eslintcache
 
 # Microbundle cache
@@ -77,34 +134,89 @@ jspm_packages/
 .rts2_cache_es/
 .rts2_cache_umd/
 
+# ===================================================================
+# ARCHIVOS DEL SISTEMA OPERATIVO
+# ===================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+
+# ===================================================================
+# HERRAMIENTAS DE DESARROLLO
+# ===================================================================
+
+# Storybook build outputs
+.out/
+.storybook-out/
+storybook-static/
+
+# Vercel
+.vercel/
+
 # Optional REPL history
 .node_repl_history
 
 # Output of 'npm pack'
 *.tgz
 
-# Yarn Integrity file
-.yarn-integrity
+# ===================================================================
+# ARCHIVOS DE BACKUP Y TEMPORALES
+# ===================================================================
 
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
 
-# Next.js build output
-.next
+# Temporary files
+*.tmp
+*.temp
 
-# Nuxt.js build / generate output
-.nuxt
-dist
+# Editor temporales
+.#*
+\#*#
 
-# Storybook build outputs
-.out
-.storybook-out
+# ===================================================================
+# ARCHIVOS ESENCIALES MANTENIDOS (NO IGNORAR)
+# ===================================================================
 
-# Temporary folders
-tmp/
-temp/
+# MANTENER ESTOS ARCHIVOS CRÍTICOS:
+# - README.md (principal)
+# - package.json y package-lock.json
+# - coolify.yml (configuración de despliegue)
+# - docker-compose.yml (si existe)
+# - Dockerfile (si existe)
+# - .env.example (template de variables)
+# - /src/ (código fuente completo)
+# - /public/ (assets públicos)
+# - /supabase/ (migraciones de base de datos)
+# - tailwind.config.ts, next.config.js, tsconfig.json
+# - jest.config.js, playwright.config.ts (configuración de testing)
 
-# Documentation and configuration directories
-/Docs
-/.augment
+# ===================================================================
+# CONFIGURACIÓN ESPECÍFICA PARA COOLIFY
+# ===================================================================
+
+# Mantener archivos necesarios para despliegue en Coolify:
+# ✅ coolify.yml - Configuración de despliegue
+# ✅ package.json - Dependencias y scripts
+# ✅ next.config.js - Configuración de Next.js
+# ✅ /src/ - Código fuente completo
+# ✅ /public/ - Assets estáticos
+# ✅ /supabase/migrations/ - Migraciones de base de datos
