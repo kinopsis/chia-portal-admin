@@ -61,25 +61,26 @@ function LoginContent() {
 
   // Handle redirect after successful authentication
   useEffect(() => {
-    // Only attempt redirect if:
-    // 1. User is authenticated
-    // 2. User profile is loaded
-    // 3. Auth context is not loading
-    // 4. We haven't already attempted a redirect
-    // 5. We're not currently submitting the form
-    if (user && userProfile && !authLoading && !redirectAttempted.current && !isSubmitting) {
-      console.log('🔄 Attempting redirect for user:', userProfile.email, 'with role:', userProfile.rol)
-
+    // Client-side fallback redirection (middleware has session sync issues)
+    // Allow redirect even when form is submitting since authentication is complete
+    if (user && userProfile && !authLoading && !redirectAttempted.current) {
       redirectAttempted.current = true
       setRedirecting(true)
+      setIsSubmitting(false) // Reset submitting state since auth is complete
 
-      const redirectTo = searchParams.get('redirectTo')
-      const redirectPath = getPostLoginRedirect(userProfile.rol, redirectTo || undefined)
+      // Determine redirect path based on user role
+      let redirectPath = '/dashboard' // Default for ciudadano
 
-      console.log('🎯 Redirecting to:', redirectPath)
+      if (userProfile.rol === 'admin') {
+        redirectPath = '/admin'
+      } else if (userProfile.rol === 'funcionario') {
+        redirectPath = '/funcionario'
+      }
 
-      // Use replace instead of push for smoother navigation
-      router.replace(redirectPath)
+      // Perform client-side redirect
+      setTimeout(() => {
+        router.push(redirectPath)
+      }, 1500) // Small delay to show success message
     }
   }, [user, userProfile, authLoading, router, searchParams, isSubmitting])
 
@@ -90,8 +91,6 @@ function LoginContent() {
     setRedirecting(false)
     redirectAttempted.current = false // Reset redirect flag for new login attempt
 
-    console.log('🔐 Starting login process...')
-
     const { error } = await signIn(email, password)
 
     if (error) {
@@ -100,7 +99,6 @@ function LoginContent() {
       setIsSubmitting(false)
       redirectAttempted.current = false
     } else {
-      console.log('✅ Login successful, waiting for profile to load...')
       // Don't set isSubmitting to false here - let the useEffect handle the redirect
       // The loading state will be managed by the redirect process
     }
@@ -159,16 +157,33 @@ function LoginContent() {
                 role="status"
                 aria-live="polite"
               >
-                <div className="flex items-center space-x-3">
-                  <ProgressIndicator
-                    type="dots"
-                    size="sm"
-                    color="success"
-                    indeterminate={true}
-                  />
-                  <p className="text-sm xs:text-base text-green-600 font-medium">
-                    ¡Inicio de sesión exitoso! Redirigiendo...
-                  </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <ProgressIndicator
+                      type="dots"
+                      size="sm"
+                      color="success"
+                      indeterminate={true}
+                    />
+                    <p className="text-sm xs:text-base text-green-600 font-medium">
+                      ¡Inicio de sesión exitoso! Redirigiendo...
+                    </p>
+                  </div>
+                  {userProfile && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const redirectPath = userProfile.rol === 'admin' ? '/admin' :
+                                           userProfile.rol === 'funcionario' ? '/funcionario' : '/dashboard'
+                        router.push(redirectPath)
+                      }}
+                      className="ml-4 text-green-600 border-green-600 hover:bg-green-600 hover:text-white"
+                    >
+                      {userProfile.rol === 'admin' ? 'Ir a Admin' :
+                       userProfile.rol === 'funcionario' ? 'Ir a Panel' : 'Ir a Dashboard'}
+                    </Button>
+                  )}
                 </div>
               </div>
             )}

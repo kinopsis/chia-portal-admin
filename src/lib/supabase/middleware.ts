@@ -39,6 +39,7 @@ export async function updateSession(request: NextRequest) {
 
   const {
     data: { user },
+    error: userError,
   } = await supabase.auth.getUser()
 
   // Protected routes that require authentication
@@ -81,11 +82,19 @@ export async function updateSession(request: NextRequest) {
 
   if (isAuthRoute && user) {
     // Get user role from database for role-based redirect
-    const { data: userProfile } = await supabase
+    const { data: userProfile, error: profileError } = await supabase
       .from('users')
       .select('rol')
       .eq('id', user.id)
       .single()
+
+    if (profileError) {
+      console.error('❌ Middleware: Error fetching user profile:', profileError)
+      // Fallback to dashboard if profile fetch fails
+      const url = request.nextUrl.clone()
+      url.pathname = '/dashboard'
+      return NextResponse.redirect(url)
+    }
 
     const url = request.nextUrl.clone()
 
