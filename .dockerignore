@@ -1,84 +1,70 @@
-# Archivos y directorios a ignorar en Docker build
+# ===================================================================
+# Portal de Atención Ciudadana de Chía - .dockerignore
+# Configuración optimizada para imagen Docker de producción
+# Compatible con despliegue en Coolify
+# ===================================================================
 
-# Dependencies
-node_modules
+# ===================================================================
+# HERRAMIENTAS DE DESARROLLO Y CONFIGURACIÓN LOCAL
+# ===================================================================
+
+# Augment AI Assistant (CRÍTICO - Excluir del contenedor)
+.augment/
+.augment/**
+.augmented/
+.augmented/**
+
+# IDE y editores
+.vscode/
+.vscode/**
+.idea/
+.idea/**
+*.swp
+*.swo
+*~
+.editorconfig
+
+# ===================================================================
+# DEPENDENCIAS Y CACHE (Se reinstalan en Docker)
+# ===================================================================
+
+# Node.js dependencies (se reinstalan con npm ci)
+node_modules/
+node_modules/**
+
+# Package manager cache
+.npm/
+.yarn/
+.pnp/
+.pnp.js
+.yarn-integrity
+yarn.lock
+.yarn-error.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Next.js
+# ===================================================================
+# BUILD ARTIFACTS Y CACHE
+# ===================================================================
+
+# Next.js build outputs (se generan en Docker)
 .next/
+.next/**
 out/
+out/**
 build/
-
-# Environment files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Testing
-coverage/
-.nyc_output
-tests/
-
-# IDE and editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Git
-.git
-.gitignore
-
-# Documentation - Exclude all documentation files and folders
-README.md
-CHANGELOG.md
-LICENSE
-*.md
-# Exclude Docs folder (capital D) and all its contents
-Docs/
-Docs/**
-# Exclude docs folder (lowercase d) and all its contents
-docs/
-docs/**
-# Exclude other common documentation patterns
-documentation/
-Documentation/
-
-# Logs
-logs
-*.log
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
+build/**
 
 # TypeScript cache
 *.tsbuildinfo
+next-env.d.ts
 
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
+# Cache directories
+.cache/
+.parcel-cache/
 .eslintcache
+.stylelintcache
 
 # Microbundle cache
 .rpt2_cache/
@@ -86,23 +72,202 @@ coverage/
 .rts2_cache_es/
 .rts2_cache_umd/
 
+# ===================================================================
+# DOCUMENTACIÓN (No necesaria en producción)
+# ===================================================================
+
+# Directorios de documentación
+Docs/
+Docs/**
+docs/
+docs/**
+documentation/
+Documentation/
+doc/
+doc/**
+
+# Archivos de documentación
+README.md
+README-*.md
+CHANGELOG.md
+CHANGELOG-*.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+SECURITY.md
+LICENSE
+LICENSE.md
+*.draft.md
+
+# ===================================================================
+# TESTING Y COVERAGE (No necesario en producción)
+# ===================================================================
+
+# Test directories
+tests/
+tests/**
+test/
+test/**
+__tests__/
+__tests__/**
+
+# Coverage reports
+coverage/
+coverage/**
+.nyc_output/
+.nyc_output/**
+
+# Test artifacts
+test-report.json
+test-results/
+test-results/**
+playwright-report/
+playwright-report/**
+
+# E2E test artifacts
+screenshots/
+videos/
+artifacts/
+
+# ===================================================================
+# VARIABLES DE ENTORNO Y CONFIGURACIÓN SENSIBLE
+# ===================================================================
+
+# Environment files (usar variables de Coolify)
+.env
+.env.*
+!.env.example
+
+# Configuración local
+config.local.js
+config.local.json
+
+# ===================================================================
+# LOGS Y ARCHIVOS TEMPORALES
+# ===================================================================
+
+# Log files
+logs/
+logs/**
+*.log
+
+# Runtime data
+pids/
+pids/**
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary folders
+tmp/
+tmp/**
+temp/
+temp/**
+
+# ===================================================================
+# ARCHIVOS DEL SISTEMA OPERATIVO
+# ===================================================================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+
+# ===================================================================
+# CONTROL DE VERSIONES Y HERRAMIENTAS
+# ===================================================================
+
+# Git (no necesario en contenedor)
+.git/
+.git/**
+.gitignore
+.gitattributes
+.gitmodules
+
+# GitHub
+.github/
+.github/**
+
+# Herramientas de desarrollo
+.husky/
+.husky/**
+
+# ===================================================================
+# HERRAMIENTAS DE BUILD Y ANÁLISIS
+# ===================================================================
+
+# Storybook
+.storybook/
+.storybook/**
+.out/
+.storybook-out/
+storybook-static/
+
+# Bundle analyzers
+.bundle-analyzer/
+bundle-report.html
+
+# Vercel (no necesario en Coolify)
+.vercel/
+.vercel/**
+
+# ===================================================================
+# ARCHIVOS DE BACKUP Y TEMPORALES
+# ===================================================================
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+
+# Editor temporales
+.#*
+\#*#
+
 # Optional REPL history
 .node_repl_history
 
 # Output of 'npm pack'
 *.tgz
 
-# Yarn Integrity file
-.yarn-integrity
+# ===================================================================
+# ARCHIVOS ESENCIALES MANTENIDOS (NO IGNORAR)
+# ===================================================================
 
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
+# MANTENER ESTOS ARCHIVOS CRÍTICOS PARA DOCKER BUILD:
+# ✅ package.json - Dependencias y scripts
+# ✅ package-lock.json - Lock de dependencias exactas
+# ✅ next.config.js - Configuración de Next.js
+# ✅ tailwind.config.ts - Configuración de Tailwind
+# ✅ tsconfig.json - Configuración de TypeScript
+# ✅ postcss.config.js - Configuración de PostCSS
+# ✅ /src/ - Código fuente completo
+# ✅ /public/ - Assets estáticos
+# ✅ /supabase/migrations/ - Migraciones de base de datos
+# ✅ .env.example - Template de variables de entorno
 
-# Storybook build outputs
-.out
-.storybook-out
+# ===================================================================
+# CONFIGURACIÓN ESPECÍFICA PARA COOLIFY
+# ===================================================================
 
-# Temporary folders
-tmp/
-temp/
+# Archivos necesarios para build en Coolify:
+# ✅ package.json - Para npm ci
+# ✅ package-lock.json - Para instalación exacta
+# ✅ next.config.js - Para configuración de build
+# ✅ /src/ - Código fuente de la aplicación
+# ✅ /public/ - Assets públicos servidos por Next.js
