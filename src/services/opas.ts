@@ -26,12 +26,15 @@ export class OPAsServerService {
 
 // Client-side service functions
 export class OPAsClientService {
-  async getAll(filters?: SearchFilters & { page?: number; limit?: number }) {
+  async getAll(filters?: SearchFilters & { page?: number; limit?: number; tiene_pago?: boolean }) {
     let query = supabase
       .from('opas')
       .select(
         `
         *,
+        requisitos,
+        visualizacion_suit,
+        visualizacion_gov,
         subdependencias (
           id,
           codigo,
@@ -48,9 +51,9 @@ export class OPAsClientService {
       )
       .order('nombre', { ascending: true })
 
-    // Apply filters
+    // Enhanced search including new fields
     if (filters?.query) {
-      query = query.or(`nombre.ilike.%${filters.query}%,codigo_opa.ilike.%${filters.query}%`)
+      query = query.or(`nombre.ilike.%${filters.query}%,descripcion.ilike.%${filters.query}%,codigo_opa.ilike.%${filters.query}%,formulario.ilike.%${filters.query}%`)
     }
 
     if (filters?.subdependencia_id) {
@@ -59,6 +62,11 @@ export class OPAsClientService {
 
     if (filters?.activo !== undefined) {
       query = query.eq('activo', filters.activo)
+    }
+
+    // Add payment filter
+    if (filters?.tiene_pago !== undefined) {
+      query = query.eq('tiene_pago', filters.tiene_pago)
     }
 
     // Apply pagination
@@ -146,6 +154,9 @@ export class OPAsClientService {
       .select(
         `
         *,
+        requisitos,
+        visualizacion_suit,
+        visualizacion_gov,
         subdependencias (
           nombre,
           dependencias (
@@ -154,7 +165,7 @@ export class OPAsClientService {
         )
       `
       )
-      .or(`nombre.ilike.%${query}%,descripcion.ilike.%${query}%`)
+      .or(`nombre.ilike.%${query}%,descripcion.ilike.%${query}%,codigo_opa.ilike.%${query}%,formulario.ilike.%${query}%`)
       .eq('activo', true)
       .limit(limit)
 

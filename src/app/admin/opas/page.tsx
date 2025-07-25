@@ -179,6 +179,60 @@ export default function OPAsAdminPage() {
       placeholder: 'Nombre de la OPA',
     },
     {
+      name: 'descripcion',
+      label: 'Descripción',
+      type: 'textarea',
+      required: true,
+      placeholder: 'Descripción detallada del servicio OPA...',
+      helperText: 'Mínimo 50 caracteres. Describe el propósito y alcance del servicio.',
+      rows: 4,
+    },
+    {
+      name: 'formulario',
+      label: 'Información del Formulario',
+      type: 'textarea',
+      placeholder: 'Descripción del formulario requerido, instrucciones o URL...',
+      helperText: 'Información sobre formularios necesarios para el trámite.',
+      rows: 3,
+    },
+    {
+      name: 'tiempo_respuesta',
+      label: 'Tiempo de Respuesta',
+      type: 'text',
+      required: true,
+      placeholder: 'Ej: 5 días hábiles, 1 semana, Inmediato',
+      helperText: 'Tiempo estimado de procesamiento del trámite.',
+    },
+    {
+      name: 'tiene_pago',
+      label: 'Requiere Pago',
+      type: 'checkbox',
+      helperText: 'Marcar si el trámite requiere pago de tasas o derechos.',
+    },
+    {
+      name: 'requisitos',
+      label: 'Requisitos',
+      type: 'textarea',
+      required: true,
+      placeholder: 'Ingrese cada requisito en una línea separada...',
+      helperText: 'Lista de requisitos necesarios (uno por línea).',
+      rows: 5,
+    },
+    {
+      name: 'visualizacion_suit',
+      label: 'URL Portal SUIT',
+      type: 'text',
+      placeholder: 'https://suit.gov.co/portal/...',
+      helperText: 'URL del trámite en el portal SUIT (opcional).',
+    },
+    {
+      name: 'visualizacion_gov',
+      label: 'URL Portal GOV.CO',
+      type: 'text',
+      placeholder: 'https://www.gov.co/ficha-tramites-y-servicios/...',
+      helperText: 'URL del trámite en el portal GOV.CO (opcional).',
+    },
+    {
       name: 'dependencia_id',
       label: 'Dependencia',
       type: 'select',
@@ -249,9 +303,22 @@ export default function OPAsAdminPage() {
     try {
       setIsSubmitting(true)
 
+      // Process requisitos from textarea to array
+      const requisitosText = formData.requisitos as string
+      const requisitosArray = requisitosText
+        ? requisitosText.split('\n').filter(req => req.trim().length > 0)
+        : []
+
       const opaData = {
         codigo_opa: formData.codigo_opa as string,
         nombre: formData.nombre as string,
+        descripcion: formData.descripcion as string,
+        formulario: formData.formulario as string || null,
+        tiempo_respuesta: formData.tiempo_respuesta as string,
+        tiene_pago: Boolean(formData.tiene_pago),
+        requisitos: requisitosArray,
+        visualizacion_suit: formData.visualizacion_suit as string || null,
+        visualizacion_gov: formData.visualizacion_gov as string || null,
         subdependencia_id: formData.subdependencia_id as string,
         activo: Boolean(formData.activo),
       }
@@ -275,8 +342,21 @@ export default function OPAsAdminPage() {
     try {
       setIsSubmitting(true)
 
+      // Process requisitos from textarea to array
+      const requisitosText = formData.requisitos as string
+      const requisitosArray = requisitosText
+        ? requisitosText.split('\n').filter(req => req.trim().length > 0)
+        : []
+
       const updates = {
         nombre: formData.nombre as string,
+        descripcion: formData.descripcion as string,
+        formulario: formData.formulario as string || null,
+        tiempo_respuesta: formData.tiempo_respuesta as string,
+        tiene_pago: Boolean(formData.tiene_pago),
+        requisitos: requisitosArray,
+        visualizacion_suit: formData.visualizacion_suit as string || null,
+        visualizacion_gov: formData.visualizacion_gov as string || null,
         subdependencia_id: formData.subdependencia_id as string,
         activo: Boolean(formData.activo),
       }
@@ -405,7 +485,11 @@ export default function OPAsAdminPage() {
             id="create-opa-form"
             fields={getFormFields()}
             onSubmit={handleSubmitCreate}
-            initialData={{ activo: true }}
+            initialData={{
+              activo: true,
+              tiene_pago: false,
+              tiempo_respuesta: '5 días hábiles'
+            }}
             validateOnChange
             validateOnBlur
           />
@@ -439,6 +523,13 @@ export default function OPAsAdminPage() {
               initialData={{
                 codigo_opa: selectedOPA.codigo_opa,
                 nombre: selectedOPA.nombre,
+                descripcion: selectedOPA.descripcion || '',
+                formulario: selectedOPA.formulario || '',
+                tiempo_respuesta: selectedOPA.tiempo_respuesta || '',
+                tiene_pago: selectedOPA.tiene_pago || false,
+                requisitos: selectedOPA.requisitos ? selectedOPA.requisitos.join('\n') : '',
+                visualizacion_suit: selectedOPA.visualizacion_suit || '',
+                visualizacion_gov: selectedOPA.visualizacion_gov || '',
                 dependencia_id: selectedOPA.subdependencias?.dependencia_id || '',
                 subdependencia_id: selectedOPA.subdependencia_id,
                 activo: selectedOPA.activo,

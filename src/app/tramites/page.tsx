@@ -33,7 +33,6 @@ const tipoOptions = [
   { value: '', label: 'Todos los tipos' },
   { value: 'tramite', label: 'Solo Trámites' },
   { value: 'opa', label: 'Solo OPAs' },
-  { value: 'faq', label: 'Solo FAQs' },
 ]
 
 // NEW: Payment type options (replaces estado)
@@ -73,7 +72,7 @@ function TramitesContent() {
 
   const breadcrumbs: BreadcrumbItem[] = [
     { label: 'Inicio', href: '/' },
-    { label: 'Búsqueda Global', href: '/tramites' },
+    { label: 'Trámites y OPAs', href: '/tramites' },
   ]
 
   // Fetch data from unified search service
@@ -93,7 +92,7 @@ function TramitesContent() {
           limit: itemsPerPage
         }
 
-        const result = await unifiedSearchService.search(filters)
+        const result = await unifiedSearchService.searchTramitesAndOpas(filters)
 
         setData(result.data)
         setTotalPages(result.pagination.totalPages)
@@ -186,9 +185,9 @@ function TramitesContent() {
           tramitesActivos: 108,
           opas: 722,
           opasActivas: 722,
-          faqs: 330,
-          faqsActivas: 330,
-          totalResults: 1160
+          faqs: 0, // Excluded from this page
+          faqsActivas: 0, // Excluded from this page
+          totalResults: 830 // Only Trámites + OPAs
         })
       } finally {
         setStatisticsLoading(false)
@@ -210,12 +209,11 @@ function TramitesContent() {
     setSelectedTipoPago('')        // NEW (replaces selectedEstado)
   }
 
-  // Statistics - use real database counts instead of filtered results
+  // Statistics - use real database counts instead of filtered results (FAQs excluded)
   const tramitesCount = statistics?.tramites || 0
   const opasCount = statistics?.opas || 0
-  const faqsCount = statistics?.faqs || 0
   const dependenciasCount = statistics?.dependencias || 0
-  const totalResultsCount = statistics?.totalResults || totalResults
+  const totalResultsCount = tramitesCount + opasCount // Only Trámites + OPAs
 
   // Prepare options for dropdowns
   const dependenciasOptions = [
@@ -234,8 +232,8 @@ function TramitesContent() {
   return (
     <div className="min-h-screen bg-gray-50">
       <PageHeader
-        title="Búsqueda Global - Portal Ciudadano"
-        description="Encuentra trámites, OPAs y respuestas en un solo lugar"
+        title="Trámites y OPAs - Portal Ciudadano"
+        description="Encuentra trámites y servicios administrativos (OPAs) en un solo lugar"
         breadcrumbs={breadcrumbs}
       />
       
@@ -257,14 +255,6 @@ function TramitesContent() {
               icon="⚡"
               color="green"
               description="Activas"
-              loading={statisticsLoading}
-            />
-            <MetricCard
-              title="FAQs"
-              value={faqsCount}
-              icon="❓"
-              color="yellow"
-              description="Publicadas"
               loading={statisticsLoading}
             />
             <MetricCard
@@ -294,7 +284,7 @@ function TramitesContent() {
             {/* Search Bar */}
             <div className="mb-4">
               <SearchBar
-                placeholder="Buscar por nombre, código, descripción..."
+                placeholder="Buscar trámites y OPAs por nombre, código, descripción..."
                 onSearch={handleSearch}
               />
             </div>
@@ -406,128 +396,107 @@ function TramitesContent() {
                   <Card key={item.id} className="hover:shadow-lg transition-shadow duration-200">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <Badge
-                            variant={
-                              item.tipo === 'tramite'
-                                ? 'primary'
-                                : item.tipo === 'opa'
-                                ? 'secondary'
-                                : 'success'
-                            }
-                            className="text-xs"
-                          >
-                            {item.tipo === 'tramite'
-                              ? '📄 TRÁMITE'
-                              : item.tipo === 'opa'
-                              ? '⚡ OPA'
-                              : '❓ FAQ'}
-                          </Badge>
-                          <Badge variant="secondary" size="sm">
-                            {item.codigo}
-                          </Badge>
-                          <Badge
-                            variant={item.estado === 'activo' ? 'success' : 'warning'}
-                            size="sm"
-                          >
-                            {item.estado}
-                          </Badge>
-                        </div>
-                        
-                        <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                          {item.nombre}
-                        </h4>
-                        
-                        <p className="text-gray-600 mb-3">
-                          {item.descripcion}
-                        </p>
-
-                        {/* NEW: Requisitos Section - Only for trámites */}
-                        {item.tipo === 'tramite' && item.originalData && (item.originalData as any).requisitos && (
-                          <div className="mb-4 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
-                            <h5 className="text-sm font-semibold text-blue-800 mb-2 flex items-center">
-                              📋 Requisitos
-                            </h5>
-                            <ul className="text-sm text-blue-700 space-y-1">
-                              {((item.originalData as any).requisitos || []).map((requisito: string, index: number) => (
-                                <li key={`${item.id}-req-${index}`} className="flex items-start">
-                                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                                  <span>{requisito}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        {/* NEW: Government Portal Links - Only for trámites */}
-                        {item.tipo === 'tramite' && item.originalData && (
-                          <div className="mb-4 flex items-center space-x-3">
-                            {/* SUIT Portal Link - Only show if URL exists and is valid */}
-                            {(item.originalData as any).visualizacion_suit &&
-                             typeof (item.originalData as any).visualizacion_suit === 'string' &&
-                             (item.originalData as any).visualizacion_suit.trim() !== '' && (
-                              <a
-                                href={(item.originalData as any).visualizacion_suit}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors duration-200"
-                                title="Ver en portal SUIT - Sistema Único de Información de Trámites"
-                              >
-                                <span className="mr-1.5">🏛️</span>
-                                SUIT
-                                <span className="ml-1">↗</span>
-                              </a>
-                            )}
-
-                            {/* GOV.CO Portal Link - Only show if URL exists and is valid */}
-                            {(item.originalData as any).visualizacion_gov &&
-                             typeof (item.originalData as any).visualizacion_gov === 'string' &&
-                             (item.originalData as any).visualizacion_gov.trim() !== '' && (
-                              <a
-                                href={(item.originalData as any).visualizacion_gov}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors duration-200"
-                                title="Ver en portal GOV.CO - Portal Único del Estado Colombiano"
-                              >
-                                <span className="mr-1.5">🌐</span>
-                                GOV.CO
-                                <span className="ml-1">↗</span>
-                              </a>
-                            )}
-                          </div>
-                        )}
-
-                        <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
-                          <span>🏛️ {item.dependencia}</span>
-                          {item.subdependencia && <span>📂 {item.subdependencia}</span>}
-                          {item.categoria && <span>🏷️ {item.categoria}</span>}
-                          {item.costo !== undefined && (
-                            <span className="text-primary-green">
-                              💰 {item.costo === 0 ? 'Gratuito' : `$${item.costo.toLocaleString()}`}
-                            </span>
-                          )}
-                          {item.tiempo_estimado && (
-                            <span>⏱️ {item.tiempo_estimado}</span>
-                          )}
-                          {item.vistas && (
-                            <span>👁️ {item.vistas} vistas</span>
-                          )}
-                        </div>
-                        
-                        <div className="flex flex-wrap gap-1">
-                          {item.tags.map((tag, index) => (
-                            <Badge key={`${item.id}-tag-${index}`} variant="neutral" size="sm">
-                              {tag}
+                        {/* 1. HEADER SECTION: Type badge + Payment badge + Code integrated with title */}
+                        <div className="mb-4">
+                          {/* Type and Payment badges BEFORE title */}
+                          <div className="flex items-center gap-2 mb-3">
+                            <Badge
+                              variant={
+                                item.tipo === 'tramite'
+                                  ? 'primary'
+                                  : item.tipo === 'opa'
+                                  ? 'secondary'
+                                  : 'success'
+                              }
+                              className="text-sm font-medium px-3 py-1"
+                            >
+                              {item.tipo === 'tramite'
+                                ? `📄 TRÁMITE ${item.codigo}`
+                                : `⚡ OPA ${item.codigo}`}
                             </Badge>
-                          ))}
+
+                            {/* Payment status badge for trámites */}
+                            {item.tipo === 'tramite' && (
+                              <Badge
+                                variant={
+                                  (item.originalData as any)?.tiene_pago === false
+                                    ? "success"
+                                    : "warning"
+                                }
+                                className="text-xs font-medium"
+                              >
+                                {(item.originalData as any)?.tiene_pago === false
+                                  ? "🆓 Gratuito"
+                                  : "💰 Con pago"}
+                              </Badge>
+                            )}
+                          </div>
+
+                          {/* Title without code (code now in badge) */}
+                          <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                            {item.nombre}
+                          </h4>
+
+                          {/* 1. DEPENDENCY HIERARCHY SUBTITLE */}
+                          <div className="mb-3">
+                            <div className="flex items-center text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-md border-l-4 border-blue-400">
+                              <span className="text-blue-600 mr-2">🏛️</span>
+                              <span className="font-medium">
+                                {item.dependencia}
+                                {item.subdependencia && (
+                                  <>
+                                    <span className="mx-2 text-gray-400">›</span>
+                                    <span className="text-gray-700">{item.subdependencia}</span>
+                                  </>
+                                )}
+                              </span>
+                            </div>
+                          </div>
+
+
                         </div>
-                      </div>
-                      
-                      <div className="ml-6">
-                        <Button variant="primary" size="sm">
-                          {item.tipo === 'faq' ? 'Ver respuesta →' : 'Ver detalles →'}
-                        </Button>
+
+                        {/* 2. CONTEXTUAL DESCRIPTION WITH HORIZONTAL LAYOUT AND VISUAL EMPHASIS */}
+                        <div className="mb-4 p-3 bg-gray-50 rounded-lg border-l-4 border-blue-400">
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-600 font-medium">
+                              {item.tipo === 'tramite' ? '📋 Formulario:' : '📝 Descripción:'}
+                            </span>
+                            <span className="font-semibold text-gray-800">
+                              {item.descripcion}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* 3. REQUIREMENTS SECTION (Expandible) */}
+                        {item.tipo === 'tramite' && item.originalData && (item.originalData as any).requisitos && (
+                          <RequisitosSectionExpandibleEnhanced
+                            requisitos={(item.originalData as any).requisitos || []}
+                            itemId={item.id}
+                            suitUrl={(item.originalData as any).visualizacion_suit}
+                            govUrl={(item.originalData as any).visualizacion_gov}
+                          />
+                        )}
+
+                        {/* 4. ESTIMATED TIME - Prominently displayed */}
+                        {item.tiempo_estimado && (
+                          <div className="mb-4 p-3 bg-gray-50 rounded-lg border-l-4 border-gray-400">
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-600 font-medium">⏱️ Tiempo estimado:</span>
+                              <span className="font-semibold text-gray-800">{item.tiempo_estimado}</span>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Additional information */}
+                        <div className="space-y-2 text-sm text-gray-600">
+
+                          {item.vistas && (
+                            <div className="text-xs text-gray-500">
+                              👁️ {item.vistas} vistas
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </Card>
@@ -540,7 +509,7 @@ function TramitesContent() {
                   No se encontraron resultados
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  No hay trámites, OPAs o FAQs que coincidan con los filtros seleccionados.
+                  No hay trámites u OPAs que coincidan con los filtros seleccionados.
                 </p>
                 <Button variant="primary" onClick={clearFilters}>
                   Limpiar filtros
@@ -611,6 +580,123 @@ function TramitesLoading() {
         </div>
       </div>
     </div>
+  )
+}
+
+// ✨ MEJORA UX: Componente de requisitos expandible con enlaces gubernamentales
+function RequisitosSectionExpandibleEnhanced({
+  requisitos,
+  itemId,
+  suitUrl,
+  govUrl
+}: {
+  requisitos: string[],
+  itemId: string,
+  suitUrl?: string,
+  govUrl?: string
+}) {
+  // Start collapsed by default
+  const [isExpanded, setIsExpanded] = useState(false)
+  const hasRequirements = requisitos && requisitos.length > 0
+
+  // Check if government portal links are valid
+  const hasSuitUrl = suitUrl && typeof suitUrl === 'string' && suitUrl.trim() !== ''
+  const hasGovUrl = govUrl && typeof govUrl === 'string' && govUrl.trim() !== ''
+
+  return (
+    <div className="mb-4 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+      {/* Header with government portal links - always visible */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <h5 className="text-sm font-semibold text-blue-800 flex items-center">
+            📋 Requisitos
+          </h5>
+
+          {/* Government Portal Links in header */}
+          <div className="flex items-center gap-2">
+            {hasSuitUrl && (
+              <a
+                href={suitUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors duration-200"
+                title="Ver en portal SUIT - Sistema Único de Información de Trámites"
+              >
+                <span className="mr-1">🏛️</span>
+                SUIT
+                <span className="ml-1">↗</span>
+              </a>
+            )}
+
+            {hasGovUrl && (
+              <a
+                href={govUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-green-600 hover:bg-green-700 rounded transition-colors duration-200"
+                title="Ver en portal GOV.CO - Portal Único del Estado Colombiano"
+              >
+                <span className="mr-1">🌐</span>
+                GOV.CO
+                <span className="ml-1">↗</span>
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* Toggle button - always show if there are requirements */}
+        {hasRequirements && (
+          <button
+            type="button"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+          >
+            {isExpanded ? (
+              <>
+                <span>Ocultar</span>
+                <span>▲</span>
+              </>
+            ) : (
+              <>
+                <span>Ver requisitos ({requisitos.length})</span>
+                <span>▼</span>
+              </>
+            )}
+          </button>
+        )}
+      </div>
+
+      {/* Requirements content - only show when expanded */}
+      {isExpanded && hasRequirements && (
+        <div className="mt-3">
+          <ul className="text-sm text-blue-700 space-y-1">
+            {requisitos.map((requisito: string, index: number) => (
+              <li key={`${itemId}-req-${index}`} className="flex items-start">
+                <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                <span>{requisito}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Show message when collapsed and no requirements */}
+      {!isExpanded && !hasRequirements && (
+        <div className="mt-2 text-xs text-blue-600 italic">
+          No hay requisitos específicos disponibles
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Legacy component for backward compatibility
+function RequisitosSectionExpandible({ requisitos, itemId }: { requisitos: string[], itemId: string }) {
+  return (
+    <RequisitosSectionExpandibleEnhanced
+      requisitos={requisitos}
+      itemId={itemId}
+    />
   )
 }
 
