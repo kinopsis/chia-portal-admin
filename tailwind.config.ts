@@ -36,9 +36,37 @@ const config: Config = {
         },
         background: 'var(--background)',
         foreground: 'var(--foreground)',
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
+        border: 'var(--border)',
+        input: 'var(--input)',
+        ring: 'var(--ring)',
+
+        // Nueva paleta de textos
+        'text-primary': 'var(--text-primary)',
+        'text-secondary': 'var(--text-secondary)',
+        'text-muted': 'var(--text-muted)',
+        'text-disabled': 'var(--text-disabled)',
+
+        // Nuevos fondos
+        'background-secondary': 'var(--background-secondary)',
+        'background-tertiary': 'var(--background-tertiary)',
+        'background-elevated': 'var(--background-elevated)',
+
+        // Nuevos bordes
+        'border-light': 'var(--border-light)',
+        'border-medium': 'var(--border-medium)',
+        'border-strong': 'var(--border-strong)',
+
+        // Colores de marca mejorados
+        'brand-green': 'var(--brand-green)',
+        'brand-green-hover': 'var(--brand-green-hover)',
+        'brand-yellow': 'var(--brand-yellow)',
+        'brand-yellow-hover': 'var(--brand-yellow-hover)',
+
+        // Estados y feedback
+        success: 'var(--success)',
+        warning: 'var(--warning)',
+        error: 'var(--error)',
+        info: 'var(--info)',
       },
       fontFamily: {
         sans: ['Inter', 'Arial', 'sans-serif'],

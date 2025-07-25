@@ -3,6 +3,38 @@
 import { supabase } from '@/lib/supabase/client'
 import type { Dependencia, SearchFilters, PaginatedResponse } from '@/types'
 
+// Utility function for retrying failed requests
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries: number = 3,
+  delay: number = 1000
+): Promise<T> {
+  let lastError: Error
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation()
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error))
+
+      if (attempt === maxRetries) {
+        break
+      }
+
+      // Log retry attempt
+      console.warn(`Attempt ${attempt} failed, retrying in ${delay}ms:`, lastError.message)
+
+      // Wait before retrying
+      await new Promise(resolve => setTimeout(resolve, delay))
+
+      // Exponential backoff
+      delay *= 2
+    }
+  }
+
+  throw lastError!
+}
+
 // Client-side service functions
 export class DependenciasClientService {
   async getAll(filters?: SearchFilters & {
@@ -12,6 +44,7 @@ export class DependenciasClientService {
     includeTramites?: boolean;
     includeOPAs?: boolean;
   }) {
+    return withRetry(async () => {
     // Build select query with relations
     let selectQuery = `
       *,
@@ -48,7 +81,27 @@ export class DependenciasClientService {
     const { data, error, count } = await query
 
     if (error) {
+      console.error('Supabase error in dependencias service:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      })
       throw new Error(`Error fetching dependencias: ${error.message}`)
+    }
+
+    if (!data) {
+      console.warn('No data returned from dependencias query')
+      return {
+        data: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0,
+        },
+        success: true,
+      } as PaginatedResponse<Dependencia>
     }
 
     // Process the data to calculate counts and ensure proper structure
@@ -87,72 +140,88 @@ export class DependenciasClientService {
       },
       success: true,
     } as PaginatedResponse<Dependencia>
+    }) // Close withRetry wrapper
   }
 
   async getById(id: string) {
-    const { data, error } = await supabase.from('dependencias').select('*').eq('id', id).single()
+    return withRetry(async () => {
+      const { data, error } = await supabase.from('dependencias').select('*').eq('id', id).single()
 
-    if (error) {
-      throw new Error(`Error fetching dependencia: ${error.message}`)
-    }
+      if (error) {
+        console.error('Supabase error in getById:', error)
+        throw new Error(`Error fetching dependencia: ${error.message}`)
+      }
 
-    return data as Dependencia
+      return data as Dependencia
+    })
   }
 
   async getActive() {
-    const { data, error } = await supabase
-      .from('dependencias')
-      .select('*')
-      .eq('activo', true)
-      .order('nombre', { ascending: true })
+    return withRetry(async () => {
+      const { data, error } = await supabase
+        .from('dependencias')
+        .select('*')
+        .eq('activo', true)
+        .order('nombre', { ascending: true })
 
-    if (error) {
-      throw new Error(`Error fetching active dependencias: ${error.message}`)
-    }
+      if (error) {
+        console.error('Supabase error in getActive:', error)
+        throw new Error(`Error fetching active dependencias: ${error.message}`)
+      }
 
-    return data as Dependencia[]
+      return data as Dependencia[]
+    })
   }
 
   async create(dependencia: Omit<Dependencia, 'id' | 'created_at' | 'updated_at'>) {
-    const { data, error } = await supabase
-      .from('dependencias')
-      .insert(dependencia)
-      .select()
-      .single()
+    return withRetry(async () => {
+      const { data, error } = await supabase
+        .from('dependencias')
+        .insert(dependencia)
+        .select()
+        .single()
 
-    if (error) {
-      throw new Error(`Error creating dependencia: ${error.message}`)
-    }
+      if (error) {
+        console.error('Supabase error in create:', error)
+        throw new Error(`Error creating dependencia: ${error.message}`)
+      }
 
-    return data as Dependencia
+      return data as Dependencia
+    })
   }
 
   async update(
     id: string,
     updates: Partial<Omit<Dependencia, 'id' | 'created_at' | 'updated_at'>>
   ) {
-    const { data, error } = await supabase
-      .from('dependencias')
-      .update({ ...updates, updated_at: new Date().toISOString() })
-      .eq('id', id)
-      .select()
-      .single()
+    return withRetry(async () => {
+      const { data, error } = await supabase
+        .from('dependencias')
+        .update({ ...updates, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single()
 
-    if (error) {
-      throw new Error(`Error updating dependencia: ${error.message}`)
-    }
+      if (error) {
+        console.error('Supabase error in update:', error)
+        throw new Error(`Error updating dependencia: ${error.message}`)
+      }
 
-    return data as Dependencia
+      return data as Dependencia
+    })
   }
 
   async delete(id: string) {
-    const { error } = await supabase.from('dependencias').delete().eq('id', id)
+    return withRetry(async () => {
+      const { error } = await supabase.from('dependencias').delete().eq('id', id)
 
-    if (error) {
-      throw new Error(`Error deleting dependencia: ${error.message}`)
-    }
+      if (error) {
+        console.error('Supabase error in delete:', error)
+        throw new Error(`Error deleting dependencia: ${error.message}`)
+      }
 
-    return { success: true }
+      return { success: true }
+    })
   }
 }
 

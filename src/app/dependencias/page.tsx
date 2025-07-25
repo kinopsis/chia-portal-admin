@@ -50,7 +50,28 @@ export default function DependenciasPage() {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Error al cargar dependencias'
         setError(errorMessage)
-        console.error('Error fetching dependencias:', err)
+
+        // Enhanced error logging with detailed context
+        console.error('Error fetching dependencias:', {
+          error: err,
+          message: errorMessage,
+          timestamp: new Date().toISOString(),
+          userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
+          url: typeof window !== 'undefined' ? window.location.href : 'Unknown',
+          stack: err instanceof Error ? err.stack : undefined,
+          type: err instanceof Error ? err.constructor.name : typeof err,
+          filters: {
+            includeSubdependencias: true,
+            includeTramites: true,
+            includeOPAs: true,
+            activo: true
+          }
+        })
+
+        // Optional: Report to error tracking service in production
+        if (process.env.NODE_ENV === 'production') {
+          // reportError('dependencias_fetch_error', err)
+        }
       } finally {
         setLoading(false)
       }

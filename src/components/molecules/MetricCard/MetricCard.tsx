@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card } from '@/components/atoms'
+import Card from '@/components/atoms/Card'
 import { clsx } from 'clsx'
 
 export interface MetricCardProps {
@@ -25,6 +25,7 @@ export interface MetricCardProps {
     | 'secondary'
     | 'success'
     | 'warning'
+    | 'info'
   size?: 'sm' | 'md' | 'lg'
   variant?: 'default' | 'gradient' | 'outlined' | 'minimal'
   onClick?: () => void
@@ -117,31 +118,38 @@ const MetricCard: React.FC<MetricCardProps> = ({
       iconBg: 'bg-orange-100',
       gradient: 'from-orange-500 to-orange-600',
     },
+    info: {
+      bg: 'bg-cyan-50',
+      text: 'text-cyan-600',
+      border: 'border-cyan-200',
+      iconBg: 'bg-cyan-100',
+      gradient: 'from-cyan-500 to-cyan-600',
+    },
   }
 
   const sizeClasses = {
     sm: {
-      card: 'p-4',
+      card: 'p-4 min-h-[120px]',
       icon: 'w-8 h-8',
       iconText: 'text-lg',
       title: 'text-xs',
-      value: 'text-lg',
+      value: 'text-lg min-w-[60px]',
       subtitle: 'text-xs',
     },
     md: {
-      card: 'p-6',
+      card: 'p-6 min-h-[140px]',
       icon: 'w-12 h-12',
       iconText: 'text-xl',
       title: 'text-sm',
-      value: 'text-2xl',
+      value: 'text-2xl min-w-[80px]',
       subtitle: 'text-xs',
     },
     lg: {
-      card: 'p-8',
+      card: 'p-8 min-h-[160px]',
       icon: 'w-16 h-16',
       iconText: 'text-2xl',
       title: 'text-base',
-      value: 'text-3xl',
+      value: 'text-3xl min-w-[100px]',
       subtitle: 'text-sm',
     },
   }
@@ -182,13 +190,26 @@ const MetricCard: React.FC<MetricCardProps> = ({
   if (loading) {
     return (
       <Card className={clsx(getCardClasses(), 'animate-pulse', className)}>
-        <div className="flex items-center space-x-4">
-          <div className={clsx('rounded-lg', sizes.icon, colors.iconBg)} />
-          <div className="flex-1 space-y-2">
-            <div className="h-4 bg-gray-200 rounded w-3/4" />
-            <div className="h-6 bg-gray-200 rounded w-1/2" />
-            <div className="h-3 bg-gray-200 rounded w-2/3" />
+        <div className="flex items-start justify-between">
+          <div className="flex items-start space-x-4 flex-1">
+            {/* Icon skeleton */}
+            <div className={clsx('rounded-lg bg-gray-200', sizes.icon)} />
+
+            {/* Content skeleton */}
+            <div className="flex-1 space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-3/4" />
+              <div className={clsx('h-6 bg-gray-200 rounded', sizes.value.includes('min-w-[60px]') ? 'w-[60px]' : sizes.value.includes('min-w-[80px]') ? 'w-[80px]' : 'w-[100px]')} />
+              {subtitle && <div className="h-3 bg-gray-200 rounded w-2/3" />}
+            </div>
           </div>
+
+          {/* Trend skeleton */}
+          {trend && (
+            <div className="flex flex-col items-end space-y-1">
+              <div className="h-3 bg-gray-200 rounded w-8" />
+              <div className="h-2 bg-gray-200 rounded w-12" />
+            </div>
+          )}
         </div>
       </Card>
     )

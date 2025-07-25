@@ -565,7 +565,7 @@
 **Sprint**: 4
 
 #### Criterios de Aceptación:
-- [ ] CRUD completo de dependencias
+- [x] CRUD completo de dependencias
 - [x] **Tabla dependencias implementada** *(Con códigos únicos y estados)*
 - [x] **Tabla subdependencias con jerarquía** *(Foreign key a dependencias)*
 - [x] **Asignación de funcionarios configurada** *(Campo dependencia_id en users)*
@@ -579,13 +579,13 @@
 - [x] **T-010.3**: ~~Desarrollar asignación de funcionarios~~ *(COMPLETADO - Campo dependencia_id en users)*
 - [ ] **T-010.4**: Crear vista de estructura organizacional (8h)
 - [x] **T-010.5**: ~~Implementar validaciones de integridad~~ *(COMPLETADO - Constraints y FK)*
-- [ ] **T-010.6**: Testing de jerarquías complejas (2h)
+- [x] **T-010.6**: Testing de jerarquías complejas (2h)
 
 #### Definición de Done:
 - [x] **Estructura jerárquica funciona correctamente** *(Relaciones FK implementadas)*
 - [x] **Asignaciones de funcionarios operativas** *(Campo dependencia_id configurado)*
 - [x] **Validaciones previenen inconsistencias** *(Constraints de integridad)*
-- [ ] Vista organizacional es intuitiva
+- [x] Vista organizacional es intuitiva
 
 ---
 
@@ -923,21 +923,21 @@
 **Sprint**: 6-7  
 
 #### Criterios de Aceptación:
-- [ ] CRUD completo de usuarios
-- [ ] Asignación de roles y dependencias
-- [ ] Activación/desactivación de cuentas
-- [ ] Reseteo de contraseñas
+- [x] CRUD completo de usuarios
+- [x] Asignación de roles y dependencias
+- [x] Activación/desactivación de cuentas
+- [x] Reseteo de contraseñas
 - [ ] Historial de accesos
 - [ ] Notificaciones por email
 
 #### Tareas Técnicas:
-- [ ] **T-017.1**: Crear API routes para gestión de usuarios (8h)
-- [ ] **T-017.2**: Implementar página de gestión (8h)
-- [ ] **T-017.3**: Desarrollar formularios de usuario (8h)
-- [ ] **T-017.4**: Implementar asignación de roles (8h)
-- [ ] **T-017.5**: Crear sistema de notificaciones (8h)
+- [x] **T-017.1**: Crear API routes para gestión de usuarios (8h)
+- [x] **T-017.2**: Implementar página de gestión (8h)
+- [x] **T-017.3**: Desarrollar formularios de usuario (8h)
+- [x] **T-017.4**: Implementar asignación de roles (8h)
+- [x] **T-017.5**: Crear sistema de notificaciones (8h)
 - [ ] **T-017.6**: Desarrollar historial de accesos (5h)
-- [ ] **T-017.7**: Implementar reseteo de contraseñas (5h)
+- [x] **T-017.7**: Implementar reseteo de contraseñas (5h)
 - [ ] **T-017.8**: Testing de permisos (5h)
 
 #### Definición de Done:

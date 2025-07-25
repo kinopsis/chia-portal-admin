@@ -255,14 +255,14 @@ function UsuariosPage() {
       title: 'Nombre',
       sortable: true,
       sorter: (a, b) => {
-        const nameA = `${a.nombre} ${a.apellido}`.toLowerCase()
-        const nameB = `${b.nombre} ${b.apellido}`.toLowerCase()
+        const nameA = `${a.nombre || ''} ${a.apellido || ''}`.toLowerCase()
+        const nameB = `${b.nombre || ''} ${b.apellido || ''}`.toLowerCase()
         return nameA.localeCompare(nameB)
       },
       render: (value, record) => (
         <div>
           <div className="font-medium text-gray-900">
-            {record.nombre} {record.apellido}
+            {record.nombre || 'Usuario'} {record.apellido || ''}
           </div>
           <div className="text-sm text-gray-500">{record.email}</div>
         </div>
@@ -907,7 +907,7 @@ function UsuariosPage() {
                   Nombre Completo
                 </label>
                 <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
-                  {viewingUser.nombre}
+                  {viewingUser.nombre || 'Usuario'} {viewingUser.apellido || ''}
                 </p>
               </div>
               <div>

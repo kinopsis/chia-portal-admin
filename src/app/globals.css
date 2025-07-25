@@ -2,23 +2,420 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  /* WCAG AA Compliant Colors - Updated for 4.5:1 contrast ratio */
-  --color-primary-yellow: #B8A000;     /* 4.6:1 contrast ratio */
-  --color-primary-yellow-alt: #A69000; /* 5.2:1 contrast ratio */
-  --color-primary-green: #006B35;      /* 4.5:1 contrast ratio */
-  --color-primary-green-alt: #005D2E;  /* 5.2:1 contrast ratio */
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
-  --ring: 142.1 76.2% 36.3%;
+/* ===== CLS PREVENTION UTILITIES ===== */
+/* Prevent layout shifts during loading and animations */
+
+/* Font loading optimization */
+@font-face {
+  font-family: 'Inter';
+  font-display: swap; /* Prevent FOIT/FOUT */
+  src: local('Inter');
 }
 
+/* Prevent layout shifts from content changes */
+.prevent-cls {
+  contain: layout style;
+}
+
+/* Fixed dimensions for metric cards */
+.metric-card-container {
+  min-height: 150px;
+  contain: layout;
+}
+
+/* Fixed dimensions for service cards */
+.service-card-container {
+  height: 280px;
+  contain: layout;
+}
+
+@media (min-width: 640px) {
+  .service-card-container {
+    height: 320px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .service-card-container {
+    height: 360px;
+  }
+}
+
+/* ===== ENHANCED CSS CUSTOM PROPERTIES SYSTEM ===== */
+/* Comprehensive design system with full dark mode support */
+
+:root {
+  /* ===== LIGHT THEME COLORS ===== */
+  --background: #ffffff;
+  --foreground: #171717;
+  --background-secondary: #f8fafc;
+  --background-tertiary: #f1f5f9;
+  --background-elevated: #ffffff;
+
+  /* WCAG AA Compliant Primary Colors - Updated for 4.5:1 contrast ratio */
+  --color-primary-yellow: #B8A000;     /* 4.6:1 contrast ratio */
+  --color-primary-yellow-alt: #A69000; /* 5.2:1 contrast ratio */
+  --color-primary-yellow-dark: #8F7A00; /* 6.1:1 contrast ratio */
+  --color-primary-yellow-light: #D4C200; /* 3.8:1 contrast (large text only) */
+
+  --color-primary-green: #006B35;      /* 4.5:1 contrast ratio */
+  --color-primary-green-alt: #005D2E;  /* 5.2:1 contrast ratio */
+  --color-primary-green-dark: #004F27; /* 6.1:1 contrast ratio */
+  --color-primary-green-light: #007A3A; /* 4.1:1 contrast (large text only) */
+
+  /* Service Card Color Schemes - Matching Reference Image */
+  --service-yellow-bg: #fefce8;
+  --service-yellow-border: #fde047;
+  --service-yellow-text: #713f12;
+  --service-yellow-button: #eab308;
+  --service-yellow-button-hover: #ca8a04;
+
+  --service-gray-bg: #f8fafc;
+  --service-gray-border: #e2e8f0;
+  --service-gray-text: #334155;
+  --service-gray-button: #64748b;
+  --service-gray-button-hover: #475569;
+
+  --service-blue-bg: #eff6ff;
+  --service-blue-border: #3b82f6;
+  --service-blue-text: #1e3a8a;
+  --service-blue-button: #2563eb;
+  --service-blue-button-hover: #1d4ed8;
+
+  --service-green-bg: #f0fdf4;
+  --service-green-border: #22c55e;
+  --service-green-text: #14532d;
+  --service-green-button: #16a34a;
+  --service-green-button-hover: #15803d;
+
+  --service-purple-bg: #faf5ff;
+  --service-purple-border: #a855f7;
+  --service-purple-text: #581c87;
+  --service-purple-button: #9333ea;
+  --service-purple-button-hover: #7c3aed;
+
+  --service-indigo-bg: #eef2ff;
+  --service-indigo-border: #6366f1;
+  --service-indigo-text: #312e81;
+  --service-indigo-button: #4f46e5;
+  --service-indigo-button-hover: #4338ca;
+
+  /* Secondary Colors */
+  --color-secondary-blue: #0066CC;
+  --color-secondary-blue-light: #3385D6;
+  --color-secondary-gray: #6B7280;
+  --color-secondary-gray-light: #9CA3AF;
+  --color-secondary-gray-dark: #374151;
+
+  /* Accent Colors */
+  --color-accent-orange: #F59E0B;
+  --color-accent-red: #EF4444;
+  --color-accent-purple: #8B5CF6;
+
+  /* Semantic Colors */
+  --color-success: #10b981;
+  --color-success-light: #d1fae5;
+  --color-success-dark: #047857;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fef3c7;
+  --color-warning-dark: #d97706;
+  --color-error: #ef4444;
+  --color-error-light: #fee2e2;
+  --color-error-dark: #dc2626;
+  --color-info: #3b82f6;
+  --color-info-light: #dbeafe;
+  --color-info-dark: #1d4ed8;
+
+  /* Gray Scale */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+
+  /* Border & Input Colors */
+  --border: #e5e7eb;
+  --border-light: #f3f4f6;
+  --border-medium: #d1d5db;
+  --border-strong: #9ca3af;
+  --input: #f9fafb;
+  --input-border: #d1d5db;
+  --input-focus: var(--color-primary-green);
+  --ring: var(--color-primary-green);
+
+  /* Shadow Colors */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  /* Spacing Scale */
+  --spacing-xs: 0.25rem;    /* 4px */
+  --spacing-sm: 0.5rem;     /* 8px */
+  --spacing-md: 1rem;       /* 16px */
+  --spacing-lg: 1.5rem;     /* 24px */
+  --spacing-xl: 2rem;       /* 32px */
+  --spacing-2xl: 2.5rem;    /* 40px */
+  --spacing-3xl: 3rem;      /* 48px */
+  --spacing-4xl: 4rem;      /* 64px */
+  --spacing-5xl: 5rem;      /* 80px */
+  --spacing-6xl: 6rem;      /* 96px */
+
+  /* Touch-friendly Spacing */
+  --touch-target-sm: 2.75rem;  /* 44px minimum */
+  --touch-target-md: 3rem;     /* 48px comfortable */
+  --touch-target-lg: 3.5rem;   /* 56px large */
+  --touch-target-xl: 4rem;     /* 64px extra large */
+
+  /* Typography Scale */
+  --font-size-xs: 0.75rem;     /* 12px */
+  --font-size-sm: 0.875rem;    /* 14px */
+  --font-size-base: 1rem;      /* 16px */
+  --font-size-lg: 1.125rem;    /* 18px */
+  --font-size-xl: 1.25rem;     /* 20px */
+  --font-size-2xl: 1.5rem;     /* 24px */
+  --font-size-3xl: 1.875rem;   /* 30px */
+  --font-size-4xl: 2.25rem;    /* 36px */
+  --font-size-5xl: 3rem;       /* 48px */
+  --font-size-6xl: 3.75rem;    /* 60px */
+
+  /* Line Heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  --line-height-loose: 2;
+
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;    /* 4px */
+  --radius-md: 0.375rem;   /* 6px */
+  --radius-lg: 0.5rem;     /* 8px */
+  --radius-xl: 0.75rem;    /* 12px */
+  --radius-2xl: 1rem;      /* 16px */
+  --radius-3xl: 1.5rem;    /* 24px */
+  --radius-full: 9999px;
+
+  /* Responsive Breakpoints */
+  --breakpoint-xs: 320px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* Animation Durations */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-very-slow: 1000ms;
+
+  /* Animation Easings */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ===== DARK THEME COLORS - NUEVA PALETA COHESIVA WCAG AA ===== */
+[data-theme="dark"] {
+  /* === FONDOS PRINCIPALES === */
+  --background: #0f172a;              /* slate-900 - Fondo principal */
+  --foreground: #f8fafc;              /* slate-50 - Texto principal (19.3:1 contraste) */
+  --background-secondary: #1e293b;    /* slate-800 - Tarjetas y elementos elevados */
+  --background-tertiary: #334155;     /* slate-700 - Elementos interactivos */
+  --background-elevated: #475569;     /* slate-600 - Elementos destacados */
+
+  /* === SERVICE CARD COLOR SCHEMES MEJORADOS - DARK MODE === */
+  --service-yellow-bg: #451a03;        /* amber-950 - Fondo amarillo oscuro */
+  --service-yellow-border: #d97706;    /* amber-600 - Borde más visible */
+  --service-yellow-text: #fef3c7;      /* amber-100 - Texto claro (14.2:1 contraste) */
+  --service-yellow-button: #f59e0b;    /* amber-500 - Botón */
+  --service-yellow-button-hover: #d97706; /* amber-600 - Botón hover */
+
+  --service-gray-bg: #1e293b;          /* slate-800 - Fondo gris mejorado */
+  --service-gray-border: #64748b;      /* slate-500 - Borde más visible */
+  --service-gray-text: #f1f5f9;        /* slate-100 - Texto más claro (16.8:1 contraste) */
+  --service-gray-button: #64748b;      /* slate-500 - Botón */
+  --service-gray-button-hover: #94a3b8; /* slate-400 - Botón hover */
+
+  --service-blue-bg: #1e3a8a;          /* blue-800 - Fondo azul */
+  --service-blue-border: #60a5fa;      /* blue-400 - Borde más visible */
+  --service-blue-text: #dbeafe;        /* blue-100 - Texto claro (12.1:1 contraste) */
+  --service-blue-button: #3b82f6;      /* blue-500 - Botón */
+  --service-blue-button-hover: #60a5fa; /* blue-400 - Botón hover */
+
+  --service-green-bg: #14532d;         /* green-900 - Fondo verde */
+  --service-green-border: #4ade80;     /* green-400 - Borde más visible */
+  --service-green-text: #dcfce7;       /* green-100 - Texto claro (13.5:1 contraste) */
+  --service-green-button: #22c55e;     /* green-500 - Botón */
+  --service-green-button-hover: #4ade80; /* green-400 - Botón hover */
+
+  --service-purple-bg: #581c87;        /* purple-900 - Fondo púrpura */
+  --service-purple-border: #c084fc;    /* purple-400 - Borde más visible */
+  --service-purple-text: #f3e8ff;      /* purple-100 - Texto claro (13.8:1 contraste) */
+  --service-purple-button: #a855f7;    /* purple-500 - Botón */
+  --service-purple-button-hover: #c084fc; /* purple-400 - Botón hover */
+
+  --service-indigo-bg: #312e81;        /* indigo-900 - Fondo índigo */
+  --service-indigo-border: #818cf8;    /* indigo-400 - Borde más visible */
+  --service-indigo-text: #e0e7ff;      /* indigo-100 - Texto claro (12.9:1 contraste) */
+  --service-indigo-button: #6366f1;    /* indigo-500 - Botón */
+  --service-indigo-button-hover: #818cf8; /* indigo-400 - Botón hover */
+
+  /* Semantic Colors - Dark Mode */
+  --color-success: #22c55e;
+  --color-success-light: #14532d;
+  --color-success-dark: #4ade80;
+  --color-warning: #f59e0b;
+  --color-warning-light: #451a03;
+  --color-warning-dark: #fbbf24;
+  --color-error: #ef4444;
+  --color-error-light: #7f1d1d;
+  --color-error-dark: #f87171;
+  --color-info: #3b82f6;
+  --color-info-light: #1e3a8a;
+  --color-info-dark: #60a5fa;
+
+  /* Gray Scale - Dark Mode */
+  --gray-50: #111827;
+  --gray-100: #1f2937;
+  --gray-200: #374151;
+  --gray-300: #4b5563;
+  --gray-400: #6b7280;
+  --gray-500: #9ca3af;
+  --gray-600: #d1d5db;
+  --gray-700: #e5e7eb;
+  --gray-800: #f3f4f6;
+  --gray-900: #f9fafb;
+
+  /* === TEXTOS MEJORADOS === */
+  --text-primary: #f8fafc;            /* slate-50 - Texto principal (19.3:1 contraste) */
+  --text-secondary: #e2e8f0;          /* slate-200 - Texto secundario (15.8:1 contraste) */
+  --text-muted: #cbd5e1;              /* slate-300 - Texto auxiliar (9.2:1 contraste) */
+  --text-disabled: #94a3b8;           /* slate-400 - Texto deshabilitado (4.7:1 contraste) */
+
+  /* === BORDES Y DIVISORES MEJORADOS === */
+  --border: #475569;                  /* slate-600 - Bordes principales */
+  --border-light: #334155;            /* slate-700 - Bordes sutiles */
+  --border-medium: #64748b;           /* slate-500 - Bordes secundarios */
+  --border-strong: #94a3b8;           /* slate-400 - Bordes destacados */
+
+  /* === INPUTS MEJORADOS === */
+  --input: #334155;                   /* slate-700 - Fondo de inputs */
+  --input-border: #475569;            /* slate-600 - Bordes de inputs */
+  --input-focus: #10b981;             /* emerald-500 - Focus de inputs */
+  --ring: #10b981;                    /* emerald-500 - Ring color */
+
+  /* === COLORES DE MARCA OPTIMIZADOS === */
+  --brand-green: #10b981;             /* emerald-500 - Verde principal (5.4:1 contraste) */
+  --brand-green-hover: #059669;       /* emerald-600 - Verde hover (4.1:1 contraste) */
+  --brand-yellow: #f59e0b;            /* amber-500 - Amarillo principal (8.2:1 contraste) */
+  --brand-yellow-hover: #d97706;      /* amber-600 - Amarillo hover (6.1:1 contraste) */
+
+  /* === ESTADOS Y FEEDBACK === */
+  --success: #22c55e;                 /* green-500 (6.8:1 contraste) */
+  --warning: #f59e0b;                 /* amber-500 (8.2:1 contraste) */
+  --error: #ef4444;                   /* red-500 (5.1:1 contraste) */
+  --info: #3b82f6;                    /* blue-500 (4.9:1 contraste) */
+
+  /* === SOMBRAS OPTIMIZADAS === */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.7);
+}
+
+/* ===== SYSTEM PREFERENCE DARK MODE - NUEVA PALETA ===== */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme]) {
+    /* === FONDOS PRINCIPALES === */
+    --background: #0f172a;              /* slate-900 - Fondo principal */
+    --foreground: #f8fafc;              /* slate-50 - Texto principal */
+    --background-secondary: #1e293b;    /* slate-800 - Tarjetas y elementos elevados */
+    --background-tertiary: #334155;     /* slate-700 - Elementos interactivos */
+    --background-elevated: #475569;     /* slate-600 - Elementos destacados */
+
+    /* === SERVICE CARD COLOR SCHEMES MEJORADOS - SYSTEM PREFERENCE === */
+    --service-yellow-bg: #451a03;        /* amber-950 - Fondo amarillo oscuro */
+    --service-yellow-border: #d97706;    /* amber-600 - Borde más visible */
+    --service-yellow-text: #fef3c7;      /* amber-100 - Texto claro */
+    --service-yellow-button: #f59e0b;    /* amber-500 - Botón */
+    --service-yellow-button-hover: #d97706; /* amber-600 - Botón hover */
+
+    --service-gray-bg: #1e293b;          /* slate-800 - Fondo gris mejorado */
+    --service-gray-border: #64748b;      /* slate-500 - Borde más visible */
+    --service-gray-text: #f1f5f9;        /* slate-100 - Texto más claro */
+    --service-gray-button: #64748b;      /* slate-500 - Botón */
+    --service-gray-button-hover: #94a3b8; /* slate-400 - Botón hover */
+
+    --service-blue-bg: #1e3a8a;
+    --service-blue-border: #3b82f6;
+    --service-blue-text: #dbeafe;
+    --service-blue-button: #3b82f6;
+    --service-blue-button-hover: #60a5fa;
+
+    --service-green-bg: #14532d;
+    --service-green-border: #16a34a;
+    --service-green-text: #dcfce7;
+    --service-green-button: #22c55e;
+    --service-green-button-hover: #4ade80;
+
+    --service-purple-bg: #581c87;
+    --service-purple-border: #9333ea;
+    --service-purple-text: #f3e8ff;
+    --service-purple-button: #a855f7;
+    --service-purple-button-hover: #c084fc;
+
+    --service-indigo-bg: #312e81;
+    --service-indigo-border: #6366f1;
+    --service-indigo-text: #e0e7ff;
+    --service-indigo-button: #6366f1;
+    --service-indigo-button-hover: #818cf8;
+
+    /* === TEXTOS MEJORADOS === */
+    --text-primary: #f8fafc;            /* slate-50 - Texto principal */
+    --text-secondary: #e2e8f0;          /* slate-200 - Texto secundario */
+    --text-muted: #cbd5e1;              /* slate-300 - Texto auxiliar */
+    --text-disabled: #94a3b8;           /* slate-400 - Texto deshabilitado */
+
+    /* === BORDES Y DIVISORES MEJORADOS === */
+    --border: #475569;                  /* slate-600 - Bordes principales */
+    --border-light: #334155;            /* slate-700 - Bordes sutiles */
+    --border-medium: #64748b;           /* slate-500 - Bordes secundarios */
+    --border-strong: #94a3b8;           /* slate-400 - Bordes destacados */
+
+    /* === INPUTS MEJORADOS === */
+    --input: #334155;                   /* slate-700 - Fondo de inputs */
+    --input-border: #475569;            /* slate-600 - Bordes de inputs */
+    --input-focus: #10b981;             /* emerald-500 - Focus de inputs */
+    --ring: #10b981;                    /* emerald-500 - Ring color */
+
+    /* === COLORES DE MARCA OPTIMIZADOS === */
+    --brand-green: #10b981;             /* emerald-500 - Verde principal */
+    --brand-green-hover: #059669;       /* emerald-600 - Verde hover */
+    --brand-yellow: #f59e0b;            /* amber-500 - Amarillo principal */
+    --brand-yellow-hover: #d97706;      /* amber-600 - Amarillo hover */
+
+    /* === ESTADOS Y FEEDBACK === */
+    --success: #22c55e;                 /* green-500 */
+    --warning: #f59e0b;                 /* amber-500 */
+    --error: #ef4444;                   /* red-500 */
+    --info: #3b82f6;                    /* blue-500 */
   }
 }
 
@@ -230,7 +627,7 @@ textarea:focus-visible {
   }
 }
 
-/* Touch-friendly utilities */
+/* Enhanced Touch-friendly utilities for mobile optimization */
 @media (hover: none) and (pointer: coarse) {
   .touch-friendly {
     min-height: 44px;
@@ -241,6 +638,1185 @@ textarea:focus-visible {
   .touch-friendly a {
     padding: 12px 16px;
   }
+
+  /* Service cards touch optimization */
+  .service-card {
+    min-height: 280px;
+    padding: 1.5rem;
+  }
+
+  .service-card button {
+    min-height: 48px;
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+
+  /* FAQ accordion touch optimization */
+  .faq-accordion-button {
+    min-height: 56px;
+    padding: 16px 20px;
+  }
+
+  /* Metrics cards touch optimization */
+  .metric-card {
+    min-height: 120px;
+    padding: 16px;
+  }
+
+  /* Department cards touch optimization */
+  .department-card {
+    min-height: 200px;
+    padding: 20px;
+  }
+
+  .department-card button {
+    min-height: 44px;
+    padding: 10px 16px;
+  }
+}
+
+/* Mobile-specific responsive enhancements */
+@media (max-width: 639px) {
+  /* Hero section mobile optimization */
+  .hero-section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.125rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-search {
+    margin-bottom: 2rem;
+  }
+
+  .hero-search input {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 16px 48px 16px 16px;
+  }
+
+  .hero-search button {
+    padding: 12px 16px;
+  }
+
+  /* Service cards mobile layout */
+  .services-grid {
+    gap: 1rem;
+  }
+
+  .service-card {
+    min-height: 280px;
+    padding: 1.5rem;
+  }
+
+  .service-card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .service-card-title {
+    font-size: 1.125rem;
+    line-height: 1.3;
+    margin-bottom: 0.75rem;
+  }
+
+  .service-card-description {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .service-card-stats {
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .service-card-button {
+    font-size: 0.875rem;
+    padding: 12px 20px;
+    min-height: 44px;
+  }
+
+  /* Metrics grid mobile optimization */
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .metric-card {
+    padding: 1rem;
+    min-height: 100px;
+  }
+
+  .metric-card-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .metric-card-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .metric-card-label {
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+
+  /* Why choose section mobile optimization */
+  .benefits-grid {
+    gap: 1.5rem;
+  }
+
+  .benefit-card {
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .benefit-icon {
+    width: 4rem;
+    height: 4rem;
+    font-size: 2rem;
+    margin: 0 auto 1rem;
+  }
+
+  .benefit-title {
+    font-size: 1.125rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .benefit-description {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* Department showcase mobile optimization */
+  .departments-grid {
+    gap: 1rem;
+  }
+
+  .department-card {
+    padding: 1.5rem;
+    min-height: 180px;
+  }
+
+  .department-icon {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+    margin: 0 auto 1rem;
+  }
+
+  .department-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .department-stats {
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  /* FAQ section mobile optimization */
+  .faq-accordion {
+    border-radius: 0.75rem;
+  }
+
+  .faq-accordion-item {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .faq-accordion-button {
+    padding: 1rem 1.25rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    min-height: 56px;
+  }
+
+  .faq-accordion-content {
+    padding: 0 1.25rem 1rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* Section spacing mobile optimization */
+  .section-spacing {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .section-header {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .section-title {
+    font-size: 1.875rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+}
+
+/* Tablet-specific responsive enhancements (640px-1023px) */
+@media (min-width: 640px) and (max-width: 1023px) {
+  /* Hero section tablet optimization */
+  .hero-section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+  }
+
+  .hero-search {
+    margin-bottom: 2.5rem;
+    max-width: 32rem;
+  }
+
+  .hero-search input {
+    font-size: 1rem;
+    padding: 18px 52px 18px 18px;
+  }
+
+  .hero-search button {
+    padding: 14px 20px;
+  }
+
+  /* Service cards tablet layout - 2 columns */
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .service-card {
+    min-height: 320px;
+    padding: 2rem;
+  }
+
+  .service-card-icon {
+    font-size: 3rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .service-card-title {
+    font-size: 1.25rem;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+  }
+
+  .service-card-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+  }
+
+  .service-card-stats {
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .service-card-button {
+    font-size: 1rem;
+    padding: 14px 24px;
+    min-height: 48px;
+  }
+
+  /* Metrics grid tablet optimization */
+  .metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .metric-card {
+    padding: 1.25rem;
+    min-height: 120px;
+  }
+
+  .metric-card-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .metric-card-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .metric-card-label {
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  /* Why choose section tablet optimization */
+  .benefits-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .benefit-card {
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .benefit-icon {
+    width: 5rem;
+    height: 5rem;
+    font-size: 2.5rem;
+    margin: 0 auto 1.25rem;
+  }
+
+  .benefit-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .benefit-description {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  /* Department showcase tablet optimization */
+  .departments-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .department-card {
+    padding: 2rem;
+    min-height: 220px;
+  }
+
+  .department-icon {
+    width: 4rem;
+    height: 4rem;
+    font-size: 2rem;
+    margin: 0 auto 1.25rem;
+  }
+
+  .department-title {
+    font-size: 1.125rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .department-stats {
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .department-button {
+    font-size: 0.875rem;
+    padding: 10px 16px;
+    min-height: 40px;
+  }
+
+  /* FAQ section tablet optimization */
+  .faq-accordion {
+    border-radius: 1rem;
+  }
+
+  .faq-accordion-button {
+    padding: 1.25rem 1.5rem;
+    font-size: 1rem;
+    line-height: 1.4;
+    min-height: 60px;
+  }
+
+  .faq-accordion-content {
+    padding: 0 1.5rem 1.25rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Section spacing tablet optimization */
+  .section-spacing {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .section-header {
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+
+  .section-title {
+    font-size: 2.25rem;
+    line-height: 1.2;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-subtitle {
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+
+  /* Tablet-specific touch optimizations */
+  .tablet-touch-friendly {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 12px 20px;
+  }
+
+  .tablet-touch-friendly button,
+  .tablet-touch-friendly a {
+    padding: 14px 20px;
+    font-size: 1rem;
+  }
+
+  /* Tablet navigation optimizations */
+  .tablet-nav {
+    gap: 1rem;
+  }
+
+  .tablet-nav-item {
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    min-height: 44px;
+  }
+
+  /* Tablet form optimizations */
+  .tablet-form-input {
+    padding: 14px 16px;
+    font-size: 1rem;
+    min-height: 48px;
+  }
+
+  .tablet-form-button {
+    padding: 14px 24px;
+    font-size: 1rem;
+    min-height: 48px;
+  }
+}
+
+/* Desktop-specific responsive enhancements (1024px+) */
+@media (min-width: 1024px) {
+  /* Hero section desktop optimization */
+  .hero-section {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .hero-title {
+    font-size: 3.75rem;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.5rem;
+    line-height: 1.5;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-search {
+    margin-bottom: 3rem;
+    max-width: 36rem;
+  }
+
+  .hero-search input {
+    font-size: 1.125rem;
+    padding: 20px 56px 20px 20px;
+  }
+
+  .hero-search button {
+    padding: 16px 24px;
+    font-size: 1rem;
+  }
+
+  .hero-cta-buttons {
+    gap: 1rem;
+  }
+
+  .hero-cta-button {
+    padding: 16px 32px;
+    font-size: 1.125rem;
+    min-width: 200px;
+  }
+
+  /* Service cards desktop layout - 3 columns (2x3 grid) matching reference image */
+  .services-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .service-card {
+    min-height: 360px;
+    padding: 2.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  .service-card-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
+  }
+
+  .service-card:hover .service-card-icon {
+    transform: scale(1.1);
+  }
+
+  .service-card-title {
+    font-size: 1.5rem;
+    line-height: 1.3;
+    margin-bottom: 1.25rem;
+  }
+
+  .service-card-description {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .service-card-stats {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .service-card-button {
+    font-size: 1.125rem;
+    padding: 16px 28px;
+    min-height: 52px;
+    transition: all 0.3s ease;
+  }
+
+  .service-card:hover .service-card-button {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Metrics grid desktop optimization */
+  .metrics-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .metric-card {
+    padding: 1.5rem;
+    min-height: 140px;
+    transition: all 0.3s ease;
+  }
+
+  .metric-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .metric-card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .metric-card-value {
+    font-size: 1.875rem;
+    font-weight: 700;
+  }
+
+  .metric-card-label {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  /* Why choose section desktop optimization */
+  .benefits-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .benefit-card {
+    padding: 2.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .benefit-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  .benefit-icon {
+    width: 6rem;
+    height: 6rem;
+    font-size: 3rem;
+    margin: 0 auto 1.5rem;
+    transition: transform 0.3s ease;
+  }
+
+  .benefit-card:hover .benefit-icon {
+    transform: scale(1.1);
+  }
+
+  .benefit-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .benefit-description {
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  /* Department showcase desktop optimization */
+  .departments-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .department-card {
+    padding: 2.5rem;
+    min-height: 260px;
+    transition: all 0.3s ease;
+  }
+
+  .department-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  .department-icon {
+    width: 5rem;
+    height: 5rem;
+    font-size: 2.5rem;
+    margin: 0 auto 1.5rem;
+    transition: transform 0.3s ease;
+  }
+
+  .department-card:hover .department-icon {
+    transform: scale(1.1);
+  }
+
+  .department-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .department-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+  }
+
+  .department-stats {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .department-button {
+    font-size: 1rem;
+    padding: 12px 20px;
+    min-height: 44px;
+    transition: all 0.3s ease;
+  }
+
+  .department-card:hover .department-button {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* FAQ section desktop optimization */
+  .faq-accordion {
+    border-radius: 1.25rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .faq-accordion-button {
+    padding: 1.5rem 2rem;
+    font-size: 1.125rem;
+    line-height: 1.4;
+    min-height: 68px;
+    transition: all 0.3s ease;
+  }
+
+  .faq-accordion-button:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+
+  .faq-accordion-content {
+    padding: 0 2rem 1.5rem;
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+
+  /* Section spacing desktop optimization */
+  .section-spacing {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+
+  .section-header {
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+
+  .section-title {
+    font-size: 3rem;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-subtitle {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* Desktop hover effects */
+  .desktop-hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  .desktop-hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  .desktop-hover-glow:hover {
+    box-shadow: 0 0 30px rgba(0, 144, 69, 0.3);
+  }
+
+  /* Desktop navigation optimizations */
+  .desktop-nav {
+    gap: 1.5rem;
+  }
+
+  .desktop-nav-item {
+    padding: 12px 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .desktop-nav-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Desktop form optimizations */
+  .desktop-form-input {
+    padding: 16px 20px;
+    font-size: 1.125rem;
+    min-height: 52px;
+    transition: all 0.3s ease;
+  }
+
+  .desktop-form-input:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .desktop-form-button {
+    padding: 16px 32px;
+    font-size: 1.125rem;
+    min-height: 52px;
+    transition: all 0.3s ease;
+  }
+
+  .desktop-form-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Desktop-specific animations */
+  .desktop-animate-in {
+    animation: desktopSlideUp 0.6s ease-out;
+  }
+
+  @keyframes desktopSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Desktop parallax effects */
+  .desktop-parallax {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Desktop grid layouts */
+  .desktop-grid-2x3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .desktop-grid-1x5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .desktop-grid-1x4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .desktop-grid-1x3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* Accessibility Enhancements */
+
+/* Focus management */
+.keyboard-navigation *:focus {
+  outline: 2px solid var(--color-primary-green);
+  outline-offset: 2px;
+}
+
+.keyboard-navigation button:focus,
+.keyboard-navigation a:focus,
+.keyboard-navigation input:focus,
+.keyboard-navigation select:focus,
+.keyboard-navigation textarea:focus {
+  outline: 2px solid var(--color-primary-green);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(0, 144, 69, 0.2);
+}
+
+/* Skip links */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 8px 16px;
+  background: var(--color-primary-green);
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  left: 6px;
+  top: 6px;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .service-card,
+  .metric-card,
+  .benefit-card,
+  .department-card,
+  .faq-accordion {
+    border: 2px solid;
+  }
+
+  .service-card:hover,
+  .metric-card:hover,
+  .benefit-card:hover,
+  .department-card:hover {
+    border-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .service-card:hover,
+  .metric-card:hover,
+  .benefit-card:hover,
+  .department-card:hover {
+    transform: none;
+  }
+
+  .service-card-icon,
+  .benefit-icon,
+  .department-icon {
+    transform: none !important;
+  }
+}
+
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* ARIA live regions */
+.aria-live-region {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Focus trap */
+.focus-trap {
+  position: relative;
+}
+
+.focus-trap::before,
+.focus-trap::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Keyboard navigation indicators */
+.keyboard-navigation .service-card:focus-within,
+.keyboard-navigation .metric-card:focus-within,
+.keyboard-navigation .benefit-card:focus-within,
+.keyboard-navigation .department-card:focus-within {
+  outline: 2px solid var(--color-primary-green);
+  outline-offset: 2px;
+}
+
+/* Touch target sizing for accessibility */
+@media (pointer: coarse) {
+  button,
+  a,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Color contrast improvements */
+.high-contrast {
+  --color-text: #000000;
+  --color-background: #ffffff;
+  --color-primary: #0000ff;
+  --color-secondary: #ff0000;
+}
+
+.high-contrast .service-card,
+.high-contrast .metric-card,
+.high-contrast .benefit-card,
+.high-contrast .department-card {
+  background: var(--color-background);
+  color: var(--color-text);
+  border: 2px solid var(--color-text);
+}
+
+/* Focus indicators for interactive elements */
+.service-card button:focus,
+.metric-card button:focus,
+.benefit-card button:focus,
+.department-card button:focus,
+.faq-accordion-button:focus {
+  outline: 2px solid var(--color-primary-green);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(0, 144, 69, 0.2);
+}
+
+/* Ensure text remains readable at all zoom levels */
+@media (min-resolution: 2dppx) {
+  .service-card-title,
+  .metric-card-label,
+  .benefit-title,
+  .department-title,
+  .section-title {
+    font-weight: 600;
+  }
+}
+
+/* Improve readability for dyslexic users */
+.dyslexia-friendly {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', cursive;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+  word-spacing: 0.1em;
+}
+
+/* Error and success states for screen readers */
+.error-state {
+  border-color: #dc2626;
+  background-color: #fef2f2;
+}
+
+.success-state {
+  border-color: #16a34a;
+  background-color: #f0fdf4;
+}
+
+.warning-state {
+  border-color: #d97706;
+  background-color: #fffbeb;
+}
+
+/* Loading states for screen readers */
+.loading-state {
+  position: relative;
+}
+
+.loading-state::after {
+  content: 'Cargando...';
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Improved form accessibility */
+.form-field {
+  position: relative;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.form-field input:invalid {
+  border-color: #dc2626;
+}
+
+.form-field .error-message {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Improved button accessibility */
+button[disabled],
+input[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button[aria-pressed="true"] {
+  background-color: var(--color-primary-green);
+  color: white;
+}
+
+/* Improved link accessibility */
+a:not([class]) {
+  color: var(--color-primary-green);
+  text-decoration: underline;
+}
+
+a:not([class]):hover,
+a:not([class]):focus {
+  text-decoration: none;
+}
+
+/* Improved table accessibility */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+th {
+  background-color: #f9fafb;
+  font-weight: 600;
+}
+
+/* Improved list accessibility */
+ul,
+ol {
+  padding-left: 1.5rem;
+}
+
+li {
+  margin-bottom: 0.25rem;
+}
+
+/* Improved heading accessibility */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.2;
+}
+
+h1:first-child,
+h2:first-child,
+h3:first-child,
+h4:first-child,
+h5:first-child,
+h6:first-child {
+  margin-top: 0;
 }
 
 /* Loading states */
