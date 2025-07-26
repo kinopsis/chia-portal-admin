@@ -77,15 +77,57 @@ const Modal: React.FC<ModalProps> = ({
     }
   }
 
-  // Focus management
+  // Focus management and focus trap
   useEffect(() => {
-    if (isOpen && contentRef.current) {
+    if (!isOpen) return
+
+    const previousActiveElement = document.activeElement as HTMLElement
+
+    // Focus trap implementation
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return
+
+      const focusableElements = contentRef.current?.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+
+      if (!focusableElements || focusableElements.length === 0) return
+
+      const firstElement = focusableElements[0] as HTMLElement
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault()
+          lastElement.focus()
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault()
+          firstElement.focus()
+        }
+      }
+    }
+
+    // Focus the first focusable element
+    if (contentRef.current) {
       const focusableElements = contentRef.current.querySelectorAll(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       )
       const firstElement = focusableElements[0] as HTMLElement
       if (firstElement) {
         firstElement.focus()
+      }
+    }
+
+    // Add focus trap
+    document.addEventListener('keydown', handleTabKey)
+
+    return () => {
+      document.removeEventListener('keydown', handleTabKey)
+      // Return focus to the previously focused element
+      if (previousActiveElement && previousActiveElement.focus) {
+        previousActiveElement.focus()
       }
     }
   }, [isOpen])

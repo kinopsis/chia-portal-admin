@@ -48,6 +48,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label htmlFor={inputId} className="mb-2 text-sm font-medium text-gray-700">
             {label}
+            {props.required && <span className="text-red-500 ml-1" aria-label="campo requerido">*</span>}
           </label>
         )}
 
@@ -69,6 +70,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               rightIcon && 'pr-10',
               className
             )}
+            aria-describedby={
+              error ? `${inputId}-error` :
+              helperText ? `${inputId}-helper` : undefined
+            }
+            aria-invalid={error ? true : false}
+            aria-required={props.required ? true : false}
             {...props}
           />
 
@@ -79,9 +86,17 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
 
-        {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+        {error && (
+          <p id={`${inputId}-error`} className="mt-1 text-sm text-red-600" role="alert">
+            {error}
+          </p>
+        )}
 
-        {helperText && !error && <p className="mt-1 text-sm text-gray-500">{helperText}</p>}
+        {helperText && !error && (
+          <p id={`${inputId}-helper`} className="mt-1 text-sm text-gray-500">
+            {helperText}
+          </p>
+        )}
       </div>
     )
   }
