@@ -325,6 +325,8 @@ export class UnifiedSearchService {
    * Used specifically for the /tramites page
    */
   async searchTramitesAndOpas(filters: UnifiedSearchFilters = {}): Promise<UnifiedSearchResponse> {
+    const startTime = performance.now()
+
     try {
       // Check if we're in a build environment and return mock data
       if (typeof window === 'undefined' && process.env.NODE_ENV === 'production') {
@@ -489,6 +491,14 @@ export class UnifiedSearchService {
       const endIndex = startIndex + limit
       const paginatedResults = unifiedResults.slice(startIndex, endIndex)
 
+      // Performance monitoring
+      const endTime = performance.now()
+      const executionTime = endTime - startTime
+
+      if (executionTime > 1000) {
+        console.warn(`Slow search query detected: ${executionTime.toFixed(2)}ms`, { filters })
+      }
+
       return {
         data: paginatedResults,
         pagination: {
@@ -502,6 +512,15 @@ export class UnifiedSearchService {
 
     } catch (error) {
       console.error('Error in unified search (Trámites and OPAs only):', error)
+
+      // Enhanced error logging for debugging
+      if (error instanceof Error) {
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack,
+          filters: filters
+        })
+      }
       return {
         data: [],
         pagination: {
