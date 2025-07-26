@@ -25,9 +25,18 @@ interface SubdependenciaWithRelations extends Subdependencia {
   }
 }
 
-// Remove local interface - using the one from unifiedSearch service
-
-// Remove mock data - will use real data from unifiedSearchService
+/**
+ * Trámites y OPAs Page
+ *
+ * Dedicated search interface for municipal services (Trámites and OPAs only).
+ * FAQs are excluded from this page to provide a focused user experience.
+ *
+ * Features:
+ * - Unified search across Trámites and OPAs databases
+ * - Advanced filtering by dependencia, subdependencia, and payment type
+ * - Enhanced card layouts with dependency hierarchy and contextual labels
+ * - Optimized performance with reduced database queries
+ */
 
 const tipoOptions = [
   { value: '', label: 'Todos los tipos' },
@@ -92,6 +101,7 @@ function TramitesContent() {
           limit: itemsPerPage
         }
 
+        // Use optimized search method that excludes FAQs for better performance
         const result = await unifiedSearchService.searchTramitesAndOpas(filters)
 
         setData(result.data)
