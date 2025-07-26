@@ -22,6 +22,8 @@ export interface NavigationProps {
   orientation?: 'horizontal' | 'vertical'
   variant?: 'default' | 'pills' | 'underline'
   className?: string
+  id?: string
+  ariaLabel?: string
 }
 
 const Navigation: React.FC<NavigationProps> = ({
@@ -29,6 +31,8 @@ const Navigation: React.FC<NavigationProps> = ({
   orientation = 'horizontal',
   variant = 'default',
   className,
+  id,
+  ariaLabel = 'Navegación principal',
 }) => {
   const { userProfile } = useAuth()
   const pathname = usePathname()
@@ -78,14 +82,14 @@ const Navigation: React.FC<NavigationProps> = ({
 
   return (
     <nav
-      id="main-navigation"
+      id={id || "main-navigation"}
       className={clsx(
         'flex',
         orientation === 'vertical' ? 'flex-col space-y-1' : 'flex-row space-x-1',
         className
       )}
       role="navigation"
-      aria-label="Navegación principal"
+      aria-label={ariaLabel}
     >
       {visibleItems.map((item) => (
         <Link
@@ -95,6 +99,8 @@ const Navigation: React.FC<NavigationProps> = ({
           target={item.external ? '_blank' : undefined}
           rel={item.external ? 'noopener noreferrer' : undefined}
           title={item.description}
+          aria-label={item.description || item.label}
+          aria-current={isActive ? 'page' : undefined}
         >
           {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
           <span className="truncate">{item.label}</span>
