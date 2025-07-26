@@ -449,13 +449,17 @@ function TramitesContent() {
 
                           {/* 1. DEPENDENCY HIERARCHY SUBTITLE */}
                           <div className="mb-3">
-                            <div className="flex items-center text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-md border-l-4 border-blue-400">
-                              <span className="text-blue-600 mr-2">🏛️</span>
+                            <div
+                              className="flex items-center text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-md border-l-4 border-blue-400"
+                              role="region"
+                              aria-label="Información de dependencia"
+                            >
+                              <span className="text-blue-600 mr-2" aria-hidden="true">🏛️</span>
                               <span className="font-medium">
                                 {item.dependencia}
                                 {item.subdependencia && (
                                   <>
-                                    <span className="mx-2 text-gray-400">›</span>
+                                    <span className="mx-2 text-gray-400" aria-hidden="true">›</span>
                                     <span className="text-gray-700">{item.subdependencia}</span>
                                   </>
                                 )}
@@ -467,10 +471,15 @@ function TramitesContent() {
                         </div>
 
                         {/* 2. CONTEXTUAL DESCRIPTION WITH HORIZONTAL LAYOUT AND VISUAL EMPHASIS */}
-                        <div className="mb-4 p-3 bg-gray-50 rounded-lg border-l-4 border-blue-400">
+                        <div
+                          className="mb-4 p-3 bg-gray-50 rounded-lg border-l-4 border-blue-400"
+                          role="region"
+                          aria-label={item.tipo === 'tramite' ? 'Información del formulario' : 'Descripción del servicio'}
+                        >
                           <div className="flex items-center gap-2">
                             <span className="text-gray-600 font-medium">
-                              {item.tipo === 'tramite' ? '📋 Formulario:' : '📝 Descripción:'}
+                              <span aria-hidden="true">{item.tipo === 'tramite' ? '📋' : '📝'}</span>
+                              {item.tipo === 'tramite' ? ' Formulario:' : ' Descripción:'}
                             </span>
                             <span className="font-semibold text-gray-800">
                               {item.descripcion}
