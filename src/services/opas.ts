@@ -56,6 +56,48 @@ export class OPAsClientService {
       query = query.or(`nombre.ilike.%${filters.query}%,descripcion.ilike.%${filters.query}%,codigo_opa.ilike.%${filters.query}%,formulario.ilike.%${filters.query}%`)
     }
 
+    if (filters?.dependencia_id) {
+      try {
+        // Convert to string and validate
+        const dependenciaId = String(filters.dependencia_id).trim()
+        console.log('Processing dependencia_id filter for OPAs:', dependenciaId, typeof dependenciaId)
+
+        // Skip empty strings
+        if (!dependenciaId) {
+          console.log('Empty dependencia_id, skipping filter')
+        } else if (!dependenciaId.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+          console.error('Invalid UUID format for dependencia_id:', dependenciaId)
+          // Return empty result for invalid UUID
+          query = query.eq('id', 'no-match')
+        } else {
+          console.log('Valid UUID, fetching subdependencias for dependencia:', dependenciaId)
+          // First get subdependencias for this dependencia
+          const { data: subdeps, error: subdepsError } = await supabase
+            .from('subdependencias')
+            .select('id')
+            .eq('dependencia_id', dependenciaId)
+
+          if (subdepsError) {
+            console.error('Error fetching subdependencias:', subdepsError)
+            // Return empty result on error
+            query = query.eq('id', 'no-match')
+          } else if (subdeps && subdeps.length > 0) {
+            console.log(`Found ${subdeps.length} subdependencias, filtering OPAs`)
+            const subdependenciaIds = subdeps.map(sub => sub.id)
+            query = query.in('subdependencia_id', subdependenciaIds)
+          } else {
+            console.log('No subdependencias found for dependencia, returning empty result')
+            // If no subdependencias found, return empty result
+            query = query.eq('id', 'no-match')
+          }
+        }
+      } catch (error) {
+        console.error('Error processing dependencia_id filter:', error)
+        // Return empty result on any error
+        query = query.eq('id', 'no-match')
+      }
+    }
+
     if (filters?.subdependencia_id) {
       query = query.eq('subdependencia_id', filters.subdependencia_id)
     }
