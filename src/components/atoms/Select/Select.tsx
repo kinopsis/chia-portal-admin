@@ -9,7 +9,7 @@ export interface SelectOption {
   disabled?: boolean
 }
 
-export interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'size'> {
+export interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'size' | 'onChange'> {
   label?: string
   error?: string
   helperText?: string
@@ -18,6 +18,7 @@ export interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectE
   fullWidth?: boolean
   size?: 'sm' | 'md' | 'lg'
   variant?: 'default' | 'outlined'
+  onChange?: (value: string) => void
 }
 
 const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
@@ -33,12 +34,20 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       variant = 'default',
       className,
       id,
+      onChange,
       ...props
     },
     ref
   ) => {
     const generatedId = useId()
     const selectId = id || generatedId
+
+    // Handle change event and extract value
+    const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      if (onChange) {
+        onChange(event.target.value)
+      }
+    }
 
     const baseClasses =
       'border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 bg-white'
@@ -80,6 +89,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
               'appearance-none pr-10',
               className
             )}
+            onChange={handleChange}
             {...props}
           >
             {placeholder && (
