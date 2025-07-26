@@ -53,10 +53,10 @@
   --background-elevated: #ffffff;
 
   /* WCAG AA Compliant Primary Colors - Updated for 4.5:1 contrast ratio */
-  --color-primary-yellow: #B8A000;     /* 4.6:1 contrast ratio */
-  --color-primary-yellow-alt: #A69000; /* 5.2:1 contrast ratio */
-  --color-primary-yellow-dark: #8F7A00; /* 6.1:1 contrast ratio */
-  --color-primary-yellow-light: #D4C200; /* 3.8:1 contrast (large text only) */
+  --color-primary-yellow: #8B7000;     /* 4.76:1 contrast ratio - CORRECTED */
+  --color-primary-yellow-alt: #7A6000; /* 6.0:1 contrast ratio - CORRECTED */
+  --color-primary-yellow-dark: #695000; /* 7.64:1 contrast ratio - CORRECTED */
+  --color-primary-yellow-light: #B8A000; /* 2.6:1 contrast (large text only) */
 
   --color-primary-green: #006B35;      /* 4.5:1 contrast ratio */
   --color-primary-green-alt: #005D2E;  /* 5.2:1 contrast ratio */
