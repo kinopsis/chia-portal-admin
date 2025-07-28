@@ -54,7 +54,7 @@ export const config = {
   },
 
   // Analytics and Monitoring
-  analytics: {
+  monitoring: {
     googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || '',
     sentryDsn: process.env.SENTRY_DSN || '',
     enableTracking: process.env.ENABLE_ANALYTICS === 'true',

@@ -26,6 +26,11 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://hvwoeasnoeecgqseuigd.supabase.co',
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2d29lYXNub2VlY2dxc2V1aWdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3MTkyMTcsImV4cCI6MjA2ODI5NTIxN30.chxHGUPbk_ser94F-4RBh2pAQrcKZiX5dz_-JQhzL7o',
+    // AI Chatbot Feature Flags
+    NEXT_PUBLIC_ENABLE_AI_CHATBOT: process.env.NEXT_PUBLIC_ENABLE_AI_CHATBOT || 'false',
+    NEXT_PUBLIC_ENABLE_NOTIFICATIONS: process.env.NEXT_PUBLIC_ENABLE_NOTIFICATIONS || 'false',
+    NEXT_PUBLIC_ENABLE_ANALYTICS: process.env.NEXT_PUBLIC_ENABLE_ANALYTICS || 'false',
+    NEXT_PUBLIC_ENABLE_DARK_MODE: process.env.NEXT_PUBLIC_ENABLE_DARK_MODE || 'false',
   },
 
   // Force all pages to be dynamic to avoid build-time data fetching

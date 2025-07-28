@@ -151,7 +151,7 @@ export function PerformanceMonitor() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 bg-black/80 text-white p-3 rounded-lg text-xs font-mono z-50">
+    <div className="fixed top-4 left-4 bg-black/80 text-white p-3 rounded-lg text-xs font-mono z-30 pointer-events-none">
       <div className="mb-2 font-bold">Performance Metrics</div>
       <div className="space-y-1">
         {webVitals.lcp && (
