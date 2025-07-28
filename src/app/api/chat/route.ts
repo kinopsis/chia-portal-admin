@@ -2,14 +2,14 @@
 // Epic 4 - US-011: Configuración Base del Chatbot IA Multi-Canal
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
-import {
-  generateChatResponse,
-  hybridSearch,
-  validateOpenAIConfig,
-  type ChatMessage
-} from '@/services/openai-server'
 import { config } from '@/lib/config'
+
+// Build-time check to prevent evaluation when environment variables are missing or placeholders
+const isPlaceholderConfig = (
+  config.supabase.url.includes('placeholder') ||
+  config.supabase.serviceRoleKey.includes('placeholder') ||
+  config.openai.apiKey.includes('placeholder')
+)
 
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000 // 15 minutes
@@ -35,6 +35,13 @@ interface ChatApiResponse {
   }
   error?: string
   rateLimited?: boolean
+}
+
+// Local type definition for ChatMessage to avoid build-time imports
+interface ChatMessage {
+  role: 'user' | 'assistant' | 'system'
+  content: string
+  timestamp?: Date
 }
 
 /**
@@ -80,6 +87,26 @@ function getClientIdentifier(request: NextRequest, body: ChatRequest): string {
  */
 export async function POST(request: NextRequest): Promise<NextResponse<ChatApiResponse>> {
   try {
+    // Handle build-time case or placeholder configuration
+    if (isPlaceholderConfig) {
+      return NextResponse.json({
+        success: false,
+        error: 'Service not available with placeholder configuration.'
+      }, { status: 503 })
+    }
+
+    // Check if required environment variables are available
+    if (!config.supabase.url || !config.supabase.serviceRoleKey || !config.openai.apiKey) {
+      return NextResponse.json({
+        success: false,
+        error: 'Service configuration incomplete. Please check environment variables.'
+      }, { status: 500 })
+    }
+
+    // Dynamic imports to prevent build-time evaluation
+    const { createServiceRoleClient } = await import('@/lib/supabase/server')
+    const { generateChatResponse, hybridSearch, validateOpenAIConfig } = await import('@/services/openai-server')
+
     // Create Supabase client with service role for RPC operations
     const supabase = createServiceRoleClient()
 
