@@ -41,7 +41,7 @@ const SubdependenciasAdminPage: React.FC = () => {
   const loadData = useCallback(async () => {
     try {
       setLoading(true)
-      setError(null)
+      setError(null.message || null)
 
       // Load both subdependencias and dependencias
       const [subdependenciasResponse, dependenciasResponse] = await Promise.all([
@@ -61,6 +61,8 @@ const SubdependenciasAdminPage: React.FC = () => {
     } catch (err) {
       console.error('Error loading data:', err)
       setError(
+        `Error al cargar los datos: ${err instanceof Error ? err.message : 'Error desconocido'}`
+      .message || 
         `Error al cargar los datos: ${err instanceof Error ? err.message : 'Error desconocido'}`
       )
     } finally {
@@ -119,8 +121,7 @@ const SubdependenciasAdminPage: React.FC = () => {
       name: 'activa',
       label: 'Activa',
       type: 'checkbox',
-      defaultValue: true,
-      helperText: 'Indica si la subdependencia está activa en el sistema',
+            helperText: 'Indica si la subdependencia está activa en el sistema',
     },
   ]
 

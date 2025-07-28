@@ -63,8 +63,9 @@ describe('Homepage Performance Tests', () => {
         description: 'Test description',
         href: '/test',
         stats: { count: 150, label: 'services' },
-        colorScheme: 'yellow' as const,
-      }
+        colorScheme: "service-yellow" as const,
+        buttonText: "Ver más"
+      , buttonText: "Ver más" }
 
       const renderTime = timer.measure('servicecard-render', () => {
         render(<ServiceCard {...serviceProps} />)
@@ -76,7 +77,7 @@ describe('Homepage Performance Tests', () => {
 
     it('renders ServiceCard grid efficiently with all color schemes', () => {
       const timer = new PerformanceTimer()
-      const colorSchemes = ['yellow', 'gray', 'blue', 'green', 'purple', 'indigo'] as const
+      const colorSchemes = ['service-yellow', 'service-gray', 'service-blue', 'service-green', 'service-purple', 'service-indigo'] as const
       
       const services = colorSchemes.map((scheme, index) => ({
         icon: '📋',
@@ -191,7 +192,7 @@ describe('Homepage Performance Tests', () => {
                 title="Test Service"
                 description="Test description"
                 href="/test"
-                colorScheme="yellow"
+                colorScheme="service-yellow"
               />
             </div>
           </ThemeProvider>
@@ -265,7 +266,7 @@ describe('Homepage Performance Tests', () => {
             title={`Service ${i}`}
             description={`Description ${i}`}
             href={`/service-${i}`}
-            colorScheme="blue"
+            colorScheme="service-blue"
           />
         )
         unmount()
@@ -295,7 +296,7 @@ describe('Homepage Performance Tests', () => {
                 title="Test Service"
                 description="Test description"
                 href="/test"
-                colorScheme="green"
+                colorScheme="service-green"
               />
             </div>
           </ThemeProvider>
@@ -354,7 +355,7 @@ describe('Homepage Performance Tests', () => {
           title="Test Service"
           description="Test description"
           href="/test"
-          colorScheme="purple"
+          colorScheme="service-purple"
           animated={true}
         />
       )
@@ -384,7 +385,7 @@ describe('Homepage Performance Tests', () => {
         description: `Description for service ${i + 1}`,
         href: `/service-${i + 1}`,
         stats: { count: (i + 1) * 10, label: 'items' },
-        colorScheme: ['yellow', 'gray', 'blue', 'green', 'purple', 'indigo'][i % 6] as const,
+        colorScheme: ['service-yellow', 'service-gray', 'service-blue', 'service-green', 'service-purple', 'service-indigo'][i % 6] as const,
       }))
 
       memoryMonitor.recordMeasurement()

@@ -73,7 +73,7 @@ describe('Screen Reader Compatibility Tests', () => {
           description="Solicita tu certificado de residencia de manera digital"
           href="/certificados/residencia"
           stats={{ count: 1250, label: 'certificados emitidos' }}
-          colorScheme="yellow"
+          colorScheme="service-yellow"
         />
       )
 
@@ -98,7 +98,7 @@ describe('Screen Reader Compatibility Tests', () => {
     })
 
     it('announces color scheme information to screen readers', () => {
-      const colorSchemes = ['yellow', 'gray', 'blue', 'green', 'purple', 'indigo'] as const
+      const colorSchemes = ['service-yellow', 'service-gray', 'service-blue', 'service-green', 'service-purple', 'service-indigo'] as const
 
       colorSchemes.forEach(colorScheme => {
         const { unmount } = render(
@@ -131,7 +131,7 @@ describe('Screen Reader Compatibility Tests', () => {
           description="Realiza pagos de impuestos y tasas municipales"
           href="/pagos"
           stats={{ count: 2340, label: 'pagos procesados este mes' }}
-          colorScheme="green"
+          colorScheme="service-green"
         />
       )
 
@@ -455,7 +455,7 @@ describe('Screen Reader Compatibility Tests', () => {
                 title="Test Service"
                 description="Test description"
                 href="/test"
-                colorScheme="blue"
+                colorScheme="service-blue"
               />
             </div>
           </ThemeProvider>

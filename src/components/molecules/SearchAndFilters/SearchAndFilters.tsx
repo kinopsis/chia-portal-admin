@@ -220,7 +220,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             value={value}
             onChange={(e) => handleFilterChange(filter.key, e.target.value)}
             placeholder={filter.placeholder}
-            {...(loading && { disabled: true })}
+            {...(loading && { })}
             className={clsx(
               'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
               classes.input,
@@ -235,7 +235,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
           <select
             value={value}
             onChange={(e) => handleFilterChange(filter.key, e.target.value)}
-            {...(loading && { disabled: true })}
+            {...(loading && { })}
             className={clsx(
               'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
               classes.input,
@@ -264,7 +264,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             min={filter.min}
             max={filter.max}
             step={filter.step}
-            {...(loading && { disabled: true })}
+            {...(loading && { })}
             className={clsx(
               'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
               classes.input,
@@ -280,7 +280,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             type="date"
             value={value}
             onChange={(e) => handleFilterChange(filter.key, e.target.value)}
-            {...(loading && { disabled: true })}
+            {...(loading && { })}
             className={clsx(
               'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
               classes.input,
@@ -300,7 +300,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
               onChange={(e) =>
                 handleFilterChange(filter.key, { ...rangeValue, start: e.target.value })
               }
-              {...(loading && { disabled: true })}
+              {...(loading && { })}
               className={clsx(
                 'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
                 classes.input,
@@ -315,7 +315,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
               onChange={(e) =>
                 handleFilterChange(filter.key, { ...rangeValue, end: e.target.value })
               }
-              {...(loading && { disabled: true })}
+              {...(loading && { })}
               className={clsx(
                 'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
                 classes.input,
@@ -334,7 +334,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
               const val = e.target.value === 'true' ? true : e.target.value === 'false' ? false : ''
               handleFilterChange(filter.key, val)
             }}
-            {...(loading && { disabled: true })}
+            {...(loading && { })}
             className={clsx(
               'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
               classes.input,
@@ -414,7 +414,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
               value={internalSearchValue}
               onChange={(e) => setInternalSearchValue(e.target.value)}
               placeholder={searchPlaceholder}
-              {...(loading && { disabled: true })}
+              {...(loading && { })}
               className={clsx(
                 'w-full pl-10 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
                 classes.input,

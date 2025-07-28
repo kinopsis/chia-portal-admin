@@ -24,8 +24,7 @@ const mockFilters: FilterConfig[] = [
     key: 'age',
     label: 'Edad',
     type: 'number',
-    min: 0,
-    max: 100,
+        max: 100,
   },
   {
     key: 'birthDate',

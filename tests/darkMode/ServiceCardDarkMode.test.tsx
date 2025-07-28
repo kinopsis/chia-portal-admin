@@ -35,7 +35,7 @@ describe('ServiceCard Dark Mode Tests', () => {
     buttonText: 'Access Service',
   }
 
-  const colorSchemes = ['yellow', 'gray', 'blue', 'green', 'purple', 'indigo'] as const
+  const colorSchemes = ['service-yellow', 'service-gray', 'service-blue', 'service-green', 'service-purple', 'service-indigo'] as const
 
   beforeEach(() => {
     cleanup = setupDarkModeTest()
@@ -73,7 +73,7 @@ describe('ServiceCard Dark Mode Tests', () => {
     it('applies dark mode background colors correctly', () => {
       applyDarkMode(true)
       
-      renderWithTheme('dark', { ...defaultProps, colorScheme: 'yellow' })
+      renderWithTheme('dark', { ...defaultProps, colorScheme: "service-yellow" })
       
       const card = screen.getByRole('article')
       const computedColors = getComputedColors(card)
@@ -184,13 +184,13 @@ describe('ServiceCard Dark Mode Tests', () => {
       
       const yellowCard = render(
         <ThemeProvider defaultTheme="dark">
-          <ServiceCard {...defaultProps} colorScheme="yellow" />
+          <ServiceCard {...defaultProps} colorScheme="service-yellow" />
         </ThemeProvider>
       )
       
       const blueCard = render(
         <ThemeProvider defaultTheme="dark">
-          <ServiceCard {...defaultProps} colorScheme="blue" />
+          <ServiceCard {...defaultProps} colorScheme="service-blue" />
         </ThemeProvider>
       )
       
@@ -371,7 +371,7 @@ describe('ServiceCard Dark Mode Tests', () => {
         title: 'Minimal Service',
         description: 'Minimal description',
         href: '/minimal',
-        colorScheme: 'blue' as const,
+        colorScheme: "service-blue" as const,
       }
       
       renderWithTheme('dark', minimalProps)

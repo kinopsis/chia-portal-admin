@@ -36,12 +36,12 @@ const DependenciasAdminPage: React.FC = () => {
   const loadDependencias = useCallback(async () => {
     try {
       setLoading(true)
-      setError(null)
+      setError(null.message || null)
       const response = await dependenciasClientService.getAll()
       setDependencias(response.data)
     } catch (err) {
       console.error('Error loading dependencias:', err)
-      setError('Error al cargar las dependencias')
+      setError('Error al cargar las dependencias'.message || 'Error al cargar las dependencias')
     } finally {
       setLoading(false)
     }
@@ -86,8 +86,7 @@ const DependenciasAdminPage: React.FC = () => {
       name: 'activa',
       label: 'Activa',
       type: 'checkbox',
-      defaultValue: true,
-      helperText: 'Indica si la dependencia está activa en el sistema',
+            helperText: 'Indica si la dependencia está activa en el sistema',
     },
   ]
 

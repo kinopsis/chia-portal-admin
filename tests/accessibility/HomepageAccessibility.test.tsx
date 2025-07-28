@@ -47,7 +47,7 @@ describe('Homepage Accessibility Tests', () => {
           description="Solicita tu certificado de residencia de manera digital"
           href="/certificados/residencia"
           stats={{ count: 1250, label: 'certificados emitidos' }}
-          colorScheme="yellow"
+          colorScheme="service-yellow"
         />
       )
 
@@ -124,7 +124,7 @@ describe('Homepage Accessibility Tests', () => {
               title="Test Service"
               description="Test description"
               href="/test"
-              colorScheme="blue"
+              colorScheme="service-blue"
             />
           </div>
         </ThemeProvider>
@@ -167,7 +167,7 @@ describe('Homepage Accessibility Tests', () => {
               title="Test Service"
               description="Test description"
               href="/test"
-              colorScheme="blue"
+              colorScheme="service-blue"
             />
           </div>
         </ThemeProvider>
@@ -200,7 +200,7 @@ describe('Homepage Accessibility Tests', () => {
     })
 
     it('validates contrast across all service card color schemes', () => {
-      const colorSchemes = ['yellow', 'gray', 'blue', 'green', 'purple', 'indigo'] as const
+      const colorSchemes = ['service-yellow', 'service-gray', 'service-blue', 'service-green', 'service-purple', 'service-indigo'] as const
 
       colorSchemes.forEach(colorScheme => {
         const { unmount } = render(
@@ -238,7 +238,7 @@ describe('Homepage Accessibility Tests', () => {
             title="Test Service"
             description="Test description"
             href="/test"
-            colorScheme="blue"
+            colorScheme="service-blue"
           />
           <FAQPreview />
         </div>
@@ -272,7 +272,7 @@ describe('Homepage Accessibility Tests', () => {
             title="Mobile Service"
             description="Mobile description"
             href="/mobile"
-            colorScheme="green"
+            colorScheme="service-green"
           />
         </div>
       )
@@ -434,7 +434,7 @@ describe('Homepage Accessibility Tests', () => {
             title="Keyboard Test"
             description="Test description"
             href="/test"
-            colorScheme="blue"
+            colorScheme="service-blue"
           />
           <FAQPreview />
         </div>
@@ -460,7 +460,7 @@ describe('Homepage Accessibility Tests', () => {
             title="Tab Test"
             description="Test description"
             href="/test"
-            colorScheme="blue"
+            colorScheme="service-blue"
           />
         </div>
       )
@@ -483,7 +483,7 @@ describe('Homepage Accessibility Tests', () => {
           title="Keyboard Activation"
           description="Test description"
           href="/test"
-          colorScheme="blue"
+          colorScheme="service-blue"
           onClick={mockOnClick}
         />
       )
@@ -557,7 +557,7 @@ describe('Homepage Accessibility Tests', () => {
             title="Focus Test"
             description="Test description"
             href="/test"
-            colorScheme="blue"
+            colorScheme="service-blue"
           />
         </div>
       )
@@ -589,7 +589,7 @@ describe('Homepage Accessibility Tests', () => {
                 title="Focus Test"
                 description="Test description"
                 href="/test"
-                colorScheme="blue"
+                colorScheme="service-blue"
               />
             </div>
           </ThemeProvider>

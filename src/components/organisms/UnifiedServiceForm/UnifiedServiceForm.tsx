@@ -288,7 +288,7 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
                     type="checkbox"
                     checked={value}
                     onChange={(e) => onChange(e.target.checked)}
-                    {...(loading && { disabled: true })}
+                    {...(loading && { })}
                     className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
                     aria-label="Servicio activo y disponible"
                   />
@@ -432,7 +432,7 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
                   type="checkbox"
                   checked={value}
                   onChange={(e) => onChange(e.target.checked)}
-                  {...(loading && { disabled: true })}
+                  {...(loading && { })}
                   className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
                   aria-label="Este servicio tiene costo"
                 />

@@ -141,7 +141,7 @@ export const RESPONSIVE_CONFIG = {
     threshold: 0.2, // 20% difference allowed
     maxDiffPixels: 1000,
     animations: {
-      disabled: true, // Disable for consistent screenshots
+      // Disable for consistent screenshots
     },
   },
 

@@ -44,8 +44,7 @@ const mockMetrics = {
     byRole: {
       ciudadano: 1000,
       funcionario: 200,
-      admin: 34,
-    },
+      ad    },
   },
   tramites: {
     total: 567,

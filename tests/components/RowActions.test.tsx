@@ -44,8 +44,7 @@ const mockActions: RowAction[] = [
     key: 'disabled',
     label: 'Disabled Action',
     onClick: jest.fn(),
-    disabled: true,
-  },
+    },
 ]
 
 describe('RowActions', () => {

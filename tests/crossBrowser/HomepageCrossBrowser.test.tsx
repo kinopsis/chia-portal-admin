@@ -152,7 +152,7 @@ describe('Homepage Cross-Browser Compatibility Tests', () => {
           description="Testing cross-browser compatibility"
           href="/test"
           stats={{ count: 1250, label: 'tests passed' }}
-          colorScheme="blue"
+          colorScheme="service-blue"
         />
       )
 
@@ -169,7 +169,7 @@ describe('Homepage Cross-Browser Compatibility Tests', () => {
     })
 
     it('handles color schemes consistently across browsers', () => {
-      const colorSchemes = ['yellow', 'gray', 'blue', 'green', 'purple', 'indigo'] as const
+      const colorSchemes = ['service-yellow', 'service-gray', 'service-blue', 'service-green', 'service-purple', 'service-indigo'] as const
 
       colorSchemes.forEach(colorScheme => {
         const { unmount } = render(
@@ -199,7 +199,7 @@ describe('Homepage Cross-Browser Compatibility Tests', () => {
           title="Functionality Test"
           description="Testing functionality"
           href="/test"
-          colorScheme="green"
+          colorScheme="service-green"
           onClick={mockOnClick}
         />
       )
@@ -300,7 +300,7 @@ describe('Homepage Cross-Browser Compatibility Tests', () => {
                 title="Theme Test"
                 description="Testing theme switching"
                 href="/test"
-                colorScheme="blue"
+                colorScheme="service-blue"
               />
             </div>
           </ThemeProvider>
@@ -336,7 +336,7 @@ describe('Homepage Cross-Browser Compatibility Tests', () => {
             title="Persistence Test"
             description="Testing theme persistence"
             href="/test"
-            colorScheme="blue"
+            colorScheme="service-blue"
           />
         </ThemeProvider>
       )
@@ -396,7 +396,7 @@ describe('Homepage Cross-Browser Compatibility Tests', () => {
           title="Touch Test"
           description="Testing touch events"
           href="/test"
-          colorScheme="blue"
+          colorScheme="service-blue"
         />
       )
 
@@ -442,7 +442,7 @@ describe('Homepage Cross-Browser Compatibility Tests', () => {
             title="Keyboard Test"
             description="Testing keyboard navigation"
             href="/test"
-            colorScheme="blue"
+            colorScheme="service-blue"
           />
           <FAQPreview />
         </div>
@@ -518,7 +518,7 @@ describe('Homepage Cross-Browser Compatibility Tests', () => {
           title="Fallback Test"
           description="Testing fallback behavior"
           href="/test"
-          colorScheme="blue"
+          colorScheme="service-blue"
         />
       )
 
@@ -544,7 +544,7 @@ describe('Homepage Cross-Browser Compatibility Tests', () => {
             title="API Fallback Test"
             description="Testing API fallback"
             href="/test"
-            colorScheme="blue"
+            colorScheme="service-blue"
           />
         </ThemeProvider>
       )

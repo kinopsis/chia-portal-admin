@@ -31,9 +31,9 @@ describe('ServiceCard Component', () => {
       count: 150,
       label: 'services available',
     },
-    colorScheme: 'yellow',
+    colorScheme: "service-yellow",
     buttonText: 'Access Service',
-  }
+  , buttonText: "Ver más" , buttonText: "Ver más" }
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -57,7 +57,7 @@ describe('ServiceCard Component', () => {
         title: 'Minimal Service',
         description: 'Minimal description',
         href: '/minimal',
-        colorScheme: 'blue' as const,
+        colorScheme: "service-blue" as const,
       }
       
       render(<ServiceCard {...minimalProps} />)
@@ -68,24 +68,22 @@ describe('ServiceCard Component', () => {
     })
 
     it('applies correct color scheme classes', () => {
-      const { rerender } = render(<ServiceCard {...defaultProps} colorScheme="yellow" />)
+      const { rerender } = render(<ServiceCard {...defaultProps} colorScheme="service-yellow" />)
       let card = screen.getByRole('article')
       expect(card).toHaveClass('service-card-yellow')
 
-      rerender(<ServiceCard {...defaultProps} colorScheme="blue" />)
+      rerender(<ServiceCard {...defaultProps} colorScheme="service-blue" />)
       card = screen.getByRole('article')
       expect(card).toHaveClass('service-card-blue')
 
-      rerender(<ServiceCard {...defaultProps} colorScheme="green" />)
+      rerender(<ServiceCard {...defaultProps} colorScheme="service-green" />)
       card = screen.getByRole('article')
       expect(card).toHaveClass('service-card-green')
     })
   })
 
   describe('Color Schemes', () => {
-    const colorSchemes: ServiceCardProps['colorScheme'][] = [
-      'yellow', 'gray', 'blue', 'green', 'purple', 'indigo'
-    ]
+    const colorSchemes: ServiceCardProps['colorScheme'][] = ['service-yellow', 'service-gray', 'service-blue', 'service-green', 'service-purple', 'service-indigo']
 
     colorSchemes.forEach((colorScheme) => {
       it(`renders correctly with ${colorScheme} color scheme`, () => {
@@ -208,7 +206,7 @@ describe('ServiceCard Component', () => {
     })
 
     it('has sufficient color contrast', () => {
-      render(<ServiceCard {...defaultProps} colorScheme="yellow" />)
+      render(<ServiceCard {...defaultProps} colorScheme="service-yellow" />)
       
       const card = screen.getByRole('article')
       const computedStyle = window.getComputedStyle(card)
