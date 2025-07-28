@@ -372,7 +372,8 @@ describe('ServiceCard Dark Mode Tests', () => {
         description: 'Minimal description',
         href: '/minimal',
         colorScheme: "service-blue" as const,
-      }
+      ,
+    buttonText: "Ver más"}
       
       renderWithTheme('dark', minimalProps)
       

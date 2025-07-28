@@ -58,7 +58,8 @@ describe('ServiceCard Component', () => {
         description: 'Minimal description',
         href: '/minimal',
         colorScheme: "service-blue" as const,
-      }
+      ,
+    buttonText: "Ver más"}
       
       render(<ServiceCard {...minimalProps} />)
       

@@ -36,7 +36,8 @@ describe('Service Card Grid Responsive Tests', () => {
       href: '/certificados/residencia',
       stats: { count: 1250, label: 'certificados emitidos' },
       colorScheme: "service-yellow" as const
-    },
+    ,
+    buttonText: "Ver más"},
     {
       icon: '📄',
       title: 'Trámites Administrativos',
@@ -44,7 +45,8 @@ describe('Service Card Grid Responsive Tests', () => {
       href: '/tramites',
       stats: { count: 156, label: 'procedimientos disponibles' },
       colorScheme: "service-gray" as const
-    },
+    ,
+    buttonText: "Ver más"},
     {
       icon: '👥',
       title: 'Consulta Ciudadano',
@@ -52,7 +54,8 @@ describe('Service Card Grid Responsive Tests', () => {
       href: '/consultas',
       stats: { count: 890, label: 'consultas atendidas' },
       colorScheme: "service-blue" as const
-    },
+    ,
+    buttonText: "Ver más"},
     {
       icon: '💰',
       title: 'Pagos en Línea',
@@ -60,7 +63,8 @@ describe('Service Card Grid Responsive Tests', () => {
       href: '/pagos',
       stats: { count: 2340, label: 'pagos procesados' },
       colorScheme: "service-green" as const
-    },
+    ,
+    buttonText: "Ver más"},
     {
       icon: '📞',
       title: 'Agendar Cita',
@@ -68,7 +72,8 @@ describe('Service Card Grid Responsive Tests', () => {
       href: '/citas',
       stats: { count: 450, label: 'citas disponibles' },
       colorScheme: "service-purple" as const
-    },
+    ,
+    buttonText: "Ver más"},
     {
       icon: '📋',
       title: 'Formularios',
@@ -76,7 +81,8 @@ describe('Service Card Grid Responsive Tests', () => {
       href: '/formularios',
       stats: { count: 89, label: 'formularios disponibles' },
       colorScheme: "service-indigo" as const
-    },
+    ,
+    buttonText: "Ver más"},
   ]
 
   const ServiceGrid: React.FC = () => (

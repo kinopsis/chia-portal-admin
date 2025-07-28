@@ -36,12 +36,12 @@ const DependenciasAdminPage: React.FC = () => {
   const loadDependencias = useCallback(async () => {
     try {
       setLoading(true)
-      setError(null.message || null)
+      setError(null)
       const response = await dependenciasClientService.getAll()
       setDependencias(response.data)
     } catch (err) {
       console.error('Error loading dependencias:', err)
-      setError('Error al cargar las dependencias'.message || 'Error al cargar las dependencias')
+      setError('Error al cargar las dependencias')
     } finally {
       setLoading(false)
     }
@@ -133,10 +133,10 @@ const DependenciasAdminPage: React.FC = () => {
       render: (value, record) => (
         <span
           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            record?.activa ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            record?.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
           }`}
         >
-          {record?.activa ? 'Activa' : 'Inactiva'}
+          {record?.activo ? 'Activa' : 'Inactiva'}
         </span>
       ),
     },

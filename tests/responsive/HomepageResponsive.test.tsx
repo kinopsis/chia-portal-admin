@@ -64,7 +64,8 @@ describe('Homepage Responsive Design Tests', () => {
       href: '/test',
       stats: { count: 150, label: 'services' },
       colorScheme: "service-yellow" as const
-    }
+    ,
+    buttonText: "Ver más"}
 
     createResponsiveTestSuite(
       'ServiceCard',
