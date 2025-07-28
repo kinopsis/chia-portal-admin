@@ -14,7 +14,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instalar dependencias (skip scripts to avoid husky in production)
-RUN npm ci --only=production --ignore-scripts && npm cache clean --force
+# Use legacy-peer-deps to handle peer dependency conflicts gracefully
+RUN npm ci --only=production --ignore-scripts --legacy-peer-deps && npm cache clean --force
 
 # Etapa de construcción
 FROM base AS builder
@@ -29,7 +30,8 @@ COPY tailwind.config.ts ./
 COPY tsconfig.json ./
 
 # Instalar todas las dependencias (incluyendo devDependencies, skip scripts)
-RUN npm ci --ignore-scripts
+# Use legacy-peer-deps to handle peer dependency conflicts gracefully
+RUN npm ci --ignore-scripts --legacy-peer-deps
 
 # Copiar código fuente
 COPY src ./src
