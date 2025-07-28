@@ -102,11 +102,11 @@ export function ChatWidget({
     return null
   }
 
-  // Position classes
+  // Position classes with responsive adjustments
   const positionClasses = {
-    'bottom-right': 'bottom-4 right-4',
-    'bottom-left': 'bottom-4 left-4',
-    'bottom-center': 'bottom-4 left-1/2 transform -translate-x-1/2'
+    'bottom-right': 'bottom-4 right-4 sm:bottom-6 sm:right-6',
+    'bottom-left': 'bottom-4 left-4 sm:bottom-6 sm:left-6',
+    'bottom-center': 'bottom-4 left-1/2 transform -translate-x-1/2 sm:bottom-6'
   }
 
   return (
@@ -115,8 +115,11 @@ export function ChatWidget({
       {isOpen && (
         <Card
           className={cn(
-            'fixed z-50 w-96 h-[600px] shadow-2xl border-0 overflow-hidden',
+            'fixed z-[9999] shadow-2xl border-0 overflow-hidden',
             'animate-in slide-in-from-bottom-4 duration-300',
+            'w-96 h-[600px]', // Default desktop size
+            'max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)]', // Responsive constraints
+            'sm:w-96 sm:h-[600px]', // Maintain size on larger screens
             positionClasses[position],
             isMinimized && 'h-12',
             className
@@ -198,9 +201,10 @@ export function ChatWidget({
         <Button
           onClick={() => setIsOpen(true)}
           className={cn(
-            'fixed z-40 w-14 h-14 rounded-full shadow-lg bg-[#009045] hover:bg-[#009540] text-white',
+            'fixed z-[9998] w-14 h-14 rounded-full shadow-lg bg-[#009045] hover:bg-[#009540] text-white',
             'animate-in zoom-in-50 duration-300 transition-all',
             'focus:ring-2 focus:ring-[#009045] focus:ring-offset-2',
+            'backdrop-blur-sm', // Add backdrop blur for better visibility
             positionClasses[position],
             hasNewMessage && 'animate-pulse'
           )}
@@ -224,8 +228,9 @@ export function ChatWidget({
       {!isOpen && messages.length === 0 && (
         <div
           className={cn(
-            'fixed z-30 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg',
+            'fixed z-[9997] bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg',
             'animate-in fade-in-50 duration-500 delay-1000',
+            'max-w-[calc(100vw-2rem)]', // Prevent overflow on small screens
             position === 'bottom-right' && 'bottom-20 right-4',
             position === 'bottom-left' && 'bottom-20 left-4',
             position === 'bottom-center' && 'bottom-20 left-1/2 transform -translate-x-1/2'

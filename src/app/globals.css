@@ -1653,6 +1653,37 @@ textarea:focus-visible {
   }
 }
 
+/* ChatWidget specific styles to prevent layout conflicts */
+.chat-widget-overlay {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.chat-widget-overlay > * {
+  pointer-events: auto;
+}
+
+/* Ensure ChatWidget doesn't interfere with page scrolling */
+.chat-widget-container {
+  position: fixed;
+  z-index: 9999;
+  max-height: calc(100vh - 2rem);
+  max-width: calc(100vw - 2rem);
+}
+
+/* Mobile-specific ChatWidget adjustments */
+@media (max-width: 640px) {
+  .chat-widget-container {
+    width: calc(100vw - 2rem) !important;
+    height: calc(100vh - 4rem) !important;
+    bottom: 1rem !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    transform: none !important;
+  }
+}
+
 /* Color contrast improvements */
 .high-contrast {
   --color-text: #000000;
