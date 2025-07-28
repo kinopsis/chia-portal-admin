@@ -26,6 +26,7 @@ build:
   build_args:
     - NEXT_PUBLIC_SUPABASE_URL
     - NEXT_PUBLIC_SUPABASE_ANON_KEY
+    - NEXT_PUBLIC_ENABLE_AI_CHATBOT
     - APP_ENV
 
 # Configuración del contenedor
@@ -62,9 +63,9 @@ environment:
   - APP_VERSION
   
   # Feature flags
-  - ENABLE_AI_CHATBOT
-  - ENABLE_NOTIFICATIONS
-  - ENABLE_ANALYTICS
+  - NEXT_PUBLIC_ENABLE_AI_CHATBOT
+  - NEXT_PUBLIC_ENABLE_NOTIFICATIONS
+  - NEXT_PUBLIC_ENABLE_ANALYTICS
   
   # Email (OPCIONAL - para notificaciones)
   - SMTP_HOST
