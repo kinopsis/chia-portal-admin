@@ -264,7 +264,7 @@ export const detectBrowserCapabilities = async (): Promise<{
   
   jsFeatures.es2020 = typeof globalThis !== 'undefined'
   jsFeatures.modules = 'noModule' in document.createElement('script')
-  jsFeatures.dynamicImport = typeof import === 'function'
+  jsFeatures.dynamicImport = true // Dynamic import support assumed in modern environments
   jsFeatures.optionalChaining = true // Assume true if code is running
   jsFeatures.nullishCoalescing = true // Assume true if code is running
   jsFeatures.intersectionObserver = 'IntersectionObserver' in window
