@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import { useAuth } from '@/hooks'
 import { Header, Footer } from '@/components'
 import { ChatWidget } from '@/components/chat'
+import { ChatErrorBoundary, ChatWidgetFallback } from '@/components/chat/ChatErrorBoundary'
 import { FEATURE_FLAGS } from '@/lib/constants'
 
 interface ConditionalLayoutProps {
@@ -48,10 +49,12 @@ const ConditionalLayout: React.FC<ConditionalLayoutProps> = ({ children }) => {
 
       {/* AI Chatbot Widget - Only on public pages */}
       {FEATURE_FLAGS.ENABLE_AI_CHATBOT && (
-        <ChatWidget
-          position="bottom-right"
-          defaultOpen={false}
-        />
+        <ChatErrorBoundary fallback={<ChatWidgetFallback />}>
+          <ChatWidget
+            position="bottom-right"
+            defaultOpen={false}
+          />
+        </ChatErrorBoundary>
       )}
 
     </div>
