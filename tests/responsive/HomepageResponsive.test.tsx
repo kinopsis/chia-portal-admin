@@ -10,7 +10,7 @@ import {
   mockMatchMedia,
   VIEWPORT_SIZES,
   type ViewportSize,
-  type BreakpointName,
+  type BreakpointName
 } from '../utils/responsiveTestUtils'
 
 // Import homepage components
@@ -24,16 +24,16 @@ import { FAQPreview } from '@/components/organisms/FAQPreview'
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
-    push: jest.fn(),
-  }),
+    push: jest.fn()
+  })
 }))
 
 // Mock theme context
 jest.mock('@/contexts/ThemeContext', () => ({
   useTheme: () => ({
     isDark: false,
-    theme: 'light',
-  }),
+    theme: 'light'
+  })
 }))
 
 // Mock providers
@@ -42,8 +42,8 @@ jest.mock('@/components/providers', () => ({
     isMobile: false,
     isTouch: false,
     viewportCategory: 'desktop',
-    isInitialized: true,
-  }),
+    isInitialized: true
+  })
 }))
 
 describe('Homepage Responsive Design Tests', () => {
@@ -63,8 +63,9 @@ describe('Homepage Responsive Design Tests', () => {
       description: 'Test service description',
       href: '/test',
       stats: { count: 150, label: 'services' },
-      colorScheme: 'yellow' as const,
-    }
+      colorScheme: "service-yellow" as const
+    ,
+    buttonText: "Ver más"}
 
     createResponsiveTestSuite(
       'ServiceCard',
@@ -140,7 +141,7 @@ describe('Homepage Responsive Design Tests', () => {
             const expectedColumns = {
               mobile: 2,
               tablet: 3,
-              desktop: 5,
+              desktop: 5
             }
             
             const gridValidation = validateGridLayout(gridContainer as HTMLElement, expectedColumns)
@@ -237,7 +238,7 @@ describe('Homepage Responsive Design Tests', () => {
             const expectedColumns = {
               mobile: 1,
               tablet: 3,
-              desktop: 3,
+              desktop: 3
             }
             
             const gridValidation = validateGridLayout(gridContainer as HTMLElement, expectedColumns)
@@ -277,7 +278,7 @@ describe('Homepage Responsive Design Tests', () => {
             const expectedColumns = {
               mobile: 1,
               tablet: 2,
-              desktop: 4,
+              desktop: 4
             }
             
             const gridValidation = validateGridLayout(gridContainer as HTMLElement, expectedColumns)

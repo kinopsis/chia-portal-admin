@@ -3,6 +3,8 @@
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/hooks'
 import { Header, Footer } from '@/components'
+import { ChatWidget } from '@/components/chat'
+import { FEATURE_FLAGS } from '@/lib/constants'
 
 interface ConditionalLayoutProps {
   children: React.ReactNode
@@ -43,6 +45,15 @@ const ConditionalLayout: React.FC<ConditionalLayoutProps> = ({ children }) => {
         {children}
       </main>
       <Footer />
+
+      {/* AI Chatbot Widget - Only on public pages */}
+      {FEATURE_FLAGS.ENABLE_AI_CHATBOT && (
+        <ChatWidget
+          position="bottom-right"
+          defaultOpen={false}
+        />
+      )}
+
     </div>
   )
 }

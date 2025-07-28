@@ -15,6 +15,7 @@ import {
   Cog6ToothIcon,
   ChartBarIcon,
   BellIcon,
+  CubeIcon,
 } from '@heroicons/react/24/outline'
 import { useAuth } from '@/hooks'
 import { clsx } from 'clsx'
@@ -72,6 +73,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       label: 'FAQs',
       href: '/admin/faqs',
       icon: <QuestionMarkCircleIcon className="w-5 h-5" />,
+    },
+    {
+      label: 'Servicios',
+      href: '/admin/servicios',
+      icon: <CubeIcon className="w-5 h-5" />,
     },
     {
       label: 'Reportes',
@@ -159,6 +165,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                 itemIsActive ? 'text-white' : 'text-gray-400 hover:text-primary-green',
                 isExpanded ? 'rotate-90' : ''
               )}
+              title={isExpanded ? `Contraer ${item.label}` : `Expandir ${item.label}`}
+              aria-label={isExpanded ? `Contraer ${item.label}` : `Expandir ${item.label}`}
             >
               <ChevronRightIcon className="w-4 h-4" />
             </button>

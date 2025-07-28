@@ -241,7 +241,7 @@ export function useThemeStyles() {
     // Helper functions for conditional styling
     themeClass: (lightClass: string, darkClass: string) => 
       isDark ? darkClass : lightClass,
-    themeValue: <T>(lightValue: T, darkValue: T) => 
+    themeValue: <T,>(lightValue: T, darkValue: T) =>
       isDark ? darkValue : lightValue,
   }
 }

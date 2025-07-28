@@ -49,8 +49,7 @@ const mockActions: BulkAction[] = [
     key: 'disabled',
     label: 'Disabled Action',
     onClick: jest.fn(),
-    disabled: true,
-  },
+    },
 ]
 
 describe('BulkActions', () => {

@@ -15,18 +15,15 @@ import { act } from '@testing-library/react'
  */
 export const BREAKPOINTS = {
   mobile: {
-    min: 320,
-    max: 639,
+        max: 639,
     name: 'mobile',
   },
   tablet: {
-    min: 640,
-    max: 1023,
+        max: 1023,
     name: 'tablet',
   },
   desktop: {
-    min: 1024,
-    max: 1920,
+        max: 1920,
     name: 'desktop',
   },
 } as const

@@ -86,8 +86,7 @@ const DependenciasAdminPage: React.FC = () => {
       name: 'activa',
       label: 'Activa',
       type: 'checkbox',
-      defaultValue: true,
-      helperText: 'Indica si la dependencia está activa en el sistema',
+            helperText: 'Indica si la dependencia está activa en el sistema',
     },
   ]
 
@@ -134,10 +133,10 @@ const DependenciasAdminPage: React.FC = () => {
       render: (value, record) => (
         <span
           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            record?.activa ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            record?.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
           }`}
         >
-          {record?.activa ? 'Activa' : 'Inactiva'}
+          {record?.activo ? 'Activa' : 'Inactiva'}
         </span>
       ),
     },

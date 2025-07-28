@@ -29,6 +29,10 @@ export type {
 } from './useSmartSearch'
 export { default as useSmartSearch } from './useSmartSearch'
 
+// Epic 4 - US-012: AI Chatbot Hooks
+export { useChat } from './useChat'
+export type { ChatMessage, UseChatReturn, UseChatOptions } from './useChat'
+
 // Additional hooks can be added here as they are created
 // export { useLocalStorage } from './useLocalStorage'
 // export { useApi } from './useApi'

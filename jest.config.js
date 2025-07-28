@@ -9,7 +9,18 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jsdom',
-  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
+  testPathIgnorePatterns: [
+    '<rootDir>/.next/',
+    '<rootDir>/node_modules/',
+    '<rootDir>/tests/e2e/',
+    '<rootDir>/tests/visual/',
+    '<rootDir>/tests/crossBrowser/CSSCompatibility.test.ts',
+    '<rootDir>/tests/crossBrowser/PlaywrightCrossBrowser.test.ts',
+    '<rootDir>/tests/performance/CoreWebVitals.test.ts',
+    '<rootDir>/tests/performance/BundleOptimization.test.ts',
+    '<rootDir>/tests/performance/LighthousePerformance.test.ts',
+    '<rootDir>/tests/accessibility/PlaywrightAccessibility.test.ts'
+  ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },

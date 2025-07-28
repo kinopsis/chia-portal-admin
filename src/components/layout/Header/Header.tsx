@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { UserIcon, Bars3Icon } from '@heroicons/react/24/outline'
-import { Button, ThemeToggle } from '@/components/atoms'
+import { Button, ThemeToggle, SkipLinks } from '@/components/atoms'
 import Navigation, { getMainNavigation } from '../Navigation'
 import MobileDrawer from '../MobileDrawer'
 import { useAuth } from '@/hooks'
@@ -38,11 +38,15 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
   }
 
   return (
-    <header
-      className={clsx('bg-white border-b border-gray-200 sticky top-0 z-50', className)}
-      role="banner"
-      aria-label="Encabezado principal del sitio"
-    >
+    <>
+      {/* Skip Links for WCAG 2.1 AA Compliance */}
+      <SkipLinks />
+
+      <header
+        className={clsx('bg-white border-b border-gray-200 sticky top-0 z-50', className)}
+        role="banner"
+        aria-label="Encabezado principal del sitio"
+      >
       <div className="container-custom">
         <div className="flex items-center justify-between h-16 xs:h-14 sm:h-16 md:h-18">
           {/* Logo Section - Enhanced Responsive Design */}
@@ -86,6 +90,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
               orientation="horizontal"
               variant="pills"
               className="space-x-1"
+              id="main-navigation"
             />
           </div>
 
@@ -207,6 +212,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
         />
       </div>
     </header>
+    </>
   )
 }
 

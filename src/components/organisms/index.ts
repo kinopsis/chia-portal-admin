@@ -12,6 +12,18 @@ export type { ActivityFeedProps, ActivityItem } from './ActivityFeed'
 export { default as DataTable } from './DataTable'
 export type { DataTableProps, Column } from './DataTable'
 
+export { UnifiedServicesManager } from './UnifiedServicesManager'
+export type { UnifiedServicesManagerProps } from './UnifiedServicesManager'
+
+export { UnifiedMetrics } from './UnifiedMetrics'
+export type { UnifiedMetricsProps } from './UnifiedMetrics'
+
+export { UnifiedFilters } from './UnifiedFilters'
+export type { UnifiedFiltersProps } from './UnifiedFilters'
+
+export { UnifiedServiceForm } from './UnifiedServiceForm'
+export type { UnifiedServiceFormProps } from './UnifiedServiceForm'
+
 export { MetricsGrid, MetricsGridPresets } from './MetricsGrid'
 export type { MetricsGridProps, MetricData } from './MetricsGrid'
 

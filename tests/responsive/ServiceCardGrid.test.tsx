@@ -7,7 +7,7 @@ import {
   validateTouchTargets,
   mockMatchMedia,
   VIEWPORT_SIZES,
-  type ViewportSize,
+  type ViewportSize
 } from '../utils/responsiveTestUtils'
 import { ServiceCard } from '@/components/molecules/ServiceCard'
 import { ResponsiveContainer } from '@/components/atoms/ResponsiveContainer'
@@ -15,16 +15,16 @@ import { ResponsiveContainer } from '@/components/atoms/ResponsiveContainer'
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
-    push: jest.fn(),
-  }),
+    push: jest.fn()
+  })
 }))
 
 // Mock theme context
 jest.mock('@/contexts/ThemeContext', () => ({
   useTheme: () => ({
     isDark: false,
-    theme: 'light',
-  }),
+    theme: 'light'
+  })
 }))
 
 describe('Service Card Grid Responsive Tests', () => {
@@ -35,48 +35,54 @@ describe('Service Card Grid Responsive Tests', () => {
       description: 'Solicita tu certificado de residencia de manera digital',
       href: '/certificados/residencia',
       stats: { count: 1250, label: 'certificados emitidos' },
-      colorScheme: 'yellow' as const,
-    },
+      colorScheme: "service-yellow" as const
+    ,
+    buttonText: "Ver más"},
     {
       icon: '📄',
       title: 'Trámites Administrativos',
       description: 'Gestiona tus trámites administrativos en línea',
       href: '/tramites',
       stats: { count: 156, label: 'procedimientos disponibles' },
-      colorScheme: 'gray' as const,
-    },
+      colorScheme: "service-gray" as const
+    ,
+    buttonText: "Ver más"},
     {
       icon: '👥',
       title: 'Consulta Ciudadano',
       description: 'Consulta el estado de tus solicitudes',
       href: '/consultas',
       stats: { count: 890, label: 'consultas atendidas' },
-      colorScheme: 'blue' as const,
-    },
+      colorScheme: "service-blue" as const
+    ,
+    buttonText: "Ver más"},
     {
       icon: '💰',
       title: 'Pagos en Línea',
       description: 'Realiza pagos de impuestos y tasas municipales',
       href: '/pagos',
       stats: { count: 2340, label: 'pagos procesados' },
-      colorScheme: 'green' as const,
-    },
+      colorScheme: "service-green" as const
+    ,
+    buttonText: "Ver más"},
     {
       icon: '📞',
       title: 'Agendar Cita',
       description: 'Agenda tu cita para atención presencial',
       href: '/citas',
       stats: { count: 450, label: 'citas disponibles' },
-      colorScheme: 'purple' as const,
-    },
+      colorScheme: "service-purple" as const
+    ,
+    buttonText: "Ver más"},
     {
       icon: '📋',
       title: 'Formularios',
       description: 'Descarga y diligencia formularios oficiales',
       href: '/formularios',
       stats: { count: 89, label: 'formularios disponibles' },
-      colorScheme: 'indigo' as const,
-    },
+      colorScheme: "service-indigo" as const
+    ,
+    buttonText: "Ver más"},
   ]
 
   const ServiceGrid: React.FC = () => (
@@ -137,7 +143,7 @@ describe('Service Card Grid Responsive Tests', () => {
         const gridValidation = validateGridLayout(grid, {
           mobile: 1,
           tablet: 2,
-          desktop: 3,
+          desktop: 3
         })
         
         expect(gridValidation.isValid).toBe(true)
@@ -214,7 +220,7 @@ describe('Service Card Grid Responsive Tests', () => {
     it('handles long service titles gracefully', () => {
       const longTitleServices = mockServices.map(service => ({
         ...service,
-        title: 'Very Long Service Title That Should Wrap Properly Across Multiple Lines',
+        title: 'Very Long Service Title That Should Wrap Properly Across Multiple Lines'
       }))
 
       const LongTitleGrid = () => (
@@ -305,7 +311,7 @@ describe('Service Card Grid Responsive Tests', () => {
       render(<ServiceGrid />)
       
       const cards = screen.getAllByRole('article')
-      const expectedColors = ['yellow', 'gray', 'blue', 'green', 'purple', 'indigo']
+      const expectedColors = ['service-yellow', 'service-gray', 'service-blue', 'service-green', 'service-purple', 'service-indigo']
       
       cards.forEach((card, index) => {
         expect(card).toHaveClass(`service-card-${expectedColors[index]}`)
@@ -321,7 +327,7 @@ describe('Service Card Grid Responsive Tests', () => {
         description: `Description for service ${i + 1}`,
         href: `/service-${i + 1}`,
         stats: { count: (i + 1) * 10, label: 'items' },
-        colorScheme: mockServices[i % 6].colorScheme,
+        colorScheme: mockServices[i % 6].colorScheme
       }))
 
       const LargeGrid = () => (

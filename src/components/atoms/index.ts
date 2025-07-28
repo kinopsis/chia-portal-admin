@@ -37,8 +37,11 @@ export type { TextareaProps } from './Textarea'
 export { default as EmptyState } from './EmptyState'
 export type { EmptyStateProps } from './EmptyState'
 
-export { SkipLink } from './SkipLink'
-export type { SkipLinkProps } from './SkipLink'
+export { SkipLink, SkipLinks } from './SkipLink'
+export type { SkipLinkProps, SkipLinksProps } from './SkipLink'
+
+export { MainContent } from './MainContent'
+export type { MainContentProps } from './MainContent'
 
 export { ResponsiveContainer, ResponsivePresets, useResponsive } from './ResponsiveContainer'
 export type { ResponsiveContainerProps } from './ResponsiveContainer'

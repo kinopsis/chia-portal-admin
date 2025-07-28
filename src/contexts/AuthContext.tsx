@@ -107,14 +107,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       console.log('🔄 Fetching user profile for:', userId)
-      const { data, error } = await supabase.from('users').select('*').eq('id', userId).single()
+      const { data, error } = await supabase
+        .from('users')
+        .select('id, email, nombre, rol, dependencia_id, activo, created_at, updated_at')
+        .eq('id', userId)
+        .single()
 
       if (error) {
-        console.error('Error fetching user profile:', error)
+        console.error('❌ Error fetching user profile:', {
+          error,
+          userId,
+          retryCount,
+          errorCode: error.code,
+          errorMessage: error.message,
+          errorDetails: error.details
+        })
 
         // Retry up to 3 times with exponential backoff
         if (retryCount < 3) {
           const delay = Math.pow(2, retryCount) * 1000 // 1s, 2s, 4s
+          console.log(`⏳ Retrying user profile fetch in ${delay}ms (attempt ${retryCount + 1}/3)`)
           setTimeout(() => {
             fetchUserProfile(userId, retryCount + 1, forceRefresh)
           }, delay)
@@ -122,6 +134,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         // After 3 retries, set userProfile to null but keep user session
+        console.error('❌ Failed to fetch user profile after 3 retries, setting profile to null')
         setUserProfile(null)
         return
       }
@@ -133,17 +146,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
 
       setUserProfile(data)
-      console.log('✅ User profile loaded successfully:', data.nombre)
+      console.log('✅ User profile loaded successfully:', {
+        userId: data.id,
+        nombre: data.nombre,
+        email: data.email,
+        rol: data.rol,
+        activo: data.activo
+      })
     } catch (error) {
-      console.error('Error fetching user profile:', error)
+      console.error('❌ Network/unexpected error fetching user profile:', {
+        error,
+        userId,
+        retryCount,
+        errorType: error instanceof Error ? error.constructor.name : typeof error,
+        errorMessage: error instanceof Error ? error.message : String(error)
+      })
 
       // Retry logic for network errors
       if (retryCount < 3) {
         const delay = Math.pow(2, retryCount) * 1000
+        console.log(`⏳ Retrying user profile fetch due to network error in ${delay}ms (attempt ${retryCount + 1}/3)`)
         setTimeout(() => {
           fetchUserProfile(userId, retryCount + 1, forceRefresh)
         }, delay)
       } else {
+        console.error('❌ Failed to fetch user profile after 3 network retries, setting profile to null')
         setUserProfile(null)
       }
     }

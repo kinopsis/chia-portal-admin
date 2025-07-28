@@ -784,6 +784,9 @@ const DataTable = <T extends Record<string, any>>({
           <div
             className={clsx('overflow-auto', responsive && 'w-full')}
             style={{ maxHeight: scrollY }}
+            role="region"
+            aria-label="Tabla de datos"
+            tabIndex={0}
           >
             <table
               className={clsx(
@@ -792,10 +795,12 @@ const DataTable = <T extends Record<string, any>>({
                 bordered && 'border-collapse'
               )}
               style={{ minWidth: scrollX }}
+              role="table"
+              aria-label="Tabla de datos con información"
             >
               {/* Table Header */}
-              <thead className="bg-gray-50">
-                <tr>
+              <thead className="bg-gray-50" role="rowgroup">
+                <tr role="row">
                   {/* Selection column */}
                   {selectable && (
                     <th
@@ -813,6 +818,8 @@ const DataTable = <T extends Record<string, any>>({
                         }}
                         onChange={(e) => handleSelectAll(e.target.checked)}
                         className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
+                        aria-label={isAllSelected ? "Deseleccionar todas las filas" : "Seleccionar todas las filas"}
+                        title={isAllSelected ? "Deseleccionar todas las filas" : "Seleccionar todas las filas"}
                       />
                     </th>
                   )}
@@ -841,11 +848,30 @@ const DataTable = <T extends Record<string, any>>({
                         }
                       }}
                       tabIndex={column.sortable !== false ? 0 : -1}
-                      role={column.sortable !== false ? 'button' : undefined}
+                      role={column.sortable !== false ? 'columnheader' : 'columnheader'}
+                      aria-sort={
+                        column.sortable !== false
+                          ? (() => {
+                              const sortInfo = currentSortConfig.find(sort => sort.key === column.key)
+                              return sortInfo
+                                ? (sortInfo.direction === 'asc' ? 'ascending' : 'descending')
+                                : 'none'
+                            })()
+                          : undefined
+                      }
                       aria-label={
                         column.sortable !== false
-                          ? `Ordenar por ${column.title}${multiSort ? '. Mantén Shift para ordenamiento múltiple' : ''}`
-                          : undefined
+                          ? (() => {
+                              const sortInfo = currentSortConfig.find(sort => sort.key === column.key)
+                              return `${column.title}, ordenar por ${
+                                sortInfo
+                                  ? sortInfo.direction === 'asc'
+                                    ? 'descendente'
+                                    : 'ascendente'
+                                  : 'ascendente'
+                              }${multiSort ? '. Mantén Shift para ordenamiento múltiple' : ''}`
+                            })()
+                          : column.title
                       }
                     >
                       <div className="flex items-center">
@@ -918,6 +944,8 @@ const DataTable = <T extends Record<string, any>>({
                             checked={isSelected}
                             onChange={(e) => handleSelectRow(record, index, e.target.checked)}
                             className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
+                            aria-label={`${isSelected ? 'Deseleccionar' : 'Seleccionar'} fila ${index + 1}`}
+                            title={`${isSelected ? 'Deseleccionar' : 'Seleccionar'} fila ${index + 1}`}
                           />
                         </td>
                       )}

@@ -12,10 +12,10 @@ const config: Config = {
         primary: {
           // WCAG AA Compliant Colors (4.5:1 contrast ratio minimum)
           // Original: #FFDC00 (contrast: 1.9:1) -> Adjusted for accessibility
-          yellow: '#B8A000',        // 4.6:1 contrast on white background
-          'yellow-alt': '#A69000',  // 5.2:1 contrast on white background
-          'yellow-dark': '#8F7A00', // 6.1:1 contrast on white background
-          'yellow-light': '#D4C200', // 3.8:1 contrast (for large text only)
+          yellow: '#8B7000',        // 4.76:1 contrast on white background - CORRECTED
+          'yellow-alt': '#7A6000',  // 6.0:1 contrast on white background - CORRECTED
+          'yellow-dark': '#695000', // 7.64:1 contrast on white background - CORRECTED
+          'yellow-light': '#B8A000', // 2.6:1 contrast (for large text only)
           // Original: #009045 (contrast: 2.4:1) -> Adjusted for accessibility
           green: '#006B35',         // 4.5:1 contrast on white background
           'green-alt': '#005D2E',   // 5.2:1 contrast on white background

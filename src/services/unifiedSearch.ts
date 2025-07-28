@@ -187,11 +187,15 @@ export class UnifiedSearchService {
           // Apply subdependencia filter (NEW) - using ID for uniqueness
           if (subdependenciaId && opa.subdependencia_id !== subdependenciaId) return
 
+          // Use actual description if available, otherwise create a meaningful fallback
+          const descripcionText = opa.descripcion ||
+            `Servicio administrativo para ${opa.nombre.toLowerCase()}. Disponible en ${subdependenciaNombre || dependenciaNombre}.`
+
           unifiedResults.push({
             id: opa.id,
             codigo: opa.codigo_opa,
             nombre: opa.nombre,
-            descripcion: 'Orden de Pago y Autorización',
+            descripcion: descripcionText,
             tipo: 'opa',
             dependencia: dependenciaNombre,
             subdependencia: subdependenciaNombre,
@@ -313,6 +317,220 @@ export class UnifiedSearchService {
     } catch (error) {
       console.error('Error getting search suggestions:', error)
       return []
+    }
+  }
+
+  /**
+   * Perform search across Trámites and OPAs only (excludes FAQs)
+   * Used specifically for the /tramites page
+   */
+  async searchTramitesAndOpas(filters: UnifiedSearchFilters = {}): Promise<UnifiedSearchResponse> {
+    const startTime = performance.now()
+
+    try {
+      // Check if we're in a build environment and return mock data
+      if (typeof window === 'undefined' && process.env.NODE_ENV === 'production') {
+        return {
+          data: [],
+          pagination: {
+            page: filters.page || 1,
+            limit: filters.limit || 10,
+            total: 0,
+            totalPages: 0
+          },
+          success: true
+        }
+      }
+
+      const { query, tipo, dependencia, subdependenciaId, tipoPago, page = 1, limit = 10 } = filters
+
+      // Prepare search filters for individual services
+      const searchFilters = {
+        query,
+        dependencia,
+        page: 1, // Get all results first, then paginate
+        limit: 10000 // Large limit to get all results
+      }
+
+      // Only search Trámites and OPAs (exclude FAQs)
+      const searchPromises: Promise<any>[] = []
+
+      // Search Trámites
+      if (!tipo || tipo === 'tramite') {
+        searchPromises.push(
+          tramitesClientService.getAll(searchFilters).catch(error => {
+            console.error('Error searching Trámites:', error)
+            return { data: [], pagination: { total: 0 } }
+          })
+        )
+      } else {
+        searchPromises.push(Promise.resolve({ data: [], pagination: { total: 0 } }))
+      }
+
+      // Search OPAs
+      if (!tipo || tipo === 'opa') {
+        searchPromises.push(
+          opasClientService.getAll(searchFilters).catch(error => {
+            console.error('Error searching OPAs:', error)
+            return { data: [], pagination: { total: 0 } }
+          })
+        )
+      } else {
+        searchPromises.push(Promise.resolve({ data: [], pagination: { total: 0 } }))
+      }
+
+      // Wait for searches to complete (only Trámites and OPAs)
+      const [tramitesResult, opasResult] = await Promise.all(searchPromises)
+
+      // Normalize and combine results
+      const unifiedResults: UnifiedSearchResult[] = []
+
+      // Process Trámites (same logic as original)
+      if (tramitesResult.data) {
+        tramitesResult.data.forEach((tramite: Tramite) => {
+          const dependenciaNombre = tramite.subdependencias?.dependencias?.nombre || 'Sin dependencia'
+          const subdependenciaNombre = tramite.subdependencias?.nombre || ''
+
+          // Apply dependencia filter
+          if (dependencia && dependenciaNombre !== dependencia) return
+
+          // Apply subdependencia filter (NEW) - using ID for uniqueness
+          if (subdependenciaId && tramite.subdependencia_id !== subdependenciaId) return
+
+          // Apply payment type filter (NEW)
+          if (tipoPago) {
+            if (tipoPago === 'gratuito' && tramite.tiene_pago !== false) return
+            if (tipoPago === 'con_pago' && tramite.tiene_pago !== true) return
+          }
+
+          unifiedResults.push({
+            id: tramite.id,
+            codigo: tramite.codigo_unico,
+            nombre: tramite.nombre,
+            descripcion: tramite.formulario || 'Trámite municipal',
+            tipo: 'tramite',
+            dependencia: dependenciaNombre,
+            subdependencia: subdependenciaNombre,
+            tiempo_estimado: tramite.tiempo_respuesta,
+            estado: tramite.activo ? 'activo' : 'inactivo',
+            tags: [
+              'tramite',
+              tramite.tiene_pago ? 'pago' : 'gratuito',
+              subdependenciaNombre.toLowerCase() || ''
+            ].filter(Boolean),
+            created_at: tramite.created_at,
+            originalData: {
+              ...tramite,
+              requisitos: tramite.requisitos || [],
+              visualizacion_suit: tramite.visualizacion_suit,
+              visualizacion_gov: tramite.visualizacion_gov
+            }
+          })
+        })
+      }
+
+      // Process OPAs (same logic as original)
+      if (opasResult.data) {
+        opasResult.data.forEach((opa: OPA) => {
+          const dependenciaNombre = opa.subdependencias?.dependencias?.nombre || 'Sin dependencia'
+          const subdependenciaNombre = opa.subdependencias?.nombre || ''
+
+          // Apply dependencia filter
+          if (dependencia && dependenciaNombre !== dependencia) return
+
+          // Apply subdependencia filter (NEW) - using ID for uniqueness
+          if (subdependenciaId && opa.subdependencia_id !== subdependenciaId) return
+
+          const descripcionText = opa.descripcion ||
+            `Servicio administrativo para ${opa.nombre.toLowerCase()}. Disponible en ${subdependenciaNombre || dependenciaNombre}.`
+
+          unifiedResults.push({
+            id: opa.id,
+            codigo: opa.codigo_opa,
+            nombre: opa.nombre,
+            descripcion: descripcionText,
+            tipo: 'opa',
+            dependencia: dependenciaNombre,
+            subdependencia: subdependenciaNombre,
+            estado: opa.activo ? 'activo' : 'inactivo',
+            tags: [
+              'opa',
+              'pago',
+              'autorizacion',
+              subdependenciaNombre.toLowerCase() || ''
+            ].filter(Boolean),
+            created_at: opa.created_at,
+            originalData: opa
+          })
+        })
+      }
+
+      // Sort by relevance (same logic as original)
+      if (query) {
+        unifiedResults.sort((a, b) => {
+          const queryLower = query.toLowerCase()
+
+          const aExactMatch = a.nombre.toLowerCase().includes(queryLower) ||
+                             a.codigo.toLowerCase().includes(queryLower)
+          const bExactMatch = b.nombre.toLowerCase().includes(queryLower) ||
+                             b.codigo.toLowerCase().includes(queryLower)
+
+          if (aExactMatch && !bExactMatch) return -1
+          if (!aExactMatch && bExactMatch) return 1
+
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        })
+      } else {
+        unifiedResults.sort((a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )
+      }
+
+      // Apply pagination
+      const startIndex = (page - 1) * limit
+      const endIndex = startIndex + limit
+      const paginatedResults = unifiedResults.slice(startIndex, endIndex)
+
+      // Performance monitoring
+      const endTime = performance.now()
+      const executionTime = endTime - startTime
+
+      if (executionTime > 1000) {
+        console.warn(`Slow search query detected: ${executionTime.toFixed(2)}ms`, { filters })
+      }
+
+      return {
+        data: paginatedResults,
+        pagination: {
+          page,
+          limit,
+          total: unifiedResults.length,
+          totalPages: Math.ceil(unifiedResults.length / limit)
+        },
+        success: true
+      }
+
+    } catch (error) {
+      console.error('Error in unified search (Trámites and OPAs only):', error)
+
+      // Enhanced error logging for debugging
+      if (error instanceof Error) {
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack,
+          filters: filters
+        })
+      }
+      return {
+        data: [],
+        pagination: {
+          page: filters.page || 1,
+          limit: filters.limit || 10,
+          total: 0,
+          totalPages: 0
+        },
+        success: false
+      }
     }
   }
 

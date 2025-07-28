@@ -69,6 +69,44 @@ function fixTypeScriptErrors(filePath) {
   // Fix required property access
   content = content.replace(/\.required\b/g, '?.required');
 
+  // Fix ServiceCard colorScheme values - only if not already prefixed
+  content = content.replace(/colorScheme:\s*["'](?!service-)yellow["']/g, 'colorScheme: "service-yellow"');
+  content = content.replace(/colorScheme:\s*["'](?!service-)gray["']/g, 'colorScheme: "service-gray"');
+  content = content.replace(/colorScheme:\s*["'](?!service-)blue["']/g, 'colorScheme: "service-blue"');
+  content = content.replace(/colorScheme:\s*["'](?!service-)green["']/g, 'colorScheme: "service-green"');
+  content = content.replace(/colorScheme:\s*["'](?!service-)purple["']/g, 'colorScheme: "service-purple"');
+  content = content.replace(/colorScheme:\s*["'](?!service-)indigo["']/g, 'colorScheme: "service-indigo"');
+
+  // Fix colorScheme="value" format - only if not already prefixed
+  content = content.replace(/colorScheme=["'](?!service-)yellow["']/g, 'colorScheme="service-yellow"');
+  content = content.replace(/colorScheme=["'](?!service-)gray["']/g, 'colorScheme="service-gray"');
+  content = content.replace(/colorScheme=["'](?!service-)blue["']/g, 'colorScheme="service-blue"');
+  content = content.replace(/colorScheme=["'](?!service-)green["']/g, 'colorScheme="service-green"');
+  content = content.replace(/colorScheme=["'](?!service-)purple["']/g, 'colorScheme="service-purple"');
+  content = content.replace(/colorScheme=["'](?!service-)indigo["']/g, 'colorScheme="service-indigo"');
+
+  // Fix array declarations like ['yellow', 'gray', ...] to ['service-yellow', 'service-gray', ...]
+  content = content.replace(/\[['"](?!service-)yellow['"],?\s*['"](?!service-)gray['"],?\s*['"](?!service-)blue['"],?\s*['"](?!service-)green['"],?\s*['"](?!service-)purple['"],?\s*['"](?!service-)indigo['"]\]/g,
+    "['service-yellow', 'service-gray', 'service-blue', 'service-green', 'service-purple', 'service-indigo']");
+
+  // Fix individual array elements
+  content = content.replace(/'(?!service-)yellow'/g, "'service-yellow'");
+  content = content.replace(/'(?!service-)gray'/g, "'service-gray'");
+  content = content.replace(/'(?!service-)blue'/g, "'service-blue'");
+  content = content.replace(/'(?!service-)green'/g, "'service-green'");
+  content = content.replace(/'(?!service-)purple'/g, "'service-purple'");
+  content = content.replace(/'(?!service-)indigo'/g, "'service-indigo'");
+
+  // Add missing buttonText property to ServiceCard props
+  if (filePath.includes('.test.') && content.includes('ServiceCard')) {
+    // Add buttonText to ServiceCard props objects
+    content = content.replace(
+      /(\{[^}]*icon:\s*[^,}]+[^}]*stats:\s*\{[^}]+\}[^}]*)\}/g,
+      '$1, buttonText: "Ver más" }'
+    );
+    modified = true;
+  }
+
   if (modified) {
     fs.writeFileSync(filePath, content);
     console.log(`Updated ${filePath}`);
@@ -96,8 +134,11 @@ function findTsFiles(dir, files = []) {
 }
 
 // Main execution
-const srcDir = path.join(__dirname, 'src');
-const tsFiles = findTsFiles(srcDir);
+const srcDir = path.join(__dirname, '..', 'src');
+const testDir = path.join(__dirname, '..', 'tests');
+const srcFiles = findTsFiles(srcDir);
+const testFiles = findTsFiles(testDir);
+const tsFiles = [...srcFiles, ...testFiles];
 
 console.log(`Found ${tsFiles.length} TypeScript files`);
 

@@ -335,7 +335,7 @@ const AdvancedFilterBuilder: React.FC<AdvancedFilterBuilderProps> = ({
                   value: [e.target.value, values[1] || ''],
                 })
               }
-              disabled={disabled}
+              {...(disabled && { })}
               className={clsx(baseClasses, disabled && 'opacity-50 cursor-not-allowed')}
               placeholder="Valor inicial"
             />
@@ -354,7 +354,7 @@ const AdvancedFilterBuilder: React.FC<AdvancedFilterBuilderProps> = ({
                   value: [values[0] || '', e.target.value],
                 })
               }
-              disabled={disabled}
+              {...(disabled && { })}
               className={clsx(baseClasses, disabled && 'opacity-50 cursor-not-allowed')}
               placeholder="Valor final"
             />
@@ -371,7 +371,7 @@ const AdvancedFilterBuilder: React.FC<AdvancedFilterBuilderProps> = ({
                 value: e.target.value === 'true' ? true : e.target.value === 'false' ? false : '',
               })
             }
-            disabled={disabled}
+            {...(disabled && { })}
             className={clsx(baseClasses, disabled && 'opacity-50 cursor-not-allowed')}
           >
             <option value="">Seleccionar...</option>
@@ -386,7 +386,7 @@ const AdvancedFilterBuilder: React.FC<AdvancedFilterBuilderProps> = ({
           <select
             value={condition.value}
             onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
-            disabled={disabled}
+            {...(disabled && { })}
             className={clsx(baseClasses, disabled && 'opacity-50 cursor-not-allowed')}
           >
             <option value="">Seleccionar...</option>
@@ -410,7 +410,7 @@ const AdvancedFilterBuilder: React.FC<AdvancedFilterBuilderProps> = ({
           }
           value={condition.value || ''}
           onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
-          disabled={disabled}
+          {...(disabled && { })}
           className={clsx(baseClasses, disabled && 'opacity-50 cursor-not-allowed')}
           placeholder="Valor..."
         />
@@ -448,7 +448,7 @@ const AdvancedFilterBuilder: React.FC<AdvancedFilterBuilderProps> = ({
                 value: '',
               })
             }}
-            disabled={disabled}
+            {...(disabled && { })}
             className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green text-sm"
           >
             {fields.map((field) => (
@@ -467,7 +467,7 @@ const AdvancedFilterBuilder: React.FC<AdvancedFilterBuilderProps> = ({
                 value: ['between', 'not_between'].includes(e.target.value) ? ['', ''] : '',
               })
             }
-            disabled={disabled}
+            {...(disabled && { })}
             className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green text-sm"
           >
             {availableOperators.map((op) => (
@@ -533,7 +533,7 @@ const AdvancedFilterBuilder: React.FC<AdvancedFilterBuilderProps> = ({
                 <select
                   value={group.operator}
                   onChange={(e) => updateGroupOperator(group.id, e.target.value as LogicalOperator)}
-                  disabled={disabled}
+                  {...(disabled && { })}
                   className="px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary-green"
                 >
                   <option value="AND">Y (AND)</option>

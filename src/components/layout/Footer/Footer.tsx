@@ -71,14 +71,24 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
   ]
 
   return (
-    <footer className={clsx('bg-gray-900 text-white', className)}>
+    <footer
+      className={clsx('bg-gray-900 text-white', className)}
+      role="contentinfo"
+      aria-label="Pie de página del sitio"
+      id="footer"
+    >
       {/* Main Footer Content */}
       <div className="container-custom py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {footerSections.map((section, index) => (
-            <div key={index}>
-              <h3 className="text-lg font-semibold mb-4 text-primary-yellow">{section.title}</h3>
-              <ul className="space-y-3">
+            <nav key={index} aria-labelledby={`footer-section-${index}`}>
+              <h3
+                id={`footer-section-${index}`}
+                className="text-lg font-semibold mb-4 text-primary-yellow"
+              >
+                {section.title}
+              </h3>
+              <ul className="space-y-3" role="list">
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
                     <Link
@@ -86,6 +96,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
                       className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors text-sm group"
                       target={link.external ? '_blank' : undefined}
                       rel={link.external ? 'noopener noreferrer' : undefined}
+                      aria-label={link.external ? `${link.label} (abre en nueva ventana)` : link.label}
                     >
                       <span className="text-base group-hover:scale-110 transition-transform">
                         {link.icon}
@@ -96,7 +107,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
                   </li>
                 ))}
               </ul>
-            </div>
+            </nav>
           ))}
         </div>
 

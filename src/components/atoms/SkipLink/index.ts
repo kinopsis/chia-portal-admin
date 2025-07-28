@@ -1,2 +1,2 @@
-export { default as SkipLink } from './SkipLink'
-export type { SkipLinkProps } from './SkipLink'
+export { default as SkipLink, SkipLinks } from './SkipLink'
+export type { SkipLinkProps, SkipLinksProps } from './SkipLink'

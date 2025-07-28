@@ -91,4 +91,43 @@ const SkipLink: React.FC<SkipLinkProps> = ({
   )
 }
 
+/**
+ * SkipLinks component - Collection of skip links for main navigation
+ * Should be placed at the very beginning of the page
+ */
+export interface SkipLinksProps {
+  className?: string
+  links?: Array<{
+    targetId: string
+    label: string
+  }>
+}
+
+export const SkipLinks: React.FC<SkipLinksProps> = ({
+  className,
+  links = [
+    { targetId: 'main-content', label: 'Saltar al contenido principal' },
+    { targetId: 'main-navigation', label: 'Saltar a la navegación principal' },
+    { targetId: 'search', label: 'Saltar a la búsqueda' },
+    { targetId: 'footer', label: 'Saltar al pie de página' }
+  ]
+}) => {
+  return (
+    <nav
+      className={clsx('skip-links', className)}
+      aria-label="Enlaces de navegación rápida"
+      role="navigation"
+    >
+      {links.map((link, index) => (
+        <SkipLink
+          key={index}
+          targetId={link.targetId}
+        >
+          {link.label}
+        </SkipLink>
+      ))}
+    </nav>
+  )
+}
+
 export default SkipLink

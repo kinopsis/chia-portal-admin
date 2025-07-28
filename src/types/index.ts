@@ -83,8 +83,15 @@ export interface OPA {
   id: string
   codigo_opa: string
   nombre: string
+  descripcion?: string           // NEW: Detailed description of the OPA
+  formulario?: string           // NEW: Form information or URL
+  tiempo_respuesta?: string     // NEW: Processing timeframe (e.g., "5 días hábiles")
+  tiene_pago: boolean          // NEW: Whether payment is required
+  visualizacion_suit?: string  // NEW: SUIT government portal URL
+  visualizacion_gov?: string   // NEW: GOV.CO government portal URL
   subdependencia_id: string
   activo: boolean
+  requisitos?: string[]        // NEW: Array of requirements needed
   created_at: string
   updated_at: string
   // Relations for display
