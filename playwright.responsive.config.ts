@@ -45,7 +45,7 @@ export default defineConfig({
     ['html', { outputFolder: 'test-results/responsive-report' }],
     ['json', { outputFile: 'test-results/responsive-results.json' }],
     ['junit', { outputFile: 'test-results/responsive-junit.xml' }],
-    ...(process.env.CI ? [['github']] : [['list']]),
+    ...(process.env.CI ? [['github'] as const] : [['list'] as const]),
   ],
   
   // Global setup and teardown
