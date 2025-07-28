@@ -33,7 +33,7 @@ describe('ServiceCard Component', () => {
     },
     colorScheme: "service-yellow",
     buttonText: 'Access Service',
-  , buttonText: "Ver más" , buttonText: "Ver más" }
+  }
 
   beforeEach(() => {
     jest.clearAllMocks()
