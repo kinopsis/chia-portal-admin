@@ -17,7 +17,6 @@ export async function updateSession(request: NextRequest) {
 
   const supabase = createServerClient(config.supabase.url, config.supabase.anonKey, {
     cookies: {
-      // @ts-ignore - getAll is valid according to Supabase SSR docs
       getAll() {
         return request.cookies.getAll()
       },
@@ -27,7 +26,13 @@ export async function updateSession(request: NextRequest) {
           request,
         })
         cookiesToSet.forEach(({ name, value, options }) =>
-          supabaseResponse.cookies.set(name, value, options)
+          supabaseResponse.cookies.set(name, value, {
+            ...options,
+            httpOnly: false, // Allow client-side access
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/'
+          })
         )
       },
     },
@@ -42,8 +47,21 @@ export async function updateSession(request: NextRequest) {
     error: userError,
   } = await supabase.auth.getUser()
 
+  // Debug logging for middleware
+  const allCookies = request.cookies.getAll()
+  const authCookie = allCookies.find(c => c.name === 'sb-hvwoeasnoeecgqseuigd-auth-token')
+
+  console.log('🔍 [MIDDLEWARE] Request:', {
+    path: request.nextUrl.pathname,
+    hasUser: !!user,
+    userId: user?.id,
+    userError: userError?.message,
+    cookies: allCookies.map(c => ({ name: c.name, hasValue: !!c.value })),
+    authCookieValue: authCookie ? authCookie.value.substring(0, 50) + '...' : 'not found'
+  })
+
   // Protected routes that require authentication
-  const protectedRoutes = ['/dashboard', '/profile']
+  const protectedRoutes = ['/dashboard', '/profile'] // Removed /funcionario to match /admin pattern
   const isProtectedRoute = protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   )
@@ -52,8 +70,16 @@ export async function updateSession(request: NextRequest) {
   const adminRoutes = ['/admin']
   const isAdminRoute = adminRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
 
+  // Funcionario-only routes
+  const funcionarioRoutes = ['/funcionario', '/funcionarios']
+  const isFuncionarioRoute = funcionarioRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
+
   // Redirect to login if accessing protected route without authentication
   if (isProtectedRoute && !user) {
+    console.log('🚫 [MIDDLEWARE] Redirecting to login:', {
+      path: request.nextUrl.pathname,
+      reason: 'No user found for protected route'
+    })
     const url = request.nextUrl.clone()
     url.pathname = '/auth/login'
     url.searchParams.set('redirectTo', request.nextUrl.pathname)
@@ -70,6 +96,22 @@ export async function updateSession(request: NextRequest) {
       .single()
 
     if (!userProfile || userProfile.rol !== 'admin') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/unauthorized'
+      return NextResponse.redirect(url)
+    }
+  }
+
+  // Check funcionario permissions for funcionario routes
+  if (isFuncionarioRoute && user) {
+    // Get user role from database
+    const { data: userProfile } = await supabase
+      .from('users')
+      .select('rol')
+      .eq('id', user.id)
+      .single()
+
+    if (!userProfile || userProfile.rol !== 'funcionario') {
       const url = request.nextUrl.clone()
       url.pathname = '/unauthorized'
       return NextResponse.redirect(url)
@@ -102,7 +144,7 @@ export async function updateSession(request: NextRequest) {
     if (userProfile?.rol === 'admin') {
       url.pathname = '/admin'
     } else if (userProfile?.rol === 'funcionario') {
-      url.pathname = '/funcionario' // Future funcionario dashboard
+      url.pathname = '/funcionarios' // Funcionario dashboard
     } else {
       url.pathname = '/dashboard'
     }
