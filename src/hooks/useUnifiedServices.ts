@@ -150,9 +150,11 @@ export function useUnifiedServices(config: UnifiedServicesConfig = {}): UseUnifi
         // Load dependencies
         const [depResponse, subResponse] = await Promise.all([
           dependenciasClientService.getAll(),
-          subdependenciasClientService.getAll()
+          subdependenciasClientService.getAll({ limit: 1000 }) // Load all subdependencias
         ])
         
+
+
         setDependencias(depResponse.data)
         setSubdependencias(subResponse.data)
       } catch (err) {
