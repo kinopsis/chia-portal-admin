@@ -42,9 +42,22 @@ async function globalSetup(config: FullConfig) {
 
     console.log('✅ Authentication system is accessible')
 
+    // Verify funcionario routes are protected
+    console.log('👤 Verifying funcionario route protection...')
+    await page.goto(`${baseURL}/funcionario`)
+
+    // Should redirect to login if not authenticated
+    await page.waitForTimeout(2000)
+    const currentUrl = page.url()
+    if (currentUrl.includes('/auth/login')) {
+      console.log('✅ Funcionario routes are properly protected')
+    } else {
+      console.warn('⚠️ Funcionario routes may not be properly protected')
+    }
+
     // Note: Individual tests will handle login flow
     console.log('📊 Skipping unified services verification in setup (will be tested individually)')
-    
+
     // Check for any critical JavaScript errors
     const errors: string[] = []
     page.on('console', msg => {
