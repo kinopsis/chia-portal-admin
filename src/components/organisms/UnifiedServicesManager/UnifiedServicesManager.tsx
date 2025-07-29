@@ -105,6 +105,7 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
     clearFilters,
     dependencias,
     subdependencias,
+    filteredSubdependencias,
     viewMode: currentViewMode,
     setViewMode,
     selectedItems,
@@ -441,7 +442,7 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
           onFiltersChange={setFilters}
           onClearFilters={clearFilters}
           dependencias={dependencias}
-          subdependencias={subdependencias}
+          subdependencias={filteredSubdependencias}
           loading={loading}
         />
       )}

@@ -230,9 +230,10 @@ const DataTable = <T extends Record<string, any>>({
   emptyText = 'No hay datos disponibles',
   emptyIcon,
   showSearchAndFilters = false,
+  searchable = false,
   searchValue = '',
   onSearchChange,
-  searchPlaceholder,
+  searchPlaceholder = 'Buscar...',
   filters = [],
   filterValues = {},
   onFiltersChange,
@@ -257,6 +258,24 @@ const DataTable = <T extends Record<string, any>>({
   const [internalSortConfig, setInternalSortConfig] = useState<SortConfig<T>[]>(
     defaultSort ? [{ ...defaultSort, priority: 0 }] : []
   )
+
+  // Internal search state when searchable is true
+  const [internalSearchValue, setInternalSearchValue] = useState('')
+
+  // Determine if we should show search functionality
+  const shouldShowSearch = searchable || showSearchAndFilters
+
+  // Use internal search value if searchable is true and no external search is provided
+  const currentSearchValue = searchable && !onSearchChange ? internalSearchValue : searchValue
+
+  // Handle search change
+  const handleSearchChange = useCallback((value: string) => {
+    if (onSearchChange) {
+      onSearchChange(value)
+    } else if (searchable) {
+      setInternalSearchValue(value)
+    }
+  }, [onSearchChange, searchable])
 
   // Use external sort config if provided, otherwise use internal
   const currentSortConfig = externalSortConfig || internalSortConfig
@@ -366,10 +385,13 @@ const DataTable = <T extends Record<string, any>>({
     let result = [...data]
 
     // Apply search filter
-    if (searchValue.trim()) {
-      const searchTerm = searchValue.toLowerCase().trim()
+    if (currentSearchValue.trim()) {
+      const searchTerm = currentSearchValue.toLowerCase().trim()
       result = result.filter((record) => {
         return columns.some((column) => {
+          // Only search in columns marked as searchable or if no searchable columns are defined
+          if (searchable && !column.searchable) return false
+
           const value = record[column.key]
           if (value == null) return false
           return String(value).toLowerCase().includes(searchTerm)
@@ -425,7 +447,7 @@ const DataTable = <T extends Record<string, any>>({
     }
 
     return result
-  }, [data, searchValue, filterValues, columns, filters, advancedFilterGroup])
+  }, [data, currentSearchValue, filterValues, columns, filters, advancedFilterGroup, searchable])
 
   // Memoized sorted data with multi-column support
   const sortedData = useMemo(() => {
@@ -683,24 +705,25 @@ const DataTable = <T extends Record<string, any>>({
     >
       <Card className={clsx('overflow-hidden', className)}>
         {/* Search and Filters */}
-        {showSearchAndFilters && (
+        {shouldShowSearch && (
           <div className="p-4 border-b border-gray-200">
             <SearchAndFilters
-              searchValue={searchValue}
-              onSearchChange={onSearchChange}
+              searchValue={currentSearchValue}
+              onSearchChange={handleSearchChange}
               searchPlaceholder={searchPlaceholder}
-              filters={filters}
-              filterValues={filterValues}
-              onFiltersChange={onFiltersChange}
-              presets={filterPresets}
-              onPresetSelect={onFilterPresetSelect}
-              onPresetSave={onFilterPresetSave}
-              showAdvancedFilters={showAdvancedFilters}
-              advancedFilterFields={advancedFilterFields}
-              advancedFilterGroup={advancedFilterGroup}
-              onAdvancedFiltersChange={onAdvancedFiltersChange}
-              onAdvancedFilterValidate={onAdvancedFilterValidate}
-              showAdvancedFilterExport={true}
+              showSearch={true}
+              filters={showSearchAndFilters ? filters : []}
+              filterValues={showSearchAndFilters ? filterValues : {}}
+              onFiltersChange={showSearchAndFilters ? onFiltersChange : undefined}
+              presets={showSearchAndFilters ? filterPresets : []}
+              onPresetSelect={showSearchAndFilters ? onFilterPresetSelect : undefined}
+              onPresetSave={showSearchAndFilters ? onFilterPresetSave : undefined}
+              showAdvancedFilters={showSearchAndFilters && showAdvancedFilters}
+              advancedFilterFields={showSearchAndFilters ? advancedFilterFields : []}
+              advancedFilterGroup={showSearchAndFilters ? advancedFilterGroup : undefined}
+              onAdvancedFiltersChange={showSearchAndFilters ? onAdvancedFiltersChange : undefined}
+              onAdvancedFilterValidate={showSearchAndFilters ? onAdvancedFilterValidate : undefined}
+              showAdvancedFilterExport={showSearchAndFilters}
               loading={loading}
               size={size === 'small' ? 'small' : size === 'large' ? 'large' : 'medium'}
             />

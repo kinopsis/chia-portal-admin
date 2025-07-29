@@ -154,7 +154,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
     },
   }
 
-  const colors = colorClasses[color]
+  const colors = colorClasses[color] || colorClasses.blue // Fallback to blue if color is invalid
   const sizes = sizeClasses[size]
 
   const getCardClasses = () => {

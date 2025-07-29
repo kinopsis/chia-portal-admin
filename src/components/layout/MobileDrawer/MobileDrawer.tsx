@@ -23,19 +23,19 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose, className,
   const mainNavItems = getMainNavigation()
   const userNavItems = getUserNavigation()
 
-  // Add admin navigation for authorized users
-  const adminNavItem =
+  // Add role-specific navigation for authorized users
+  const roleNavItem =
     user && userProfile && ['funcionario', 'admin'].includes(userProfile.rol)
       ? [
           {
-            label: userProfile.rol === 'admin' ? 'Administración' : 'Panel',
-            href: '/admin',
+            label: userProfile.rol === 'admin' ? 'Administración' : 'Panel Funcionario',
+            href: userProfile.rol === 'admin' ? '/admin' : '/funcionario',
             icon: <span className="text-base">{userProfile.rol === 'admin' ? '⚙️' : '📊'}</span>,
           },
         ]
       : []
 
-  const allNavItems = [...mainNavItems, ...adminNavItem]
+  const allNavItems = [...mainNavItems, ...roleNavItem]
 
   // Handle escape key
   useEffect(() => {
