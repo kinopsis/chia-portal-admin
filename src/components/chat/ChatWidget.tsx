@@ -1,16 +1,27 @@
-// ChatWidget Component - Main AI Chatbot Interface
-// Epic 4 - US-012: Interfaz de Usuario del Chatbot Web
+// ChatWidget Improved - Enhanced UX/UI Implementation
+// Addresses header design, accessibility, and visual hierarchy issues
 
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { cn } from '@/lib/utils'
 import { useChat } from '@/hooks/useChat'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import ChatHistory from './ChatHistory'
 import ChatInput from './ChatInput'
-import { MessageCircle, X, Minimize2, Maximize2, HelpCircle } from 'lucide-react'
+import { 
+  MessageCircle, 
+  X, 
+  Minimize2, 
+  Maximize2, 
+  Settings, 
+  Wifi, 
+  WifiOff,
+  Clock,
+  CheckCircle,
+  AlertCircle
+} from 'lucide-react'
 import { config } from '@/lib/config'
 
 interface ChatWidgetProps {
@@ -19,14 +30,18 @@ interface ChatWidgetProps {
   position?: 'bottom-right' | 'bottom-left' | 'bottom-center'
 }
 
-export function ChatWidget({ 
-  className, 
+export function ChatWidget({
+  className,
   defaultOpen = false,
   position = 'bottom-right'
-}: ChatWidgetProps) {
+}: ChatWidgetImprovedProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
   const [isMinimized, setIsMinimized] = useState(false)
   const [hasNewMessage, setHasNewMessage] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
+
+  // Focus management
+  const focusInputRef = useRef<(() => void) | null>(null)
 
   // Initialize chat hook
   const {
@@ -52,13 +67,10 @@ export function ChatWidget({
 
   // Handle new messages notification
   useEffect(() => {
-    if (!isOpen && messages.length > 0) {
-      const lastMessage = messages[messages.length - 1]
-      if (lastMessage.role === 'assistant') {
-        setHasNewMessage(true)
-      }
+    if (messages.length > 0 && !isOpen) {
+      setHasNewMessage(true)
     }
-  }, [messages, isOpen])
+  }, [messages.length, isOpen])
 
   // Clear new message notification when opened
   useEffect(() => {
@@ -67,13 +79,14 @@ export function ChatWidget({
     }
   }, [isOpen])
 
-  // Handle feedback submission
+  // Enhanced feedback submission
   const handleFeedback = async (messageId: string, feedback: 'helpful' | 'not_helpful', comment?: string) => {
     try {
       const response = await fetch('/api/chat/feedback', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionToken}`
         },
         body: JSON.stringify({
           messageId,
@@ -85,17 +98,45 @@ export function ChatWidget({
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
         console.warn('Feedback submission failed:', errorData)
-        // Don't throw error - allow visual feedback to work regardless
         return { success: false, error: errorData.error || 'Failed to submit feedback' }
       }
 
       return { success: true }
     } catch (error) {
       console.error('Error submitting feedback:', error)
-      // Don't throw error - allow visual feedback to work regardless
       return { success: false, error: 'Network error' }
     }
   }
+
+  // Get connection status details
+  const getConnectionStatus = () => {
+    if (!isConnected) {
+      return {
+        icon: WifiOff,
+        text: 'Desconectado',
+        color: 'text-red-200',
+        bgColor: 'bg-red-500/20'
+      }
+    }
+    
+    if (isLoading || isTyping) {
+      return {
+        icon: Clock,
+        text: 'Escribiendo...',
+        color: 'text-blue-200',
+        bgColor: 'bg-blue-500/20'
+      }
+    }
+
+    return {
+      icon: CheckCircle,
+      text: 'En línea',
+      color: 'text-green-200',
+      bgColor: 'bg-green-500/20'
+    }
+  }
+
+  const connectionStatus = getConnectionStatus()
 
   // Don't render if chatbot is disabled
   if (!isChatbotEnabled) {
@@ -111,44 +152,117 @@ export function ChatWidget({
 
   return (
     <>
-      {/* Chat Widget */}
+      {/* Enhanced Backdrop with blur effect */}
+      {isOpen && (
+        <div
+          className={cn(
+            'fixed inset-0 z-[9998]',
+            'bg-black/40 backdrop-blur-sm',
+            'animate-in fade-in duration-300',
+            'transition-all ease-out'
+          )}
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+          data-testid="chat-backdrop"
+        />
+      )}
+
+      {/* Enhanced Chat Widget */}
       {isOpen && (
         <Card
           className={cn(
-            'fixed z-[9999] shadow-2xl border-0 overflow-hidden',
+            'fixed z-[9999] overflow-hidden',
+            // Enhanced background and contrast
+            'bg-white/98 backdrop-blur-md',
+            'border border-[#009045]/20 shadow-2xl',
+            'ring-1 ring-black/5',
             'animate-in slide-in-from-bottom-4 duration-300',
             'w-96 h-[600px]', // Default desktop size
             'max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)]', // Responsive constraints
             'sm:w-96 sm:h-[600px]', // Maintain size on larger screens
             positionClasses[position],
-            isMinimized && 'h-12',
+            isMinimized && 'h-16', // Increased minimized height for better header visibility
             className
           )}
           role="dialog"
           aria-label="Asistente Virtual del Municipio de Chía"
-          aria-modal="false"
+          aria-modal="true"
+          data-chat-widget="true"
+          data-testid="chat-widget"
+          onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 bg-[#009045] text-white">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                <MessageCircle className="h-4 w-4" aria-hidden="true" />
+          {/* Enhanced Header */}
+          <div className={cn(
+            'flex items-center justify-between px-4 py-3',
+            'bg-gradient-to-r from-[#009045] to-[#007A3A]',
+            'text-white shadow-lg',
+            // Better height for touch targets
+            'min-h-[64px]'
+          )}>
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              {/* Enhanced Avatar/Icon */}
+              <div className={cn(
+                'w-10 h-10 rounded-full flex items-center justify-center',
+                'bg-white/20 backdrop-blur-sm border border-white/30',
+                'shadow-sm'
+              )}>
+                <MessageCircle className="h-5 w-5 text-white" aria-hidden="true" />
               </div>
-              <div>
-                <h2 className="font-semibold text-sm">Asistente Virtual</h2>
-                <p className="text-xs text-green-100">
-                  {isConnected ? 'En línea' : 'Desconectado'}
-                </p>
+              
+              {/* Enhanced Title and Status */}
+              <div className="flex-1 min-w-0">
+                <h2 className="font-semibold text-base leading-tight truncate">
+                  Asistente Virtual
+                </h2>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <div className={cn(
+                    'flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs',
+                    'transition-all duration-200',
+                    connectionStatus.bgColor
+                  )}>
+                    <connectionStatus.icon className={cn('h-3 w-3', connectionStatus.color)} />
+                    <span className={connectionStatus.color}>
+                      {connectionStatus.text}
+                    </span>
+                  </div>
+                  
+                  {/* Municipality Branding */}
+                  <span className="text-xs text-green-100 truncate">
+                    Municipio de Chía
+                  </span>
+                </div>
               </div>
             </div>
             
-            <div className="flex items-center gap-1">
+            {/* Enhanced Control Buttons */}
+            <div className="flex items-center gap-1 ml-2">
+              {/* Settings button (optional) */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowSettings(!showSettings)}
+                className={cn(
+                  'h-9 w-9 p-0 text-white/80 hover:text-white',
+                  'hover:bg-white/20 focus:bg-white/20',
+                  'focus:outline-none focus:ring-2 focus:ring-white/50',
+                  'transition-all duration-200'
+                )}
+                aria-label="Configuración del chat"
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+              
               {/* Minimize/Maximize button */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsMinimized(!isMinimized)}
-                className="h-8 w-8 p-0 text-white hover:bg-white/20"
+                className={cn(
+                  'h-9 w-9 p-0 text-white/80 hover:text-white',
+                  'hover:bg-white/20 focus:bg-white/20',
+                  'focus:outline-none focus:ring-2 focus:ring-white/50',
+                  'transition-all duration-200'
+                )}
                 aria-label={isMinimized ? 'Maximizar chat' : 'Minimizar chat'}
               >
                 {isMinimized ? (
@@ -163,7 +277,12 @@ export function ChatWidget({
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsOpen(false)}
-                className="h-8 w-8 p-0 text-white hover:bg-white/20"
+                className={cn(
+                  'h-9 w-9 p-0 text-white/80 hover:text-white',
+                  'hover:bg-red-500/20 focus:bg-red-500/20',
+                  'focus:outline-none focus:ring-2 focus:ring-white/50',
+                  'transition-all duration-200'
+                )}
                 aria-label="Cerrar chat"
               >
                 <X className="h-4 w-4" />
@@ -171,9 +290,50 @@ export function ChatWidget({
             </div>
           </div>
 
+          {/* Settings Panel (if enabled) */}
+          {showSettings && !isMinimized && (
+            <div className="bg-gray-50 border-b border-gray-200 p-3">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-medium text-gray-900">Configuración</h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowSettings(false)}
+                  className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clearMessages}
+                  className="w-full text-xs"
+                  disabled={messages.length === 0}
+                >
+                  Limpiar conversación
+                </Button>
+                {error && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={clearError}
+                    className="w-full text-xs text-red-600 border-red-200 hover:bg-red-50"
+                  >
+                    Limpiar errores
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Chat content */}
           {!isMinimized && (
-            <div className="flex flex-col h-[calc(600px-64px)]">
+            <div className={cn(
+              'flex flex-col bg-white/95',
+              showSettings ? 'h-[calc(600px-64px-80px)]' : 'h-[calc(600px-64px)]'
+            )}>
               <ChatHistory
                 messages={messages}
                 isLoading={isLoading}
@@ -190,67 +350,47 @@ export function ChatWidget({
                 onSendMessage={sendMessage}
                 disabled={isLoading || !isConnected}
                 maxLength={1000}
+                autoFocus={true}
+                shouldFocusAfterResponse={true}
+                onFocusRequest={focusInputRef}
+                showCharacterCount={true}
+                showSuggestions={true}
+                enableVoiceInput={false}
+                enableAttachments={false}
               />
             </div>
           )}
         </Card>
       )}
 
-      {/* Floating Action Button */}
+      {/* Enhanced Floating Action Button */}
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
           className={cn(
-            'fixed z-[9998] w-14 h-14 rounded-full shadow-lg bg-[#009045] hover:bg-[#009540] text-white',
-            'animate-in zoom-in-50 duration-300 transition-all',
-            'focus:ring-2 focus:ring-[#009045] focus:ring-offset-2',
-            'backdrop-blur-sm', // Add backdrop blur for better visibility
+            'fixed z-[9999] h-14 w-14 rounded-full shadow-lg',
+            'bg-gradient-to-r from-[#009045] to-[#007A3A]',
+            'hover:from-[#007A3A] hover:to-[#006B35]',
+            'text-white border-2 border-white/20',
+            'transition-all duration-300 ease-out',
+            'hover:scale-110 hover:shadow-xl',
+            'focus:outline-none focus:ring-4 focus:ring-[#009045]/30',
+            'active:scale-95',
             positionClasses[position],
+            // Pulse animation for new messages
             hasNewMessage && 'animate-pulse'
           )}
           aria-label="Abrir asistente virtual"
+          data-testid="chat-fab"
         >
-          <MessageCircle className="h-6 w-6" aria-hidden="true" />
-          
-          {/* New message indicator */}
-          {hasNewMessage && (
-            <div 
-              className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center"
-              aria-label="Nuevo mensaje"
-            >
-              <span className="text-xs font-bold text-white">!</span>
-            </div>
-          )}
-        </Button>
-      )}
-
-      {/* Help tooltip for first-time users */}
-      {!isOpen && messages.length === 0 && (
-        <div
-          className={cn(
-            'fixed z-[9997] bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg',
-            'animate-in fade-in-50 duration-500 delay-1000',
-            'max-w-[calc(100vw-2rem)]', // Prevent overflow on small screens
-            position === 'bottom-right' && 'bottom-20 right-4',
-            position === 'bottom-left' && 'bottom-20 left-4',
-            position === 'bottom-center' && 'bottom-20 left-1/2 transform -translate-x-1/2'
-          )}
-          role="tooltip"
-        >
-          <div className="flex items-center gap-2">
-            <HelpCircle className="h-3 w-3" aria-hidden="true" />
-            <span>¿Necesitas ayuda? ¡Pregúntame!</span>
-          </div>
-          <div 
-            className={cn(
-              'absolute w-2 h-2 bg-gray-900 transform rotate-45',
-              position === 'bottom-right' && 'top-full right-6 -mt-1',
-              position === 'bottom-left' && 'top-full left-6 -mt-1',
-              position === 'bottom-center' && 'top-full left-1/2 -translate-x-1/2 -mt-1'
+          <div className="relative">
+            <MessageCircle className="h-6 w-6" />
+            {/* New message indicator */}
+            {hasNewMessage && (
+              <div className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border-2 border-white animate-ping" />
             )}
-            aria-hidden="true"
-          />
-        </div>
+          </div>
+        </Button>
       )}
     </>
   )

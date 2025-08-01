@@ -16,22 +16,24 @@ const Sprint2_1Demo: React.FC<Sprint2_1DemoProps> = ({ className }) => {
   const [searchResults, setSearchResults] = useState<string[]>([])
   const [analyticsData, setAnalyticsData] = useState<any>(null)
 
-  // Smart search hook demonstration
+  // Smart search hook demonstration (UX-007: Updated to 300ms debounce)
   const smartSearch = useSmartSearch(
     async (query: string) => {
-      // Simulate search results
+      // Simulate search results with fuzzy matching
       const mockResults = [
         `Resultado para "${query}" - Certificado de Residencia`,
         `Resultado para "${query}" - Licencia de Construcción`,
         `Resultado para "${query}" - Permiso de Funcionamiento`,
+        `Resultado para "${query}" - Trámite de Estratificación`,
+        `Resultado para "${query}" - Impuesto Predial`,
       ]
       setSearchResults(mockResults)
-      
+
       // Track search with result count
       await smartSearch.trackSearch(query, mockResults.length)
     },
     {
-      debounceMs: 500,
+      debounceMs: 300, // UX-007: 300ms debounce for intelligent search
       maxSuggestions: 8,
       source: 'demo',
       enableAnalytics: true,
@@ -101,10 +103,10 @@ const Sprint2_1Demo: React.FC<Sprint2_1DemoProps> = ({ className }) => {
             
             <div className="space-y-mobile-md xs:space-y-6">
               <SearchBar
-                placeholder="Prueba la búsqueda inteligente..."
+                placeholder="Prueba la búsqueda inteligente con tolerancia a errores..."
                 onSearch={smartSearch.search}
                 enableSmartSuggestions={true}
-                debounceMs={500}
+                debounceMs={300} // UX-007: 300ms debounce
                 maxSuggestions={8}
                 source="demo"
                 showPopularSearches={true}

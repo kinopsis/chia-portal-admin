@@ -7,6 +7,7 @@ import { Form } from '@/components/molecules'
 import { RoleGuard } from '@/components/auth'
 import { faqsClientService } from '@/services/faqs'
 import { supabase } from '@/lib/supabase'
+import { normalizeSpanishText } from '@/lib/utils'
 import { FAQ, FormField, Dependencia, Subdependencia } from '@/types'
 import { formatDate } from '@/utils'
 import type { Column } from '@/components/organisms/DataTable'
@@ -437,15 +438,25 @@ export default function FuncionariosFAQsPage() {
   ]
 
   // Filter data based on search
-  const filteredFaqs = faqs.filter(
-    (faq) =>
-      (faq.pregunta || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (faq.respuesta || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (faq.categoria || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (faq.dependencias?.nombre || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (faq.subdependencias?.nombre || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (faq.tema || '').toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  // UX-001: Enhanced search with accent normalization
+  const filteredFaqs = faqs.filter((faq) => {
+    if (!searchQuery) return true
+
+    const normalizedQuery = normalizeSpanishText(searchQuery)
+    const normalizedPregunta = normalizeSpanishText(faq.pregunta || '')
+    const normalizedRespuesta = normalizeSpanishText(faq.respuesta || '')
+    const normalizedCategoria = normalizeSpanishText(faq.categoria || '')
+    const normalizedDependencia = normalizeSpanishText(faq.dependencias?.nombre || '')
+    const normalizedSubdependencia = normalizeSpanishText(faq.subdependencias?.nombre || '')
+    const normalizedTema = normalizeSpanishText(faq.tema || '')
+
+    return normalizedPregunta.includes(normalizedQuery) ||
+           normalizedRespuesta.includes(normalizedQuery) ||
+           normalizedCategoria.includes(normalizedQuery) ||
+           normalizedDependencia.includes(normalizedQuery) ||
+           normalizedSubdependencia.includes(normalizedQuery) ||
+           normalizedTema.includes(normalizedQuery)
+  })
 
   return (
     <RoleGuard allowedRoles={['funcionario']}>

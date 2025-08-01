@@ -6,16 +6,23 @@ export const dynamic = 'force-dynamic'
 import React, { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Card, Button, Badge, Select } from '@/components/atoms'
-import { SearchBar, Breadcrumb, MetricCard } from '@/components/molecules'
+import { SearchBar, Breadcrumb } from '@/components/molecules'
 import { PageHeader } from '@/components/layout'
 import type { BreadcrumbItem } from '@/components/molecules'
 import { unifiedSearchService } from '@/services/unifiedSearch'
 import type { UnifiedSearchResult, UnifiedSearchFilters } from '@/services/unifiedSearch'
-import { statisticsService } from '@/services/statistics'
-import type { PortalStatistics } from '@/services/statistics'
+
 import { dependenciasClientService } from '@/services/dependencias'
 import { SubdependenciasClientService } from '@/services/subdependencias'
 import type { Dependencia, Subdependencia } from '@/types'
+// UX-004: Import new filter components
+import { TramitesFilters } from '@/components/organisms/TramitesFilters/TramitesFilters'
+import { FilterOption } from '@/components/molecules/FilterChips/FilterChips'
+// UX-005: Import enhanced loading components
+import { TramiteCardSkeletonGrid } from '@/components/molecules/TramiteCardSkeleton/TramiteCardSkeleton'
+import { useLoadingStates, LoadingPresets } from '@/hooks/useLoadingStates'
+// Enhanced pagination component
+import EnhancedPagination from '@/components/molecules/EnhancedPagination/EnhancedPagination'
 
 // Extended type for Subdependencias with relations
 interface SubdependenciaWithRelations extends Subdependencia {
@@ -36,6 +43,7 @@ interface SubdependenciaWithRelations extends Subdependencia {
  * - Advanced filtering by dependencia, subdependencia, and payment type
  * - Enhanced card layouts with dependency hierarchy and contextual labels
  * - Optimized performance with reduced database queries
+ * - Clean layout without statistics display for improved focus on search functionality
  */
 
 const tipoOptions = [
@@ -63,21 +71,29 @@ function TramitesContent() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState(initialQuery)
-  const [selectedDependencia, setSelectedDependencia] = useState('')
-  const [selectedTipo, setSelectedTipo] = useState('')
-  const [selectedSubdependencia, setSelectedSubdependencia] = useState('')  // NEW
-  const [selectedTipoPago, setSelectedTipoPago] = useState('')  // NEW (replaces selectedEstado)
+  // UX-004: Updated to arrays for multi-selection
+  const [selectedDependencias, setSelectedDependencias] = useState<string[]>([])
+  const [selectedTipos, setSelectedTipos] = useState<string[]>([])
+  const [selectedSubdependencias, setSelectedSubdependencias] = useState<string[]>([])
+  const [selectedTiposPago, setSelectedTiposPago] = useState<string[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalResults, setTotalResults] = useState(0)
-  const [statistics, setStatistics] = useState<PortalStatistics | null>(null)
-  const [statisticsLoading, setStatisticsLoading] = useState(true)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
   const [dependencias, setDependencias] = useState<Dependencia[]>([])
   const [dependenciasLoading, setDependenciasLoading] = useState(true)
   const [subdependencias, setSubdependencias] = useState<SubdependenciaWithRelations[]>([])  // NEW
   const [filteredSubdependencias, setFilteredSubdependencias] = useState<SubdependenciaWithRelations[]>([])  // NEW
   const [subdependenciasLoading, setSubdependenciasLoading] = useState(true)  // NEW
-  const itemsPerPage = 10
+
+  // UX-005: Enhanced loading states
+  const loadingStates = useLoadingStates({
+    stages: LoadingPresets.standard.stages,
+    autoProgress: false, // Manual control for realistic timing
+    onComplete: () => {
+      console.log('Loading completed')
+    }
+  })
 
   const breadcrumbs: BreadcrumbItem[] = [
     { label: 'Inicio', href: '/' },
@@ -90,27 +106,44 @@ function TramitesContent() {
       try {
         setLoading(true)
         setError(null)
+        // UX-005: Start enhanced loading sequence
+        loadingStates.startLoading()
 
+        // UX-004: Convert arrays to single values for API compatibility
+        // For now, use first selected value. Future: extend API to support arrays
         const filters: UnifiedSearchFilters = {
           query: searchQuery,
-          tipo: selectedTipo as any,
-          dependencia: selectedDependencia,
-          subdependenciaId: selectedSubdependencia,  // NEW - using ID instead of name
-          tipoPago: selectedTipoPago as any,         // NEW (replaces estado)
+          tipo: selectedTipos.length > 0 ? selectedTipos[0] as any : '',
+          dependencia: selectedDependencias.length > 0 ? selectedDependencias[0] : '',
+          subdependenciaId: selectedSubdependencias.length > 0 ? selectedSubdependencias[0] : '',
+          tipoPago: selectedTiposPago.length > 0 ? selectedTiposPago[0] as any : '',
           page: currentPage,
           limit: itemsPerPage
         }
 
+        // UX-005: Progress to basic info stage
+        setTimeout(() => loadingStates.goToStage('basic-info'), 400)
+
         // Use optimized search method that excludes FAQs for better performance
         const result = await unifiedSearchService.searchTramitesAndOpas(filters)
+
+        // UX-005: Progress to details stage
+        loadingStates.goToStage('details')
+
+        // Simulate processing time for better UX
+        await new Promise(resolve => setTimeout(resolve, 300))
 
         setData(result.data)
         setTotalPages(result.pagination.totalPages)
         setTotalResults(result.pagination.total)
 
+        // UX-005: Complete loading
+        loadingStates.stopLoading()
+
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Error al cargar datos'
         setError(errorMessage)
+        loadingStates.setError(errorMessage)
         console.error('Error fetching unified search data:', err)
       } finally {
         setLoading(false)
@@ -118,7 +151,7 @@ function TramitesContent() {
     }
 
     fetchData()
-  }, [searchQuery, selectedDependencia, selectedTipo, selectedSubdependencia, selectedTipoPago, currentPage])
+  }, [searchQuery, selectedDependencias, selectedTipos, selectedSubdependencias, selectedTiposPago, currentPage])
 
   // Load dependencias on component mount
   useEffect(() => {
@@ -162,81 +195,66 @@ function TramitesContent() {
     fetchSubdependencias()
   }, [])
 
-  // Filter subdependencias based on selected dependencia
+  // UX-004: Filter subdependencias based on selected dependencias (arrays)
   useEffect(() => {
-    if (!selectedDependencia) {
+    if (selectedDependencias.length === 0) {
       setFilteredSubdependencias(subdependencias)
-      setSelectedSubdependencia('') // Clear subdependencia selection
+      setSelectedSubdependencias([]) // Clear subdependencia selection
     } else {
       const filtered = subdependencias.filter(sub => {
         // Use the proper type structure
         const dependenciaNombre = sub.dependencias?.nombre
-        return dependenciaNombre === selectedDependencia
+        return dependenciaNombre && selectedDependencias.includes(dependenciaNombre)
       })
       setFilteredSubdependencias(filtered)
-      setSelectedSubdependencia('') // Clear subdependencia selection when dependencia changes
+      // Keep only subdependencias that belong to selected dependencias
+      setSelectedSubdependencias(prev =>
+        prev.filter(subId =>
+          filtered.some(sub => sub.id === subId)
+        )
+      )
     }
-  }, [selectedDependencia, subdependencias])
+  }, [selectedDependencias, subdependencias])
 
-  // Fetch portal statistics separately (only once on mount)
-  useEffect(() => {
-    const fetchStatistics = async () => {
-      try {
-        setStatisticsLoading(true)
-        const stats = await statisticsService.getPortalStatistics()
-        setStatistics(stats)
-      } catch (err) {
-        console.error('Error fetching portal statistics:', err)
-        // Set fallback statistics
-        setStatistics({
-          dependencias: 14,
-          subdependencias: 75,
-          tramites: 108,
-          tramitesActivos: 108,
-          opas: 722,
-          opasActivas: 722,
-          faqs: 0, // Excluded from this page
-          faqsActivas: 0, // Excluded from this page
-          totalResults: 830 // Only Trámites + OPAs
-        })
-      } finally {
-        setStatisticsLoading(false)
-      }
-    }
 
-    fetchStatistics()
-  }, []) // Only run once on mount
 
   const handleSearch = (query: string) => {
     setSearchQuery(query)
   }
 
+  // UX-004: Updated clear filters for arrays
   const clearFilters = () => {
     setSearchQuery('')
-    setSelectedDependencia('')
-    setSelectedTipo('')
-    setSelectedSubdependencia('')  // NEW
-    setSelectedTipoPago('')        // NEW (replaces selectedEstado)
+    setSelectedDependencias([])
+    setSelectedTipos([])
+    setSelectedSubdependencias([])
+    setSelectedTiposPago([])
   }
 
-  // Statistics - use real database counts instead of filtered results (FAQs excluded)
-  const tramitesCount = statistics?.tramites || 0
-  const opasCount = statistics?.opas || 0
-  const dependenciasCount = statistics?.dependencias || 0
-  const totalResultsCount = tramitesCount + opasCount // Only Trámites + OPAs
 
-  // Prepare options for dropdowns
-  const dependenciasOptions = [
-    { value: '', label: 'Todas las dependencias' },
-    ...dependencias.map(dep => ({ value: dep.nombre, label: dep.nombre }))
+
+  // UX-004: Create filter options for chip components
+  // Note: Statistics counts removed for cleaner interface focused on search functionality
+  const dependenciasOptions: FilterOption[] = dependencias.map(dep => ({
+    value: dep.nombre,
+    label: dep.nombre,
+    count: dep.tramites_count || 0
+  }))
+
+  const subdependenciasOptions: FilterOption[] = filteredSubdependencias.map(sub => ({
+    value: sub.id,
+    label: sub.nombre,
+    count: sub.tramites_count || 0
+  }))
+
+  const tipoOptions: FilterOption[] = [
+    { value: 'tramite', label: 'Trámites' },
+    { value: 'opa', label: 'OPAs' }
   ]
 
-  const subdependenciasOptions = [
-    { value: '', label: 'Todas las subdependencias' },
-    ...(Array.isArray(filteredSubdependencias) ? filteredSubdependencias.map(sub => ({
-      value: sub.id, // Use ID as value to ensure uniqueness
-      label: sub.nombre // Display name as label
-    })) : [])
+  const tiposPagoOptions: FilterOption[] = [
+    { value: 'gratuito', label: 'Gratuito', count: 0 },
+    { value: 'con_pago', label: 'Con Pago', count: 0 }
   ]
 
   return (
@@ -249,111 +267,27 @@ function TramitesContent() {
       
       <div className="container-custom py-8">
         <div className="max-w-6xl mx-auto space-y-8">
-          {/* Statistics */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-            <MetricCard
-              title="Trámites"
-              value={tramitesCount}
-              icon="📄"
-              color="blue"
-              description="Disponibles"
-              loading={statisticsLoading}
-            />
-            <MetricCard
-              title="OPAs"
-              value={opasCount}
-              icon="⚡"
-              color="green"
-              description="Activas"
-              loading={statisticsLoading}
-            />
-            <MetricCard
-              title="Dependencias"
-              value={dependenciasCount}
-              icon="🏛️"
-              color="purple"
-              description="Con servicios"
-              loading={statisticsLoading}
-            />
-            <MetricCard
-              title="Total Resultados"
-              value={totalResultsCount}
-              icon="🔍"
-              color="primary"
-              description="Encontrados"
-              loading={statisticsLoading}
-            />
-          </div>
-
-          {/* Search and Filters */}
-          <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Búsqueda y Filtros
-            </h3>
-            
-            {/* Search Bar */}
-            <div className="mb-4">
-              <SearchBar
-                placeholder="Buscar trámites y OPAs por nombre, código, descripción..."
-                onSearch={handleSearch}
-              />
-            </div>
-
-            {/* Filters - Row 1 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <Select
-                value={selectedDependencia}
-                onChange={(e) => setSelectedDependencia(e.target.value)}
-                options={dependenciasOptions}
-                placeholder={dependenciasLoading ? "Cargando dependencias..." : "Filtrar por dependencia"}
-                disabled={dependenciasLoading}
-              />
-              <Select
-                value={selectedTipo}
-                onChange={(e) => setSelectedTipo(e.target.value)}
-                options={tipoOptions}
-                placeholder="Filtrar por tipo"
-              />
-              <Button
-                variant="outline"
-                onClick={clearFilters}
-                className="w-full"
-              >
-                🔄 Limpiar Filtros
-              </Button>
-            </div>
-
-            {/* Filters - Row 2 (NEW) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <Select
-                value={selectedSubdependencia}
-                onChange={(e) => setSelectedSubdependencia(e.target.value)}
-                options={subdependenciasOptions}
-                placeholder={subdependenciasLoading ? "Cargando subdependencias..." : "Filtrar por subdependencia"}
-                disabled={subdependenciasLoading || !selectedDependencia}
-              />
-              <Select
-                value={selectedTipoPago}
-                onChange={(e) => setSelectedTipoPago(e.target.value)}
-                options={tiposPagoOptions}
-                placeholder="Filtrar por tipo de pago"
-              />
-            </div>
-
-            {/* Results Summary */}
-            <div className="text-sm text-gray-600">
-              {loading ? (
-                'Cargando resultados...'
-              ) : error ? (
-                `Error: ${error}`
-              ) : (
-                <>
-                  Mostrando {data.length} de {totalResults} resultados
-                  {searchQuery && ` para "${searchQuery}"`}
-                </>
-              )}
-            </div>
-          </Card>
+          {/* UX-004: New Chip-Based Filters */}
+          <TramitesFilters
+            searchQuery={searchQuery}
+            onSearchChange={handleSearch}
+            dependenciasOptions={dependenciasOptions}
+            subdependenciasOptions={subdependenciasOptions}
+            tipoOptions={tipoOptions}
+            tiposPagoOptions={tiposPagoOptions}
+            selectedDependencias={selectedDependencias}
+            selectedSubdependencias={selectedSubdependencias}
+            selectedTipos={selectedTipos}
+            selectedTiposPago={selectedTiposPago}
+            onDependenciasChange={setSelectedDependencias}
+            onSubdependenciasChange={setSelectedSubdependencias}
+            onTiposChange={setSelectedTipos}
+            onTiposPagoChange={setSelectedTiposPago}
+            dependenciasLoading={dependenciasLoading}
+            subdependenciasLoading={subdependenciasLoading}
+            totalResults={totalResults}
+            onClearFilters={clearFilters}
+          />
 
           {/* Results */}
           <div>
@@ -362,27 +296,33 @@ function TramitesContent() {
             </h3>
 
             {loading ? (
-              <div className="space-y-4">
-                {/* Loading skeleton */}
-                {Array.from({ length: 3 }).map((_, index) => (
-                  <Card key={index} className="animate-pulse">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <div className="h-6 w-20 bg-gray-200 rounded"></div>
-                          <div className="h-6 w-16 bg-gray-200 rounded"></div>
-                        </div>
-                        <div className="h-6 w-3/4 bg-gray-200 rounded mb-2"></div>
-                        <div className="h-4 w-full bg-gray-200 rounded mb-3"></div>
-                        <div className="flex space-x-4">
-                          <div className="h-4 w-24 bg-gray-200 rounded"></div>
-                          <div className="h-4 w-20 bg-gray-200 rounded"></div>
-                        </div>
-                      </div>
-                      <div className="h-8 w-24 bg-gray-200 rounded"></div>
-                    </div>
-                  </Card>
-                ))}
+              <div>
+                {/* UX-005: Enhanced loading with progress indicator */}
+                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-blue-900">
+                      {loadingStates.currentStageInfo.label}
+                    </span>
+                    <span className="text-xs text-blue-700">
+                      {Math.round(loadingStates.progress)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-blue-200 rounded-full h-2">
+                    <div
+                      className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
+                      style={{ width: `${loadingStates.progress}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Enhanced skeleton cards */}
+                <TramiteCardSkeletonGrid
+                  count={6}
+                  showShimmer={true}
+                  variant="default"
+                  staggered={true}
+                  data-testid="tramites-loading-skeleton"
+                />
               </div>
             ) : error ? (
               <Card className="text-center py-12">
@@ -536,41 +476,32 @@ function TramitesContent() {
               </Card>
             )}
 
-            {/* Pagination */}
+            {/* Enhanced Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center space-x-4 mt-8">
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                >
-                  ◀ Anterior
-                </Button>
-                
-                <div className="flex space-x-2">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                    <Button
-                      key={page}
-                      variant={currentPage === page ? 'primary' : 'outline'}
-                      size="sm"
-                      onClick={() => setCurrentPage(page)}
-                    >
-                      {page}
-                    </Button>
-                  ))}
-                </div>
-                
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                >
-                  Siguiente ▶
-                </Button>
-                
-                <span className="text-sm text-gray-600">
-                  Página {currentPage} de {totalPages} ({totalResults} resultados)
-                </span>
+              <div className="mt-12">
+                <EnhancedPagination
+                  current={currentPage}
+                  pageSize={itemsPerPage}
+                  total={totalResults}
+                  showSizeChanger={true}
+                  showQuickJumper={true}
+                  showTotal={true}
+                  showFirstLast={true}
+                  pageSizeOptions={[10, 25, 50, 100]}
+                  size="default"
+                  hideOnSinglePage={true}
+                  onChange={(page, size) => {
+                    setCurrentPage(page)
+                    if (size !== itemsPerPage) {
+                      setItemsPerPage(size)
+                    }
+                  }}
+                  onShowSizeChange={(page, size) => {
+                    setCurrentPage(page)
+                    setItemsPerPage(size)
+                  }}
+                  className="bg-white rounded-lg p-6 shadow-sm border border-gray-100"
+                />
               </div>
             )}
           </div>

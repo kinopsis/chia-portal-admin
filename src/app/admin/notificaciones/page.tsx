@@ -173,7 +173,6 @@ export default function NotificacionesAdminPage() {
       setIsSubmitting(true)
 
       // TODO: Implement notification creation
-      console.log('Creating notification:', formData)
 
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000))

@@ -1,6 +1,7 @@
 // Service for managing FAQs
 
 import { supabase } from '@/lib/supabase/client'
+import { normalizeSpanishText } from '@/lib/utils'
 import type { FAQ, SearchFilters, PaginatedResponse, FAQHierarchy } from '@/types'
 
 // Server-side service functions
@@ -48,8 +49,29 @@ export class FAQsClientService {
       .order('created_at', { ascending: false })
 
     // Apply filters
+    // UX-001: Enhanced search with accent normalization
     if (filters?.query) {
-      query = query.or(`pregunta.ilike.%${filters.query}%,respuesta.ilike.%${filters.query}%`)
+      // Use both database search (for performance) and client-side normalization (for accuracy)
+      const normalizedQuery = normalizeSpanishText(filters.query)
+
+      // Create broader database search using prefixes to catch accent variations
+      const searchTerms = filters.query.split(' ').map(term => {
+        if (term.length > 4) {
+          return term.substring(0, Math.max(4, Math.floor(term.length * 0.7)))
+        }
+        return term
+      })
+
+      const prefixQueries = searchTerms.map(term =>
+        `pregunta.ilike.%${term}%,respuesta.ilike.%${term}%`
+      ).join(',')
+
+      // Database search - use prefix-based search to catch more potential matches
+      query = query.or(prefixQueries)
+
+      // Store original query for client-side filtering
+      ;(query as any)._clientSearchQuery = normalizedQuery
+      ;(query as any)._originalQuery = filters.query
     }
 
     if (filters?.dependencia_id) {
@@ -78,8 +100,30 @@ export class FAQsClientService {
       throw new Error(`Error fetching FAQs: ${error.message}`)
     }
 
+    let filteredData = data || []
+
+    // UX-001: Apply client-side accent-insensitive filtering for comprehensive search
+    const clientSearchQuery = (query as any)._clientSearchQuery
+    const originalQuery = (query as any)._originalQuery
+
+    if ((clientSearchQuery || originalQuery) && filteredData.length > 0) {
+      filteredData = filteredData.filter((faq: FAQ) => {
+        const normalizedPregunta = normalizeSpanishText(faq.pregunta || '')
+        const normalizedRespuesta = normalizeSpanishText(faq.respuesta || '')
+        const normalizedOriginalQuery = normalizeSpanishText(originalQuery || '')
+
+        // Check if any of the search terms match
+        return normalizedPregunta.includes(clientSearchQuery || '') ||
+               normalizedRespuesta.includes(clientSearchQuery || '') ||
+               normalizedPregunta.includes(normalizedOriginalQuery) ||
+               normalizedRespuesta.includes(normalizedOriginalQuery) ||
+               (faq.pregunta || '').toLowerCase().includes((originalQuery || '').toLowerCase()) ||
+               (faq.respuesta || '').toLowerCase().includes((originalQuery || '').toLowerCase())
+      })
+    }
+
     return {
-      data: data || [],
+      data: filteredData,
       pagination: {
         page,
         limit,

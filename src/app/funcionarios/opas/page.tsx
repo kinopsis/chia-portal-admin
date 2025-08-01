@@ -7,6 +7,7 @@ import { DataTable } from '@/components/organisms'
 import { RoleGuard } from '@/components/auth'
 import { opasClientService } from '@/services/opas'
 import { supabase } from '@/lib/supabase/client'
+import { normalizeSpanishText } from '@/lib/utils'
 import type { FormField, OPA, Dependencia, Subdependencia } from '@/types'
 import type { Column } from '@/components/organisms/DataTable'
 import { formatDate, formatCurrency } from '@/utils'
@@ -402,14 +403,23 @@ export default function FuncionariosOPAsPage() {
   ]
 
   // Filter data based on search
-  const filteredOpas = opas.filter(
-    (opa) =>
-      (opa.codigo || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (opa.nombre || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (opa.descripcion || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (opa.dependencias?.nombre || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (opa.subdependencias?.nombre || '').toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  // UX-001: Enhanced search with accent normalization
+  const filteredOpas = opas.filter((opa) => {
+    if (!searchQuery) return true
+
+    const normalizedQuery = normalizeSpanishText(searchQuery)
+    const normalizedCodigo = normalizeSpanishText(opa.codigo || '')
+    const normalizedNombre = normalizeSpanishText(opa.nombre || '')
+    const normalizedDescripcion = normalizeSpanishText(opa.descripcion || '')
+    const normalizedDependencia = normalizeSpanishText(opa.dependencias?.nombre || '')
+    const normalizedSubdependencia = normalizeSpanishText(opa.subdependencias?.nombre || '')
+
+    return normalizedCodigo.includes(normalizedQuery) ||
+           normalizedNombre.includes(normalizedQuery) ||
+           normalizedDescripcion.includes(normalizedQuery) ||
+           normalizedDependencia.includes(normalizedQuery) ||
+           normalizedSubdependencia.includes(normalizedQuery)
+  })
 
   return (
     <RoleGuard allowedRoles={['funcionario']}>

@@ -43,10 +43,19 @@ export function ChatHistory({
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (autoScroll && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'end'
-      })
+      // Check if scrollIntoView is available (not available in test environments)
+      if (typeof messagesEndRef.current.scrollIntoView === 'function') {
+        messagesEndRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end'
+        })
+      } else {
+        // Fallback for test environments
+        const scrollArea = scrollAreaRef.current
+        if (scrollArea) {
+          scrollArea.scrollTop = scrollArea.scrollHeight
+        }
+      }
     }
   }, [messages, isTyping, autoScroll])
 

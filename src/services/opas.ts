@@ -1,6 +1,7 @@
 // Service for managing OPAs (Órdenes de Pago y Autorización)
 
 import { supabase } from '@/lib/supabase/client'
+import { normalizeSpanishText } from '@/lib/utils'
 import type { OPA, SearchFilters, PaginatedResponse } from '@/types'
 
 // Server-side service functions
@@ -52,8 +53,29 @@ export class OPAsClientService {
       .order('nombre', { ascending: true })
 
     // Enhanced search including new fields
+    // UX-001: Enhanced search with accent normalization
     if (filters?.query) {
-      query = query.or(`nombre.ilike.%${filters.query}%,descripcion.ilike.%${filters.query}%,codigo_opa.ilike.%${filters.query}%,formulario.ilike.%${filters.query}%`)
+      // Use both database search (for performance) and client-side normalization (for accuracy)
+      const normalizedQuery = normalizeSpanishText(filters.query)
+
+      // Create broader database search using prefixes to catch accent variations
+      const searchTerms = filters.query.split(' ').map(term => {
+        if (term.length > 4) {
+          return term.substring(0, Math.max(4, Math.floor(term.length * 0.7)))
+        }
+        return term
+      })
+
+      const prefixQueries = searchTerms.map(term =>
+        `nombre.ilike.%${term}%,descripcion.ilike.%${term}%,codigo_opa.ilike.%${term}%,formulario.ilike.%${term}%`
+      ).join(',')
+
+      // Database search - use prefix-based search to catch more potential matches
+      query = query.or(prefixQueries)
+
+      // Store original query for client-side filtering
+      ;(query as any)._clientSearchQuery = normalizedQuery
+      ;(query as any)._originalQuery = filters.query
     }
 
     if (filters?.dependencia_id) {
@@ -125,8 +147,38 @@ export class OPAsClientService {
       throw new Error(`Error fetching OPAs: ${error.message}`)
     }
 
+    let filteredData = data || []
+
+    // UX-001: Apply client-side accent-insensitive filtering for comprehensive search
+    const clientSearchQuery = (query as any)._clientSearchQuery
+    const originalQuery = (query as any)._originalQuery
+
+    if ((clientSearchQuery || originalQuery) && filteredData.length > 0) {
+      filteredData = filteredData.filter((opa: OPA) => {
+        const normalizedNombre = normalizeSpanishText(opa.nombre || '')
+        const normalizedDescripcion = normalizeSpanishText(opa.descripcion || '')
+        const normalizedFormulario = normalizeSpanishText(opa.formulario || '')
+        const normalizedCodigo = normalizeSpanishText(opa.codigo_opa || '')
+        const normalizedOriginalQuery = normalizeSpanishText(originalQuery || '')
+
+        // Check if any of the search terms match
+        return normalizedNombre.includes(clientSearchQuery || '') ||
+               normalizedDescripcion.includes(clientSearchQuery || '') ||
+               normalizedFormulario.includes(clientSearchQuery || '') ||
+               normalizedCodigo.includes(clientSearchQuery || '') ||
+               normalizedNombre.includes(normalizedOriginalQuery) ||
+               normalizedDescripcion.includes(normalizedOriginalQuery) ||
+               normalizedFormulario.includes(normalizedOriginalQuery) ||
+               normalizedCodigo.includes(normalizedOriginalQuery) ||
+               (opa.nombre || '').toLowerCase().includes((originalQuery || '').toLowerCase()) ||
+               (opa.descripcion || '').toLowerCase().includes((originalQuery || '').toLowerCase()) ||
+               (opa.formulario || '').toLowerCase().includes((originalQuery || '').toLowerCase()) ||
+               (opa.codigo_opa || '').toLowerCase().includes((originalQuery || '').toLowerCase())
+      })
+    }
+
     return {
-      data: data || [],
+      data: filteredData,
       pagination: {
         page,
         limit,

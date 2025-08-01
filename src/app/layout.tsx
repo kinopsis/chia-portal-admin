@@ -8,6 +8,7 @@ import { ConditionalLayout } from '@/components/layout'
 import { SkipLink } from '@/components/atoms'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import { MobileOptimizationProvider, PerformanceProvider, PerformanceMonitor, AccessibilityProvider } from '@/components/providers'
+import { PrivacyConsent } from '@/components/molecules/PrivacyConsent/PrivacyConsent'
 import { initializeAccessibility } from '@/utils/accessibilityUtils'
 import './globals.css'
 
@@ -51,6 +52,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <AuthProvider>
                       <ConditionalLayout>{children}</ConditionalLayout>
                       <PerformanceMonitor />
+                      {/* UX-008: Privacy Consent Banner */}
+                      <PrivacyConsent showDetailedOptions={true} />
                     </AuthProvider>
                   </QueryProvider>
                 </ThemeProvider>

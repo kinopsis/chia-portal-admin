@@ -219,8 +219,6 @@ const DependenciasAdminPage: React.FC = () => {
 
   // Handle actions
   const handleAction = (action: string, dependencia: DependenciaWithStats) => {
-    console.log(`Action started: ${action}`, dependencia)
-
     switch (action) {
       case 'edit':
         setSelectedDependencia(dependencia)
@@ -231,8 +229,6 @@ const DependenciasAdminPage: React.FC = () => {
         setIsDeleteModalOpen(true)
         break
     }
-
-    console.log(`Action completed: ${action}`, dependencia)
   }
 
   if (error) {

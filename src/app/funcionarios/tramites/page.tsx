@@ -7,6 +7,7 @@ import { DataTable } from '@/components/organisms'
 import { RoleGuard } from '@/components/auth'
 import { TramitesClientService } from '@/services/tramites'
 import { supabase } from '@/lib/supabase/client'
+import { normalizeSpanishText } from '@/lib/utils'
 import type { FormField, Tramite, Dependencia, Subdependencia } from '@/types'
 import type { Column } from '@/components/organisms/DataTable'
 import { formatDate, formatCurrency } from '@/utils'
@@ -406,14 +407,23 @@ export default function FuncionariosTramitesPage() {
   ]
 
   // Filter data based on search
-  const filteredTramites = tramites.filter(
-    (tramite) =>
-      (tramite.codigo || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (tramite.nombre || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (tramite.descripcion || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (tramite.dependencias?.nombre || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (tramite.subdependencias?.nombre || '').toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  // UX-001: Enhanced search with accent normalization
+  const filteredTramites = tramites.filter((tramite) => {
+    if (!searchQuery) return true
+
+    const normalizedQuery = normalizeSpanishText(searchQuery)
+    const normalizedCodigo = normalizeSpanishText(tramite.codigo || '')
+    const normalizedNombre = normalizeSpanishText(tramite.nombre || '')
+    const normalizedDescripcion = normalizeSpanishText(tramite.descripcion || '')
+    const normalizedDependencia = normalizeSpanishText(tramite.dependencias?.nombre || '')
+    const normalizedSubdependencia = normalizeSpanishText(tramite.subdependencias?.nombre || '')
+
+    return normalizedCodigo.includes(normalizedQuery) ||
+           normalizedNombre.includes(normalizedQuery) ||
+           normalizedDescripcion.includes(normalizedQuery) ||
+           normalizedDependencia.includes(normalizedQuery) ||
+           normalizedSubdependencia.includes(normalizedQuery)
+  })
 
   return (
     <RoleGuard allowedRoles={['funcionario']}>
