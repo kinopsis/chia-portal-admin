@@ -11,6 +11,11 @@ export type { SidebarProps } from './Sidebar'
 export { default as AdminLayout } from './AdminLayout'
 export type { AdminLayoutProps } from './AdminLayout'
 
+export { FuncionarioLayout } from './FuncionarioLayout'
+export type { FuncionarioLayoutProps } from './FuncionarioLayout'
+
+export { FuncionarioSidebar } from './FuncionarioSidebar'
+
 export {
   default as Navigation,
   getMainNavigation,

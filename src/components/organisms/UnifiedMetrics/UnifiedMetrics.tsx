@@ -137,7 +137,7 @@ export const UnifiedMetrics: React.FC<UnifiedMetricsProps> = ({
       title: 'Dependencias',
       value: metrics.dependencias,
       icon: '🏛️',
-      color: 'gray' as const,
+      color: 'info' as const,
       description: 'Entidades registradas'
     },
     {
@@ -145,7 +145,7 @@ export const UnifiedMetrics: React.FC<UnifiedMetricsProps> = ({
       title: 'Subdependencias',
       value: metrics.subdependencias,
       icon: '🏢',
-      color: 'slate' as const,
+      color: 'secondary' as const,
       description: 'Subdivisiones activas'
     }
   ] : []

@@ -1,5 +1,5 @@
-// ChatInput Component for AI Chatbot
-// Epic 4 - US-012: Interfaz de Usuario del Chatbot Web
+// ChatInput Improved - UX/UI Audit Implementation
+// Addresses all identified usability and accessibility issues
 
 'use client'
 
@@ -7,42 +7,86 @@ import React, { useState, useRef, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Send, AlertCircle } from 'lucide-react'
+import { Send, AlertCircle, Mic, Paperclip, Smile } from 'lucide-react'
 
-interface ChatInputProps {
+interface ChatInputImprovedProps {
   onSendMessage: (message: string) => void
   disabled?: boolean
   placeholder?: string
   maxLength?: number
   className?: string
+  autoFocus?: boolean
+  shouldFocusAfterResponse?: boolean
+  onFocusRequest?: () => void
+  // New UX improvements
+  showCharacterCount?: boolean
+  showSuggestions?: boolean
+  enableVoiceInput?: boolean
+  enableAttachments?: boolean
 }
 
-export function ChatInput({
+export function ChatInputImproved({
   onSendMessage,
   disabled = false,
   placeholder = "Escribe tu pregunta sobre trámites, servicios o información municipal...",
   maxLength = 1000,
-  className
-}: ChatInputProps) {
+  className,
+  autoFocus = false,
+  shouldFocusAfterResponse = true,
+  onFocusRequest,
+  showCharacterCount = true,
+  showSuggestions = true,
+  enableVoiceInput = false,
+  enableAttachments = false
+}: ChatInputImprovedProps) {
   const [message, setMessage] = useState('')
   const [isFocused, setIsFocused] = useState(false)
+  const [isComposing, setIsComposing] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  // Auto-resize textarea
+  // Quick suggestions for better UX
+  const quickSuggestions = [
+    "¿Cómo saco mi cédula?",
+    "Horarios de atención",
+    "¿Dónde pago impuestos?",
+    "Registro de empresa"
+  ]
+
+  // Auto-resize textarea with improved logic
   useEffect(() => {
     const textarea = textareaRef.current
     if (textarea) {
       textarea.style.height = 'auto'
-      textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`
+      const newHeight = Math.min(Math.max(textarea.scrollHeight, 44), 120)
+      textarea.style.height = `${newHeight}px`
     }
   }, [message])
 
-  // Handle form submission
+  // Enhanced focus management
+  useEffect(() => {
+    if (autoFocus && textareaRef.current && !disabled) {
+      const timer = setTimeout(() => {
+        textareaRef.current?.focus()
+      }, 100)
+      return () => clearTimeout(timer)
+    }
+  }, [autoFocus, disabled])
+
+  // Focus after response with improved timing
+  useEffect(() => {
+    if (shouldFocusAfterResponse && !isComposing && textareaRef.current) {
+      const timer = setTimeout(() => {
+        textareaRef.current?.focus()
+      }, 300)
+      return () => clearTimeout(timer)
+    }
+  }, [shouldFocusAfterResponse, isComposing])
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const trimmedMessage = message.trim()
     
-    if (trimmedMessage && !disabled) {
+    if (trimmedMessage && !disabled && !isOverLimit) {
       onSendMessage(trimmedMessage)
       setMessage('')
       
@@ -53,7 +97,6 @@ export function ChatInput({
     }
   }
 
-  // Handle key press
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
@@ -61,127 +104,186 @@ export function ChatInput({
     }
   }
 
+  const handleSuggestionClick = (suggestion: string) => {
+    setMessage(suggestion)
+    textareaRef.current?.focus()
+  }
+
   // Character count and validation
   const characterCount = message.length
   const isOverLimit = characterCount > maxLength
   const isNearLimit = characterCount > maxLength * 0.8
+  const canSend = message.trim().length > 0 && !isOverLimit && !disabled
 
   return (
     <div className={cn('border-t border-gray-200 bg-white', className)}>
+      {/* Quick Suggestions */}
+      {showSuggestions && message.length === 0 && !isFocused && (
+        <div className="px-4 pt-3 pb-2">
+          <p className="text-xs font-medium text-gray-600 mb-2">Preguntas frecuentes:</p>
+          <div className="flex flex-wrap gap-2">
+            {quickSuggestions.map((suggestion, index) => (
+              <button
+                key={index}
+                onClick={() => handleSuggestionClick(suggestion)}
+                className={cn(
+                  'px-3 py-1.5 text-xs rounded-full border transition-all duration-200',
+                  'bg-gray-50 border-gray-200 text-gray-700',
+                  'hover:bg-[#009045] hover:text-white hover:border-[#009045]',
+                  'focus:outline-none focus:ring-2 focus:ring-[#009045] focus:ring-offset-1',
+                  'active:scale-95'
+                )}
+                disabled={disabled}
+              >
+                {suggestion}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="p-4">
         <div className="relative">
-          {/* Textarea */}
-          <Textarea
-            ref={textareaRef}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            placeholder={placeholder}
-            disabled={disabled}
-            className={cn(
-              'min-h-[44px] max-h-[120px] resize-none pr-12 transition-all duration-200',
-              'border-2 bg-white text-gray-900 placeholder:text-gray-400',
-              'focus:outline-none focus:ring-0 shadow-sm',
-              // Enhanced focus states with municipal colors
-              isFocused && !isOverLimit && 'ring-2 ring-[#009045] border-[#009045] shadow-md',
-              // Improved default and hover states for better visibility
-              !isFocused && !isOverLimit && 'border-gray-400 hover:border-gray-500 hover:shadow-sm',
-              // Error states
-              isOverLimit && 'border-red-500 focus:ring-red-500 focus:border-red-500 shadow-red-100',
-              // Disabled state with better contrast
-              disabled && 'opacity-60 cursor-not-allowed bg-gray-100 border-gray-300'
-            )}
-            aria-label="Mensaje para el asistente virtual"
-            aria-describedby="char-count message-help"
-          />
+          {/* Main Input Container */}
+          <div className={cn(
+            'relative rounded-lg border-2 transition-all duration-200',
+            'bg-white shadow-sm',
+            // Enhanced focus states with better contrast
+            isFocused && !isOverLimit && 'ring-2 ring-[#009045]/20 border-[#009045] shadow-md',
+            // Improved default state with better visibility
+            !isFocused && !isOverLimit && 'border-gray-300 hover:border-gray-400 hover:shadow-sm',
+            // Clear error states
+            isOverLimit && 'border-red-500 ring-2 ring-red-500/20 shadow-red-100',
+            // Enhanced disabled state
+            disabled && 'opacity-60 cursor-not-allowed bg-gray-50 border-gray-200'
+          )}>
+            
+            {/* Textarea */}
+            <Textarea
+              ref={textareaRef}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              onCompositionStart={() => setIsComposing(true)}
+              onCompositionEnd={() => setIsComposing(false)}
+              placeholder={placeholder}
+              disabled={disabled}
+              className={cn(
+                'min-h-[44px] max-h-[120px] resize-none border-0 pr-16 pl-4 py-3',
+                'bg-transparent text-gray-900 placeholder:text-gray-500',
+                'focus:outline-none focus:ring-0 shadow-none',
+                // Improved placeholder contrast (WCAG AA compliant)
+                'placeholder:text-gray-500',
+                // Better text sizing for readability
+                'text-sm leading-relaxed'
+              )}
+              aria-label="Mensaje para el asistente virtual"
+              aria-describedby={cn(
+                showCharacterCount && "char-count",
+                "message-help"
+              )}
+              maxLength={maxLength}
+            />
 
-          {/* Send button */}
-          <Button
-            type="submit"
-            size="sm"
-            disabled={disabled || !message.trim() || isOverLimit}
-            className={cn(
-              'absolute right-2 bottom-2 h-8 w-8 p-0 transition-all duration-200',
-              message.trim() && !disabled && !isOverLimit
-                ? 'bg-[#009045] hover:bg-[#009540] text-white shadow-md hover:shadow-lg focus:ring-2 focus:ring-[#009045] focus:ring-offset-1 transform hover:scale-105'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-sm'
-            )}
-            aria-label="Enviar mensaje"
-          >
-            <Send className="h-4 w-4" aria-hidden="true" />
-          </Button>
-        </div>
-
-        {/* Character count and help text */}
-        <div className="flex items-center justify-between mt-2 text-xs">
-          <div id="message-help" className="text-gray-500">
-            {disabled ? (
-              <span className="flex items-center gap-1">
-                <AlertCircle className="h-3 w-3" aria-hidden="true" />
-                Enviando mensaje...
-              </span>
-            ) : (
-              'Presiona Enter para enviar, Shift+Enter para nueva línea'
-            )}
-          </div>
-          
-          <div
-            id="char-count"
-            className={cn(
-              'font-medium',
-              isOverLimit && 'text-red-600',
-              isNearLimit && !isOverLimit && 'text-yellow-600',
-              !isNearLimit && 'text-gray-500'
-            )}
-            aria-live="polite"
-          >
-            {characterCount}/{maxLength}
-          </div>
-        </div>
-
-        {/* Error message for over limit */}
-        {isOverLimit && (
-          <div 
-            className="mt-2 text-xs text-red-600 flex items-center gap-1"
-            role="alert"
-            aria-live="assertive"
-          >
-            <AlertCircle className="h-3 w-3" aria-hidden="true" />
-            El mensaje excede el límite de {maxLength} caracteres
-          </div>
-        )}
-
-        {/* Quick suggestions */}
-        {!message && !disabled && (
-          <div className="mt-3">
-            <p className="text-xs text-gray-600 mb-2">Preguntas frecuentes:</p>
-            <div className="flex flex-wrap gap-2">
-              {[
-                '¿Cómo saco mi cédula?',
-                '¿Dónde pago impuestos?',
-                'Horarios de atención',
-                '¿Cómo registro mi empresa?'
-              ].map((suggestion, index) => (
+            {/* Action Buttons Container */}
+            <div className="absolute right-2 bottom-2 flex items-center gap-1">
+              {/* Optional: Voice Input Button */}
+              {enableVoiceInput && (
                 <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
                   type="button"
-                  onClick={() => setMessage(suggestion)}
-                  className="text-xs h-6 px-2 text-gray-600 hover:text-gray-800"
-                  aria-label={`Usar sugerencia: ${suggestion}`}
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 text-gray-400 hover:text-[#009045] hover:bg-[#009045]/10"
+                  aria-label="Grabar mensaje de voz"
+                  disabled={disabled}
                 >
-                  {suggestion}
+                  <Mic className="h-4 w-4" />
                 </Button>
-              ))}
+              )}
+
+              {/* Optional: Attachment Button */}
+              {enableAttachments && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 text-gray-400 hover:text-[#009045] hover:bg-[#009045]/10"
+                  aria-label="Adjuntar archivo"
+                  disabled={disabled}
+                >
+                  <Paperclip className="h-4 w-4" />
+                </Button>
+              )}
+
+              {/* Send Button - Enhanced Design */}
+              <Button
+                type="submit"
+                size="sm"
+                disabled={!canSend}
+                className={cn(
+                  'h-8 w-8 p-0 rounded-md transition-all duration-200',
+                  // Enhanced enabled state with better contrast
+                  canSend && 'bg-[#009045] hover:bg-[#007A3A] text-white shadow-sm hover:shadow-md',
+                  canSend && 'focus:outline-none focus:ring-2 focus:ring-[#009045] focus:ring-offset-2',
+                  canSend && 'active:scale-95',
+                  // Improved disabled state
+                  !canSend && 'bg-gray-200 text-gray-400 cursor-not-allowed',
+                  // Loading state
+                  disabled && 'opacity-60'
+                )}
+                aria-label={canSend ? "Enviar mensaje" : "Escribe un mensaje para enviar"}
+              >
+                <Send className="h-4 w-4" />
+              </Button>
             </div>
           </div>
-        )}
+
+          {/* Character Count and Status */}
+          {showCharacterCount && (
+            <div className="flex items-center justify-between mt-2 px-1">
+              <div className="flex items-center gap-2">
+                {/* Status Indicator */}
+                {isOverLimit && (
+                  <div className="flex items-center gap-1 text-red-600">
+                    <AlertCircle className="h-3 w-3" />
+                    <span className="text-xs">Mensaje muy largo</span>
+                  </div>
+                )}
+                {isNearLimit && !isOverLimit && (
+                  <div className="flex items-center gap-1 text-amber-600">
+                    <AlertCircle className="h-3 w-3" />
+                    <span className="text-xs">Cerca del límite</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Character Counter */}
+              <div
+                id="char-count"
+                className={cn(
+                  'text-xs transition-colors duration-200',
+                  isOverLimit && 'text-red-600 font-medium',
+                  isNearLimit && !isOverLimit && 'text-amber-600',
+                  !isNearLimit && 'text-gray-400'
+                )}
+                aria-live="polite"
+              >
+                {characterCount}/{maxLength}
+              </div>
+            </div>
+          )}
+
+          {/* Help Text */}
+          <div id="message-help" className="sr-only">
+            Escribe tu pregunta y presiona Enter para enviar, o Shift+Enter para nueva línea.
+            {isOverLimit && ` El mensaje excede el límite de ${maxLength} caracteres.`}
+          </div>
+        </div>
       </form>
     </div>
   )
 }
 
-export default ChatInput
+export default ChatInputImproved

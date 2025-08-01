@@ -4,6 +4,9 @@
 import { tramitesClientService } from './tramites'
 import { opasClientService } from './opas'
 import { faqsClientService } from './faqs'
+import { normalizeSpanishText } from '@/lib/utils'
+import { fuzzySearch, enhancedSearchSuggestions, fuzzySearchCache, FuzzyMatch } from '@/lib/fuzzySearch'
+import { normalizeForSearch, searchMatches } from '@/utils/textNormalization'
 import type { Tramite, OPA, FAQ } from '@/types'
 
 // Unified search result interface
@@ -244,15 +247,31 @@ export class UnifiedSearchService {
       }
 
       // Sort by relevance (exact matches first, then partial matches)
+      // Enhanced accent-insensitive search using new normalization utility
       if (query) {
+        const normalizedQuery = normalizeForSearch(query)
+
         unifiedResults.sort((a, b) => {
-          const aExactMatch = a.nombre.toLowerCase().includes(query.toLowerCase()) ? 1 : 0
-          const bExactMatch = b.nombre.toLowerCase().includes(query.toLowerCase()) ? 1 : 0
-          
-          if (aExactMatch !== bExactMatch) {
-            return bExactMatch - aExactMatch
+          const normalizedAName = normalizeForSearch(a.nombre)
+          const normalizedBName = normalizeForSearch(b.nombre)
+          const normalizedADesc = normalizeForSearch(a.descripcion)
+          const normalizedBDesc = normalizeForSearch(b.descripcion)
+
+          // Check for exact matches in name (highest priority)
+          const aNameExact = searchMatches(normalizedQuery, normalizedAName) ? 2 : 0
+          const bNameExact = searchMatches(normalizedQuery, normalizedBName) ? 2 : 0
+
+          // Check for matches in description (lower priority)
+          const aDescMatch = searchMatches(normalizedQuery, normalizedADesc) ? 1 : 0
+          const bDescMatch = searchMatches(normalizedQuery, normalizedBDesc) ? 1 : 0
+
+          const aRelevance = aNameExact + aDescMatch
+          const bRelevance = bNameExact + bDescMatch
+
+          if (aRelevance !== bRelevance) {
+            return bRelevance - aRelevance
           }
-          
+
           // Secondary sort by creation date (newest first)
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         })
@@ -288,35 +307,130 @@ export class UnifiedSearchService {
   }
 
   /**
-   * Get quick search suggestions
+   * Get quick search suggestions with fuzzy search support (UX-007)
    */
-  async getSearchSuggestions(query: string, limit = 5): Promise<string[]> {
+  async getSearchSuggestions(query: string, limit = 8): Promise<string[]> {
     try {
       if (!query || query.length < 2) return []
 
-      const results = await this.search({ query, limit: 20 })
-      
-      // Extract unique suggestions from results
-      const suggestions = new Set<string>()
-      
-      results.data.forEach(item => {
-        // Add exact name matches
-        if (item.nombre.toLowerCase().includes(query.toLowerCase())) {
-          suggestions.add(item.nombre)
-        }
-        
-        // Add relevant tags
-        item.tags.forEach(tag => {
-          if (tag.toLowerCase().includes(query.toLowerCase()) && tag.length > 2) {
-            suggestions.add(tag)
-          }
-        })
-      })
+      // Check cache first
+      const cacheKey = `suggestions_${query}_${limit}`
+      const cached = fuzzySearchCache.get(cacheKey, {})
+      if (cached) {
+        return cached
+      }
 
-      return Array.from(suggestions).slice(0, limit)
+      // Get search results for suggestions
+      const results = await this.search({ query, limit: 50 }) // Get more results for better suggestions
+
+      // Use enhanced fuzzy search suggestions
+      const suggestions = enhancedSearchSuggestions(query, results.data, limit)
+
+      // If fuzzy search doesn't return enough results, fall back to exact matching
+      if (suggestions.length < limit) {
+        const exactSuggestions = new Set<string>(suggestions)
+
+        results.data.forEach(item => {
+          if (exactSuggestions.size >= limit) return
+
+          // Add exact name matches
+          const normalizedQuery = normalizeForSearch(query)
+          const normalizedName = normalizeForSearch(item.nombre)
+
+          if (searchMatches(normalizedQuery, normalizedName)) {
+            exactSuggestions.add(item.nombre)
+          }
+
+          // Add relevant tags
+          item.tags.forEach(tag => {
+            if (exactSuggestions.size >= limit) return
+            const normalizedTag = normalizeForSearch(tag)
+            if (searchMatches(normalizedQuery, normalizedTag) && tag.length > 2) {
+              exactSuggestions.add(tag)
+            }
+          })
+        })
+
+        const finalSuggestions = Array.from(exactSuggestions).slice(0, limit)
+
+        // Cache the results
+        fuzzySearchCache.set(cacheKey, {}, finalSuggestions)
+
+        return finalSuggestions
+      }
+
+      // Cache the fuzzy search results
+      fuzzySearchCache.set(cacheKey, {}, suggestions)
+
+      return suggestions
     } catch (error) {
       console.error('Error getting search suggestions:', error)
       return []
+    }
+  }
+
+  /**
+   * Perform fuzzy search with typo tolerance (UX-007)
+   */
+  async fuzzySearch(query: string, limit = 10): Promise<UnifiedSearchResponse> {
+    try {
+      if (!query || query.length < 2) {
+        return {
+          success: true,
+          data: [],
+          pagination: {
+            page: 1,
+            limit,
+            total: 0,
+            totalPages: 0
+          }
+        }
+      }
+
+      // Get all results first
+      const allResults = await this.search({ query: '', limit: 1000 })
+
+      // Apply fuzzy search
+      const fuzzyMatches = fuzzySearch(
+        query,
+        allResults.data,
+        ['nombre', 'descripcion', 'codigo_tramite', 'codigo_opa'],
+        {
+          threshold: 0.6,
+          maxDistance: 3,
+          caseSensitive: false,
+          normalizeAccents: true
+        }
+      )
+
+      // Convert fuzzy matches back to unified search format
+      const fuzzyResults = fuzzyMatches.slice(0, limit).map(match => ({
+        ...match.item,
+        _fuzzyScore: match.score // Add fuzzy score for debugging
+      }))
+
+      return {
+        success: true,
+        data: fuzzyResults,
+        pagination: {
+          page: 1,
+          limit,
+          total: fuzzyMatches.length,
+          totalPages: Math.ceil(fuzzyMatches.length / limit)
+        }
+      }
+    } catch (error) {
+      console.error('Error in fuzzy search:', error)
+      return {
+        success: false,
+        data: [],
+        pagination: {
+          page: 1,
+          limit,
+          total: 0,
+          totalPages: 0
+        }
+      }
     }
   }
 
@@ -465,15 +579,21 @@ export class UnifiedSearchService {
         })
       }
 
-      // Sort by relevance (same logic as original)
+      // Sort by relevance with proper accent normalization
       if (query) {
         unifiedResults.sort((a, b) => {
-          const queryLower = query.toLowerCase()
+          // Use proper accent normalization for search matching
+          const normalizedQuery = normalizeSpanishText(query)
 
-          const aExactMatch = a.nombre.toLowerCase().includes(queryLower) ||
-                             a.codigo.toLowerCase().includes(queryLower)
-          const bExactMatch = b.nombre.toLowerCase().includes(queryLower) ||
-                             b.codigo.toLowerCase().includes(queryLower)
+          const normalizedANombre = normalizeSpanishText(a.nombre)
+          const normalizedACodigo = normalizeSpanishText(a.codigo)
+          const normalizedBNombre = normalizeSpanishText(b.nombre)
+          const normalizedBCodigo = normalizeSpanishText(b.codigo)
+
+          const aExactMatch = normalizedANombre.includes(normalizedQuery) ||
+                             normalizedACodigo.includes(normalizedQuery)
+          const bExactMatch = normalizedBNombre.includes(normalizedQuery) ||
+                             normalizedBCodigo.includes(normalizedQuery)
 
           if (aExactMatch && !bExactMatch) return -1
           if (!aExactMatch && bExactMatch) return 1

@@ -72,7 +72,7 @@ export function useUnifiedSearchQuery(
 
 // Hook for search suggestions with aggressive caching
 export function useSearchSuggestionsQuery(query: string) {
-  const debouncedQuery = useDebounce(query, 200) // Faster debounce for suggestions
+  const debouncedQuery = useDebounce(query, 300) // UX-007: 300ms debounce for intelligent search
 
   return useQuery({
     queryKey: searchKeys.suggestions(debouncedQuery),

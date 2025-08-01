@@ -8,6 +8,9 @@ export {
   usePublicBreadcrumbs,
 } from './useBreadcrumbs'
 
+export { useFuncionarioBreadcrumbs } from './useFuncionarioBreadcrumbs'
+export type { BreadcrumbItem } from './useFuncionarioBreadcrumbs'
+
 export { default as useAsyncOperation } from './useAsyncOperation'
 export type {
   AsyncOperationState,
@@ -19,6 +22,9 @@ export { default as useBreakpoint } from './useBreakpoint'
 export type { Breakpoint, BreakpointConfig, UseBreakpointReturn } from './useBreakpoint'
 export { default as useSystemMetrics } from './useSystemMetrics'
 export type { SystemMetrics, MetricsFilters } from './useSystemMetrics'
+
+export { default as useFuncionarioMetrics } from './useFuncionarioMetrics'
+export type { FuncionarioMetrics, FuncionarioMetricsFilters, UseFuncionarioMetricsReturn } from './useFuncionarioMetrics'
 
 // Sprint 2.1: Smart Search and Enhanced UX Hooks
 export { useDebounce } from './useDebounce'

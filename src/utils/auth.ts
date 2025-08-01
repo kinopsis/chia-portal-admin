@@ -54,9 +54,9 @@ export function getPostLoginRedirect(userRole: UserRole, redirectTo?: string): s
     if (userRole === 'funcionario' && !redirectTo.startsWith('/admin')) {
       return redirectTo
     }
-    
+
     // Ciudadano users can only access general routes (not admin or funcionario)
-    if (userRole === 'ciudadano' && !redirectTo.startsWith('/admin') && !redirectTo.startsWith('/funcionario')) {
+    if (userRole === 'ciudadano' && !redirectTo.startsWith('/admin') && !redirectTo.startsWith('/funcionario') && !redirectTo.startsWith('/funcionarios')) {
       return redirectTo
     }
   }

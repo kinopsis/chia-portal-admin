@@ -1885,6 +1885,18 @@ h6:first-child {
   animation: slideUp 0.3s ease-out;
 }
 
+.animate-in {
+  animation: slideInFromTop 0.3s ease-out;
+}
+
+.slide-in-from-top-2 {
+  animation: slideInFromTop2 0.3s ease-out;
+}
+
+.fade-in-0 {
+  animation: fadeIn 0.3s ease-out;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -1897,6 +1909,28 @@ h6:first-child {
 @keyframes slideUp {
   from {
     transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop2 {
+  from {
+    transform: translateY(-2px);
     opacity: 0;
   }
   to {

@@ -19,19 +19,19 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
 
   const mainNavItems = getMainNavigation()
 
-  // Add admin navigation for authorized users
-  const adminNavItem =
+  // Add role-specific navigation for authorized users
+  const roleNavItem =
     user && userProfile && ['funcionario', 'admin'].includes(userProfile.rol)
       ? [
           {
-            label: userProfile.rol === 'admin' ? 'Administración' : 'Panel',
-            href: '/admin',
+            label: userProfile.rol === 'admin' ? 'Administración' : 'Panel Funcionario',
+            href: userProfile.rol === 'admin' ? '/admin' : '/funcionario',
             icon: <span className="text-base">{userProfile.rol === 'admin' ? '⚙️' : '📊'}</span>,
           },
         ]
       : []
 
-  const allNavItems = [...mainNavItems, ...adminNavItem]
+  const allNavItems = [...mainNavItems, ...roleNavItem]
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)

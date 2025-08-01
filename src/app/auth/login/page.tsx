@@ -63,10 +63,18 @@ function LoginContent() {
   useEffect(() => {
     // Client-side fallback redirection (middleware has session sync issues)
     // Allow redirect even when form is submitting since authentication is complete
-    if (user && userProfile && !authLoading && !redirectAttempted.current) {
+    // CRITICAL: Validate that userProfile belongs to the current user to prevent race conditions
+    if (user && userProfile && userProfile.id === user.id && !authLoading && !redirectAttempted.current) {
       redirectAttempted.current = true
       setRedirecting(true)
       setIsSubmitting(false) // Reset submitting state since auth is complete
+
+      console.log('🎯 Redirecting user:', {
+        userId: user.id,
+        profileId: userProfile.id,
+        role: userProfile.rol,
+        name: userProfile.nombre
+      })
 
       // Determine redirect path based on user role
       let redirectPath = '/dashboard' // Default for ciudadano
@@ -74,13 +82,14 @@ function LoginContent() {
       if (userProfile.rol === 'admin') {
         redirectPath = '/admin'
       } else if (userProfile.rol === 'funcionario') {
-        redirectPath = '/funcionario'
+        redirectPath = '/funcionarios'
       }
 
-      // Perform client-side redirect
+      // Perform client-side redirect with shorter delay
       setTimeout(() => {
+        console.log('🚀 Executing redirect to:', redirectPath)
         router.push(redirectPath)
-      }, 1500) // Small delay to show success message
+      }, 500) // Shorter delay to ensure redirect happens
     }
   }, [user, userProfile, authLoading, router, searchParams, isSubmitting])
 
@@ -91,7 +100,31 @@ function LoginContent() {
     setRedirecting(false)
     redirectAttempted.current = false // Reset redirect flag for new login attempt
 
-    const { error } = await signIn(email, password)
+    // Client-side validation
+    if (!email || !email.trim()) {
+      setError('El correo electrónico es requerido')
+      setIsSubmitting(false)
+      redirectAttempted.current = false
+      return
+    }
+
+    if (!password || !password.trim()) {
+      setError('La contraseña es requerida')
+      setIsSubmitting(false)
+      redirectAttempted.current = false
+      return
+    }
+
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email.trim())) {
+      setError('Por favor ingresa un correo electrónico válido')
+      setIsSubmitting(false)
+      redirectAttempted.current = false
+      return
+    }
+
+    const { error } = await signIn(email.trim(), password)
 
     if (error) {
       console.error('❌ Login error:', error.message)
@@ -175,13 +208,13 @@ function LoginContent() {
                       size="sm"
                       onClick={() => {
                         const redirectPath = userProfile.rol === 'admin' ? '/admin' :
-                                           userProfile.rol === 'funcionario' ? '/funcionario' : '/dashboard'
+                                           userProfile.rol === 'funcionario' ? '/funcionarios' : '/dashboard'
                         router.push(redirectPath)
                       }}
                       className="ml-4 text-green-600 border-green-600 hover:bg-green-600 hover:text-white"
                     >
                       {userProfile.rol === 'admin' ? 'Ir a Admin' :
-                       userProfile.rol === 'funcionario' ? 'Ir a Panel' : 'Ir a Dashboard'}
+                       userProfile.rol === 'funcionario' ? 'Ir a Dashboard Funcionario' : 'Ir a Dashboard'}
                     </Button>
                   )}
                 </div>
@@ -199,6 +232,10 @@ function LoginContent() {
               disabled={isSubmitting || redirecting}
               aria-describedby="email-help"
               autoComplete="email"
+              minLength={5}
+              maxLength={254}
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+              title="Por favor ingresa un correo electrónico válido"
             />
             <div id="email-help" className="sr-only">
               Ingresa tu dirección de correo electrónico registrada
@@ -215,6 +252,9 @@ function LoginContent() {
               disabled={isSubmitting || redirecting}
               aria-describedby="password-help"
               autoComplete="current-password"
+              minLength={1}
+              maxLength={128}
+              title="La contraseña es requerida"
             />
             <div id="password-help" className="sr-only">
               Ingresa tu contraseña. Debe tener al menos 8 caracteres

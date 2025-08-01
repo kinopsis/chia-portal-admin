@@ -38,9 +38,9 @@ export interface SmartSearchActions {
   trackSearch: (query: string, resultCount: number, duration?: number) => Promise<void>
 }
 
-// Default configuration
+// Default configuration (UX-007: Updated for intelligent search)
 const DEFAULT_CONFIG: Required<SmartSearchConfig> = {
-  debounceMs: 500,
+  debounceMs: 300, // UX-007: 300ms debounce for intelligent search
   maxSuggestions: 8,
   source: 'default',
   enableAnalytics: true,

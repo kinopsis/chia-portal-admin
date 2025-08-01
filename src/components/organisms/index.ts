@@ -3,6 +3,9 @@
 export { default as DashboardStats } from './DashboardStats'
 export type { DashboardStatsProps } from './DashboardStats'
 
+export { FuncionarioDashboardStats } from './FuncionarioDashboardStats'
+export type { FuncionarioDashboardStatsProps } from './FuncionarioDashboardStats'
+
 export { default as QuickActions } from './QuickActions'
 export type { QuickActionsProps, QuickActionItem } from './QuickActions'
 

@@ -90,19 +90,14 @@ export default function FAQsAdminPage() {
 
   // Handle dependencia change for hierarchical selection
   const handleDependenciaChange = (dependenciaValue: string) => {
-    console.log('handleDependenciaChange called with:', dependenciaValue)
-
     // Find the dependencia by ID
     const dependencia = dependencias.find((dep) => dep.id === dependenciaValue)
 
     if (dependencia) {
-      console.log('Found dependencia:', dependencia)
       setSelectedDependenciaId(dependencia.id)
       const filtered = subdependencias.filter((sub) => sub.dependencia_id === dependencia.id)
-      console.log('Filtered subdependencias:', filtered)
       setFilteredSubdependencias(filtered)
     } else {
-      console.log('No dependencia found for:', dependenciaValue)
       setSelectedDependenciaId('')
       setFilteredSubdependencias([])
     }

@@ -183,6 +183,11 @@ const config: Config = {
           '50%': { transform: 'translateX(100%)' },
           '100%': { transform: 'translateX(100%)' },
         },
+        // UX-005: Enhanced shimmer animation for loading cards
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
         progressSlide: {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },

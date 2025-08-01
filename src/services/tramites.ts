@@ -1,6 +1,7 @@
 // Service for managing Tramites
 
 import { supabase } from '@/lib/supabase/client'
+import { normalizeSpanishText } from '@/lib/utils'
 import type { Tramite, SearchFilters, PaginatedResponse } from '@/types'
 import { getTramitesSelectQuery } from './databaseHelper'
 
@@ -49,8 +50,30 @@ export class TramitesClientService {
       .order('nombre', { ascending: true })
 
     // Apply filters
+    // UX-001: Enhanced search with accent normalization
     if (filters?.query) {
-      query = query.or(`nombre.ilike.%${filters.query}%,formulario.ilike.%${filters.query}%`)
+      // Use both database search (for performance) and client-side normalization (for accuracy)
+      const normalizedQuery = normalizeSpanishText(filters.query)
+
+      // Create broader database search using prefixes to catch accent variations
+      // For words longer than 4 characters, use a prefix approach to cast a wider net
+      const searchTerms = filters.query.split(' ').map(term => {
+        if (term.length > 4) {
+          return term.substring(0, Math.max(4, Math.floor(term.length * 0.7)))
+        }
+        return term
+      })
+
+      const prefixQueries = searchTerms.map(term =>
+        `nombre.ilike.%${term}%,formulario.ilike.%${term}%`
+      ).join(',')
+
+      // Database search - use prefix-based search to catch more potential matches
+      query = query.or(prefixQueries)
+
+      // Store original query for client-side filtering
+      ;(query as any)._clientSearchQuery = normalizedQuery
+      ;(query as any)._originalQuery = filters.query
     }
 
     if (filters?.dependencia_id) {
@@ -117,8 +140,30 @@ export class TramitesClientService {
       throw new Error(`Error fetching tramites: ${error.message}`)
     }
 
+    let filteredData = data || []
+
+    // UX-001: Apply client-side accent-insensitive filtering for comprehensive search
+    const clientSearchQuery = (query as any)._clientSearchQuery
+    const originalQuery = (query as any)._originalQuery
+
+    if ((clientSearchQuery || originalQuery) && filteredData.length > 0) {
+      filteredData = filteredData.filter((tramite: Tramite) => {
+        const normalizedNombre = normalizeSpanishText(tramite.nombre || '')
+        const normalizedFormulario = normalizeSpanishText(tramite.formulario || '')
+        const normalizedOriginalQuery = normalizeSpanishText(originalQuery || '')
+
+        // Check if any of the search terms match
+        return normalizedNombre.includes(clientSearchQuery || '') ||
+               normalizedFormulario.includes(clientSearchQuery || '') ||
+               normalizedNombre.includes(normalizedOriginalQuery) ||
+               normalizedFormulario.includes(normalizedOriginalQuery) ||
+               (tramite.nombre || '').toLowerCase().includes((originalQuery || '').toLowerCase()) ||
+               (tramite.formulario || '').toLowerCase().includes((originalQuery || '').toLowerCase())
+      })
+    }
+
     return {
-      data: data || [],
+      data: filteredData,
       pagination: {
         page,
         limit,
@@ -180,6 +225,21 @@ export class TramitesClientService {
   }
 
   async search(query: string, limit = 10) {
+    // Apply accent normalization for comprehensive search
+    const normalizedQuery = normalizeSpanishText(query)
+
+    // Create broader database search using prefixes to catch accent variations
+    const searchTerms = query.split(' ').map(term => {
+      if (term.length > 4) {
+        return term.substring(0, Math.max(4, Math.floor(term.length * 0.7)))
+      }
+      return term
+    })
+
+    const prefixQueries = searchTerms.map(term =>
+      `nombre.ilike.%${term}%,formulario.ilike.%${term}%`
+    ).join(',')
+
     const { data, error } = await supabase
       .from('tramites')
       .select(
@@ -193,15 +253,31 @@ export class TramitesClientService {
         )
       `
       )
-      .or(`nombre.ilike.%${query}%,formulario.ilike.%${query}%`)
+      .or(prefixQueries)
       .eq('activo', true)
-      .limit(limit)
+      .limit(limit * 3) // Get more results to account for client-side filtering
 
     if (error) {
       throw new Error(`Error searching tramites: ${error.message}`)
     }
 
-    return data as Tramite[]
+    let filteredData = data || []
+
+    // UX-001: Apply client-side accent-insensitive filtering for comprehensive search
+    if (query && filteredData.length > 0) {
+      filteredData = filteredData.filter((tramite: Tramite) => {
+        const normalizedNombre = normalizeSpanishText(tramite.nombre || '')
+        const normalizedFormulario = normalizeSpanishText(tramite.formulario || '')
+
+        return normalizedNombre.includes(normalizedQuery) ||
+               normalizedFormulario.includes(normalizedQuery) ||
+               (tramite.nombre || '').toLowerCase().includes(query.toLowerCase()) ||
+               (tramite.formulario || '').toLowerCase().includes(query.toLowerCase())
+      })
+    }
+
+    // Limit results after filtering
+    return filteredData.slice(0, limit) as Tramite[]
   }
 
   async create(tramite: Omit<Tramite, 'id' | 'created_at' | 'updated_at'>) {

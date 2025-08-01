@@ -25,7 +25,7 @@ export const USER_ROLE_LABELS = {
 // Role-based default routes after login
 export const ROLE_DEFAULT_ROUTES = {
   [USER_ROLES.ADMIN]: '/admin',
-  [USER_ROLES.FUNCIONARIO]: '/funcionario', // Future funcionario dashboard
+  [USER_ROLES.FUNCIONARIO]: '/funcionarios', // Funcionario dashboard
   [USER_ROLES.CIUDADANO]: '/dashboard',
 } as const
 

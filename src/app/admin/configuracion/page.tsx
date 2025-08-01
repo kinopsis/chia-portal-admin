@@ -221,7 +221,6 @@ export default function ConfiguracionAdminPage() {
       setLoading(true)
 
       // TODO: Implement configuration save
-      console.log('Saving configuration:', formData)
 
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000))

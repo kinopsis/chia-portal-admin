@@ -137,7 +137,7 @@ export class UnifiedServicesService {
     try {
       const [depResponse, subResponse] = await Promise.all([
         dependenciasClientService.getAll(),
-        subdependenciasClientService.getAll()
+        subdependenciasClientService.getAll({ limit: 1000 }) // Load all subdependencias
       ])
       
       this.dependenciasCache = depResponse.data
