@@ -79,23 +79,23 @@ export const TramitesFilters: React.FC<TramitesFiltersProps> = ({
 
   return (
     <div className={cn('space-y-6', className)} data-testid="tramites-filters">
-      {/* Hero Search Box - Prominent and Separate */}
-      <div className="bg-gradient-to-r from-primary-green/5 to-primary-yellow/5 rounded-2xl p-8 border border-primary-green/10">
+      {/* Hero Search Box - Prominent and Separate - Responsive */}
+      <div className="bg-gradient-to-r from-primary-green/5 to-primary-yellow/5 rounded-2xl p-4 sm:p-6 lg:p-8 border border-primary-green/10">
         <div className="max-w-4xl mx-auto text-center space-y-4">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
             Encuentra tu trámite o servicio
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
             Busca por nombre, código, palabras clave o requisitos
           </p>
 
           {/* Enhanced Search Bar */}
           <div className="relative">
             <SearchBar
-              placeholder="Ej: certificado residencia, licencia construcción, permiso funcionamiento..."
+              placeholder="Ej: certificado residencia, licencia construcción..."
               onSearch={onSearchChange}
               value={searchQuery}
-              className="w-full text-lg"
+              className="w-full text-base sm:text-lg"
               enableSmartSuggestions={true}
               showPopularSearches={true}
               showRecentSearches={true}

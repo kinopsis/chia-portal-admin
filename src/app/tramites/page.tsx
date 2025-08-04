@@ -23,6 +23,10 @@ import { TramiteCardSkeletonGrid } from '@/components/molecules/TramiteCardSkele
 import { useLoadingStates, LoadingPresets } from '@/hooks/useLoadingStates'
 // Enhanced pagination component
 import EnhancedPagination from '@/components/molecules/EnhancedPagination/EnhancedPagination'
+// Unified service card components
+import { UnifiedServiceCardGrid } from '@/components/molecules/UnifiedServiceCard'
+import type { UnifiedServiceData } from '@/components/molecules/UnifiedServiceCard'
+import { getServiceDescription, truncateByChars, isMeaningfulText } from '@/utils/textUtils'
 
 // Extended type for Subdependencias with relations
 interface SubdependenciaWithRelations extends Subdependencia {
@@ -231,7 +235,24 @@ function TramitesContent() {
     setSelectedTiposPago([])
   }
 
-
+  // Convert search results to unified service data format
+  const convertToUnifiedServiceData = (items: UnifiedSearchResult[]): UnifiedServiceData[] => {
+    return items.map(item => ({
+      id: item.id,
+      codigo: item.codigo,
+      nombre: item.nombre,
+      descripcion: getServiceDescription(item),
+      tipo: item.tipo as 'tramite' | 'opa',
+      activo: true, // Public search only shows active services
+      dependencia: item.dependencia,
+      subdependencia: item.subdependencia,
+      tiempo_estimado: item.tiempo_estimado,
+      vistas: item.vistas,
+      created_at: item.created_at,
+      updated_at: item.updated_at,
+      originalData: item.originalData
+    }))
+  }
 
   // UX-004: Create filter options for chip components
   // Note: Statistics counts removed for cleaner interface focused on search functionality
@@ -341,126 +362,12 @@ function TramitesContent() {
                 </Button>
               </Card>
             ) : data.length > 0 ? (
-              <div className="space-y-4">
-                {data.map(item => (
-                  <Card key={item.id} className="hover:shadow-lg transition-shadow duration-200">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        {/* 1. HEADER SECTION: Type badge + Payment badge + Code integrated with title */}
-                        <div className="mb-4">
-                          {/* Type and Payment badges BEFORE title */}
-                          <div className="flex items-center gap-2 mb-3">
-                            <Badge
-                              variant={
-                                item.tipo === 'tramite'
-                                  ? 'primary'
-                                  : item.tipo === 'opa'
-                                  ? 'secondary'
-                                  : 'success'
-                              }
-                              className="text-sm font-medium px-3 py-1"
-                            >
-                              {item.tipo === 'tramite'
-                                ? `📄 TRÁMITE ${item.codigo}`
-                                : `⚡ OPA ${item.codigo}`}
-                            </Badge>
-
-                            {/* Payment status badge for trámites */}
-                            {item.tipo === 'tramite' && (
-                              <Badge
-                                variant={
-                                  (item.originalData as any)?.tiene_pago === false
-                                    ? "success"
-                                    : "warning"
-                                }
-                                className="text-xs font-medium"
-                              >
-                                {(item.originalData as any)?.tiene_pago === false
-                                  ? "🆓 Gratuito"
-                                  : "💰 Con pago"}
-                              </Badge>
-                            )}
-                          </div>
-
-                          {/* Title without code (code now in badge) */}
-                          <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                            {item.nombre}
-                          </h4>
-
-                          {/* 1. DEPENDENCY HIERARCHY SUBTITLE */}
-                          <div className="mb-3">
-                            <div
-                              className="flex items-center text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-md border-l-4 border-blue-400"
-                              role="region"
-                              aria-label="Información de dependencia"
-                            >
-                              <span className="text-blue-600 mr-2" aria-hidden="true">🏛️</span>
-                              <span className="font-medium">
-                                {item.dependencia}
-                                {item.subdependencia && (
-                                  <>
-                                    <span className="mx-2 text-gray-400" aria-hidden="true">›</span>
-                                    <span className="text-gray-700">{item.subdependencia}</span>
-                                  </>
-                                )}
-                              </span>
-                            </div>
-                          </div>
-
-
-                        </div>
-
-                        {/* 2. CONTEXTUAL DESCRIPTION WITH HORIZONTAL LAYOUT AND VISUAL EMPHASIS */}
-                        <div
-                          className="mb-4 p-3 bg-gray-50 rounded-lg border-l-4 border-blue-400"
-                          role="region"
-                          aria-label={item.tipo === 'tramite' ? 'Información del formulario' : 'Descripción del servicio'}
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="text-gray-600 font-medium">
-                              <span aria-hidden="true">{item.tipo === 'tramite' ? '📋' : '📝'}</span>
-                              {item.tipo === 'tramite' ? ' Formulario:' : ' Descripción:'}
-                            </span>
-                            <span className="font-semibold text-gray-800">
-                              {item.descripcion}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* 3. REQUIREMENTS SECTION (Expandible) */}
-                        {item.tipo === 'tramite' && item.originalData && (item.originalData as any).requisitos && (
-                          <RequisitosSectionExpandibleEnhanced
-                            requisitos={(item.originalData as any).requisitos || []}
-                            itemId={item.id}
-                            suitUrl={(item.originalData as any).visualizacion_suit}
-                            govUrl={(item.originalData as any).visualizacion_gov}
-                          />
-                        )}
-
-                        {/* 4. ESTIMATED TIME - Prominently displayed */}
-                        {item.tiempo_estimado && (
-                          <div className="mb-4 p-3 bg-gray-50 rounded-lg border-l-4 border-gray-400">
-                            <div className="flex items-center gap-2">
-                              <span className="text-gray-600 font-medium">⏱️ Tiempo estimado:</span>
-                              <span className="font-semibold text-gray-800">{item.tiempo_estimado}</span>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Additional information */}
-                        <div className="space-y-2 text-sm text-gray-600">
-
-                          {item.vistas && (
-                            <div className="text-xs text-gray-500">
-                              👁️ {item.vistas} vistas
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+              <UnifiedServiceCardGrid
+                services={convertToUnifiedServiceData(data)}
+                context="public"
+                userRole="ciudadano"
+                data-testid="tramites-results-grid"
+              />
             ) : (
               <Card className="text-center py-12">
                 <div className="text-6xl mb-4">🔍</div>

@@ -98,7 +98,7 @@ const Navigation: React.FC<NavigationProps> = ({
           className={clsx('flex items-center space-x-2 relative group', getItemClasses(item))}
           target={item.external ? '_blank' : undefined}
           rel={item.external ? 'noopener noreferrer' : undefined}
-          title={item.description}
+          {...(item.description && { title: item.description })}
           aria-label={item.description || item.label}
           aria-current={isActive ? 'page' : undefined}
         >

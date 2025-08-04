@@ -31,6 +31,7 @@ export interface UnifiedFiltersProps {
   className?: string
   collapsible?: boolean
   defaultCollapsed?: boolean
+  hideSearch?: boolean
 }
 
 /**
@@ -45,7 +46,8 @@ export const UnifiedFilters: React.FC<UnifiedFiltersProps> = ({
   loading = false,
   className,
   collapsible = true,
-  defaultCollapsed = false
+  defaultCollapsed = false,
+  hideSearch = false
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed)
 
@@ -96,17 +98,17 @@ export const UnifiedFilters: React.FC<UnifiedFiltersProps> = ({
     onFiltersChange({ activo: activoValue, page: 1 })
   }, [onFiltersChange])
 
-  // Count active filters
+  // Count active filters (excluding search if hidden)
   const activeFiltersCount = useMemo(() => {
     let count = 0
-    if (filters.query) count++
+    if (!hideSearch && filters.query) count++
     if (filters.serviceType && filters.serviceType !== 'both') count++
     if (filters.dependencia_id) count++
     if (filters.subdependencia_id) count++
     if (filters.tipoPago && filters.tipoPago !== 'both') count++
     if (filters.activo !== undefined) count++
     return count
-  }, [filters])
+  }, [filters, hideSearch])
 
   // Service type options
   const serviceTypeOptions = [
@@ -153,7 +155,7 @@ export const UnifiedFilters: React.FC<UnifiedFiltersProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <h3 className="text-lg font-semibold text-gray-900">
-            Búsqueda y Filtros
+            {hideSearch ? 'Filtros Avanzados' : 'Búsqueda y Filtros'}
           </h3>
           {activeFiltersCount > 0 && (
             <Badge variant="primary" size="sm">
@@ -190,15 +192,17 @@ export const UnifiedFilters: React.FC<UnifiedFiltersProps> = ({
       {/* Filters Content */}
       {!isCollapsed && (
         <div className="space-y-4">
-          {/* Search Bar */}
-          <div>
-            <SearchBar
-              placeholder="Buscar por nombre, código, descripción..."
-              onSearch={handleSearch}
-              defaultValue={filters.query}
-              disabled={loading}
-            />
-          </div>
+          {/* Search Bar - Only show if not hidden */}
+          {!hideSearch && (
+            <div>
+              <SearchBar
+                placeholder="Buscar por nombre, código, descripción..."
+                onSearch={handleSearch}
+                defaultValue={filters.query}
+                disabled={loading}
+              />
+            </div>
+          )}
 
           {/* Filter Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -275,8 +279,8 @@ export const UnifiedFilters: React.FC<UnifiedFiltersProps> = ({
                 <span className="text-sm font-medium text-gray-700">
                   Filtros activos:
                 </span>
-                
-                {filters.query && (
+
+                {!hideSearch && filters.query && (
                   <Badge variant="secondary" size="sm">
                     Búsqueda: "{filters.query}"
                   </Badge>

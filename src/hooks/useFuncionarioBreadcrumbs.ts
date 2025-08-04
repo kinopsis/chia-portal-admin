@@ -15,10 +15,14 @@ export function useFuncionarioBreadcrumbs(): BreadcrumbItem[] {
   const { userProfile } = useAuth()
 
   return useMemo(() => {
+    const pathSegments = pathname.split('/').filter(Boolean)
+    const isPlural = pathSegments[0] === 'funcionarios' // Support both /funcionario and /funcionarios
+    const baseHref = isPlural ? '/funcionarios' : '/funcionario'
+
     const breadcrumbs: BreadcrumbItem[] = [
       {
         label: 'Panel Funcionario',
-        href: '/funcionario',
+        href: baseHref,
       },
     ]
 
@@ -26,12 +30,11 @@ export function useFuncionarioBreadcrumbs(): BreadcrumbItem[] {
     if (userProfile?.dependencia?.nombre) {
       breadcrumbs.push({
         label: userProfile.dependencia.nombre,
-        href: '/funcionario',
+        href: baseHref,
       })
     }
 
     // Parse current path
-    const pathSegments = pathname.split('/').filter(Boolean)
     
     if (pathSegments.length > 1) {
       const section = pathSegments[1]
@@ -40,31 +43,39 @@ export function useFuncionarioBreadcrumbs(): BreadcrumbItem[] {
         case 'tramites':
           breadcrumbs.push({
             label: 'Trámites',
-            href: '/funcionario/tramites',
+            href: `${baseHref}/tramites`,
             current: pathSegments.length === 2,
           })
           break
-          
+
         case 'opas':
           breadcrumbs.push({
             label: 'OPAs',
-            href: '/funcionario/opas',
+            href: `${baseHref}/opas`,
             current: pathSegments.length === 2,
           })
           break
-          
+
+        case 'servicios':
+          breadcrumbs.push({
+            label: 'Servicios',
+            href: `${baseHref}/servicios`,
+            current: pathSegments.length === 2,
+          })
+          break
+
         case 'faqs':
           breadcrumbs.push({
             label: 'FAQs',
-            href: '/funcionario/faqs',
+            href: `${baseHref}/faqs`,
             current: pathSegments.length === 2,
           })
           break
-          
+
         case 'subdependencias':
           breadcrumbs.push({
             label: 'Subdependencias',
-            href: '/funcionario/subdependencias',
+            href: `${baseHref}/subdependencias`,
             current: pathSegments.length === 2,
           })
           break

@@ -135,7 +135,11 @@ const BulkActions = <T extends Record<string, any>>({
         {isLoading ? (
           <span className="animate-spin mr-2">⟳</span>
         ) : (
-          action.icon && <span className="mr-2">{action.icon}</span>
+          action.icon && (
+            <span className="mr-2">
+              {typeof action.icon === 'function' ? action.icon() : action.icon}
+            </span>
+          )
         )}
         {action.label}
       </Button>

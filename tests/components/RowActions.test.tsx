@@ -35,6 +35,13 @@ const mockActions: RowAction[] = [
     confirmMessage: 'Are you sure you want to delete this item?',
   },
   {
+    key: 'toggle',
+    label: (record) => record.active ? 'Deactivate' : 'Activate',
+    icon: (record) => record.active ? '🔴' : '🟢',
+    onClick: jest.fn(),
+    tooltip: (record) => record.active ? 'Deactivate item' : 'Activate item',
+  },
+  {
     key: 'hidden',
     label: 'Hidden Action',
     onClick: jest.fn(),
@@ -44,7 +51,8 @@ const mockActions: RowAction[] = [
     key: 'disabled',
     label: 'Disabled Action',
     onClick: jest.fn(),
-    },
+    disabled: true,
+  },
 ]
 
 describe('RowActions', () => {
@@ -377,7 +385,7 @@ describe('RowActions', () => {
     )
 
     let button = screen.getByLabelText('View')
-    expect(button).toHaveClass('px-2', 'py-1')
+    expect(button).toHaveClass('px-3', 'py-1.5')
 
     rerender(
       <RowActions
@@ -390,6 +398,41 @@ describe('RowActions', () => {
     )
 
     button = screen.getByLabelText('View')
-    expect(button).toHaveClass('px-4', 'py-3')
+    expect(button).toHaveClass('px-6', 'py-3')
+  })
+
+  it('handles function-based tooltips correctly', () => {
+    const toggleAction = mockActions.find(action => action.key === 'toggle')
+
+    render(
+      <RowActions
+        record={mockRecord}
+        index={0}
+        actions={[toggleAction!]}
+        variant="buttons"
+      />
+    )
+
+    // For active record, should show "Deactivate item" tooltip
+    const button = screen.getByLabelText('Deactivate')
+    expect(button).toHaveAttribute('title', 'Deactivate item')
+  })
+
+  it('handles function-based tooltips for inactive record', () => {
+    const inactiveRecord = { ...mockRecord, active: false }
+    const toggleAction = mockActions.find(action => action.key === 'toggle')
+
+    render(
+      <RowActions
+        record={inactiveRecord}
+        index={0}
+        actions={[toggleAction!]}
+        variant="buttons"
+      />
+    )
+
+    // For inactive record, should show "Activate item" tooltip
+    const button = screen.getByLabelText('Activate')
+    expect(button).toHaveAttribute('title', 'Activate item')
   })
 })

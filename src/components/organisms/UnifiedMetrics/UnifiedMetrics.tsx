@@ -25,6 +25,7 @@ export interface UnifiedMetricsProps {
   onMetricClick?: (metric: string, value: number) => void
   className?: string
   compact?: boolean
+  simplified?: boolean
 }
 
 /**
@@ -36,7 +37,8 @@ export const UnifiedMetrics: React.FC<UnifiedMetricsProps> = ({
   serviceType = 'both',
   onMetricClick,
   className,
-  compact = false
+  compact = false,
+  simplified = false
 }) => {
   // Handle metric click
   const handleMetricClick = (metric: string, value: number) => {
@@ -149,6 +151,120 @@ export const UnifiedMetrics: React.FC<UnifiedMetricsProps> = ({
       description: 'Subdivisiones activas'
     }
   ] : []
+
+  // Simplified mode: Show only service type breakdown
+  if (simplified) {
+    return (
+      <div className={clsx('space-y-4', className)}>
+        {/* Service Type Breakdown - Always show for simplified mode */}
+        {metrics && (
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Distribución por Tipo de Servicio
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Trámites Breakdown */}
+              <div className="space-y-3">
+                <h4 className="text-md font-medium text-gray-700 flex items-center">
+                  <span className="mr-2">📄</span>
+                  Trámites ({metrics.tramites.total})
+                </h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Activos:</span>
+                    <span className="font-medium text-green-600">
+                      {metrics.tramites.activos}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Inactivos:</span>
+                    <span className="font-medium text-red-600">
+                      {metrics.tramites.inactivos}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Con Pago:</span>
+                    <span className="font-medium text-yellow-600">
+                      {metrics.tramites.conPago}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Gratuitos:</span>
+                    <span className="font-medium text-blue-600">
+                      {metrics.tramites.gratuitos}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* OPAs Breakdown */}
+              <div className="space-y-3">
+                <h4 className="text-md font-medium text-gray-700 flex items-center">
+                  <span className="mr-2">⚡</span>
+                  OPAs ({metrics.opas.total})
+                </h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Activos:</span>
+                    <span className="font-medium text-green-600">
+                      {metrics.opas.activos}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Inactivos:</span>
+                    <span className="font-medium text-red-600">
+                      {metrics.opas.inactivos}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Con Pago:</span>
+                    <span className="font-medium text-yellow-600">
+                      {metrics.opas.conPago}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Gratuitos:</span>
+                    <span className="font-medium text-blue-600">
+                      {metrics.opas.gratuitos}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Loading state for simplified mode */}
+        {loading && !metrics && (
+          <Card className="p-6">
+            <div className="animate-pulse">
+              <div className="h-6 bg-gray-200 rounded mb-4 w-1/3"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <div className="h-5 bg-gray-200 rounded w-1/2"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="h-5 bg-gray-200 rounded w-1/2"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
+      </div>
+    )
+  }
 
   if (compact) {
     return (

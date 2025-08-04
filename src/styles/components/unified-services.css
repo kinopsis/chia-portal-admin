@@ -1,0 +1,226 @@
+/**
+ * Unified Services Manager - Responsive Styles
+ * 
+ * Custom CSS for enhanced mobile and tablet experience
+ * in the services management interface
+ */
+
+/* Mobile-first responsive table */
+.unified-services-table {
+  @apply w-full;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .unified-services-table {
+    /* Reduce padding on mobile */
+    .table-cell {
+      @apply px-2 py-3;
+    }
+    
+    /* Make toggle switches larger for touch */
+    .toggle-switch-mobile {
+      @apply scale-110;
+    }
+    
+    /* Optimize badge sizes */
+    .badge-mobile {
+      @apply text-xs px-1.5 py-0.5;
+    }
+  }
+  
+  /* Mobile service cards alternative view */
+  .service-card-mobile {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-3;
+  }
+  
+  .service-card-header {
+    @apply flex items-start justify-between mb-2;
+  }
+  
+  .service-card-title {
+    @apply font-medium text-gray-900 text-sm flex-1 mr-2;
+  }
+  
+  .service-card-code {
+    @apply font-mono text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded;
+  }
+  
+  .service-card-meta {
+    @apply flex items-center space-x-2 text-xs text-gray-500 mb-3;
+  }
+  
+  .service-card-actions {
+    @apply flex items-center justify-between;
+  }
+  
+  .service-card-toggle {
+    @apply flex items-center space-x-2;
+  }
+  
+  .service-card-buttons {
+    @apply flex space-x-2;
+  }
+  
+  .service-card-button {
+    @apply p-2 text-gray-400 hover:text-blue-600 transition-colors rounded-md hover:bg-gray-50;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .unified-services-table {
+    /* Adjust column widths for tablet */
+    .col-codigo {
+      @apply w-24;
+    }
+    
+    .col-nombre {
+      @apply flex-1 min-w-0;
+    }
+    
+    .col-estado {
+      @apply w-20;
+    }
+    
+    .col-tiempo {
+      @apply w-24;
+    }
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1025px) {
+  .unified-services-table {
+    /* Full feature set on desktop */
+    .col-codigo {
+      @apply w-32;
+    }
+    
+    .col-nombre {
+      @apply flex-1 min-w-0;
+    }
+    
+    .col-tiempo {
+      @apply w-28;
+    }
+    
+    .col-estado {
+      @apply w-24;
+    }
+    
+    .col-acciones {
+      @apply w-28;
+    }
+  }
+}
+
+/* Touch-friendly interactions */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  .touch-target {
+    @apply min-h-11 min-w-11;
+  }
+  
+  /* Enhanced toggle switch for touch */
+  .toggle-switch-touch {
+    @apply scale-125 m-1;
+  }
+  
+  /* Larger buttons */
+  .button-touch {
+    @apply min-h-11 px-4 py-2;
+  }
+}
+
+/* Loading states */
+.service-loading {
+  @apply opacity-50 pointer-events-none;
+}
+
+.service-loading-overlay {
+  @apply absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center;
+}
+
+.service-loading-spinner {
+  @apply animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-blue-600;
+}
+
+/* Error states */
+.service-error {
+  @apply border-red-200 bg-red-50;
+}
+
+.service-error-icon {
+  @apply text-red-500 animate-pulse;
+}
+
+/* Success states */
+.service-success {
+  @apply border-green-200 bg-green-50;
+}
+
+.service-success-icon {
+  @apply text-green-500;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Focus states for accessibility */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .toggle-switch {
+    @apply border-2 border-gray-900;
+  }
+  
+  .badge {
+    @apply border border-gray-900;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .toggle-switch,
+  .button,
+  .badge {
+    @apply transition-none;
+  }
+  
+  .animate-spin,
+  .animate-pulse,
+  .animate-slide-in,
+  .animate-fade-in {
+    @apply animate-none;
+  }
+}

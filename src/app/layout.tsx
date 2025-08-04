@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { Header, Footer } from '@/components'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
+import { ServiceUpdateProvider } from '@/contexts/ServiceUpdateContext'
 import { QueryProvider } from '@/providers/QueryProvider'
 import { ConditionalLayout } from '@/components/layout'
 import { SkipLink } from '@/components/atoms'
@@ -50,10 +51,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <ThemeProvider defaultTheme="system" enableTransitions={true}>
                   <QueryProvider>
                     <AuthProvider>
-                      <ConditionalLayout>{children}</ConditionalLayout>
-                      <PerformanceMonitor />
-                      {/* UX-008: Privacy Consent Banner */}
-                      <PrivacyConsent showDetailedOptions={true} />
+                      <ServiceUpdateProvider>
+                        <ConditionalLayout>{children}</ConditionalLayout>
+                        <PerformanceMonitor />
+                        {/* UX-008: Privacy Consent Banner */}
+                        <PrivacyConsent showDetailedOptions={true} />
+                      </ServiceUpdateProvider>
                     </AuthProvider>
                   </QueryProvider>
                 </ThemeProvider>

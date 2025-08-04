@@ -16,6 +16,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { unifiedServicesService } from '@/services/unifiedServices'
 import { dependenciasClientService } from '@/services/dependencias'
 import { subdependenciasClientService } from '@/services/subdependencias'
+import { useServiceUpdates } from '@/contexts/ServiceUpdateContext'
 import type { 
   UnifiedServiceItem, 
   UnifiedSearchFilters, 
@@ -99,6 +100,9 @@ export function useUnifiedServices(config: UnifiedServicesConfig = {}): UseUnifi
     pageSize = 20
   } = config
 
+  // Service updates context
+  const { subscribeToUpdates } = useServiceUpdates()
+
   // Data state
   const [data, setData] = useState<UnifiedServiceItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -113,9 +117,9 @@ export function useUnifiedServices(config: UnifiedServicesConfig = {}): UseUnifi
     totalPages: 0
   })
 
-  // Filter state
+  // Filter state - Start with no default filters applied
   const [filters, setFiltersState] = useState<UnifiedSearchFilters>({
-    serviceType: defaultServiceType,
+    serviceType: 'both', // Always start with both types to show all services
     query: '',
     dependencia_id: '',
     subdependencia_id: '',
@@ -173,7 +177,9 @@ export function useUnifiedServices(config: UnifiedServicesConfig = {}): UseUnifi
       setError(null)
 
       const response = await unifiedServicesService.getAll(filters)
-      
+
+
+
       setData(response.data)
       setPagination(response.pagination)
       
@@ -193,6 +199,29 @@ export function useUnifiedServices(config: UnifiedServicesConfig = {}): UseUnifi
   useEffect(() => {
     fetchData()
   }, [fetchData])
+
+  // Subscribe to service updates for real-time updates
+  useEffect(() => {
+    const unsubscribe = subscribeToUpdates((update) => {
+      console.log('🔄 Received service update:', update)
+
+      // Update the local data state immediately
+      setData(prevData =>
+        prevData.map(item =>
+          item.id === update.serviceId
+            ? { ...item, activo: update.newStatus }
+            : item
+        )
+      )
+
+      // Refresh metrics to reflect the change
+      if (enableMetrics) {
+        fetchData() // This will refresh both data and metrics
+      }
+    })
+
+    return unsubscribe
+  }, [subscribeToUpdates, enableMetrics, fetchData])
 
   // Auto-refresh functionality
   useEffect(() => {
@@ -265,7 +294,7 @@ export function useUnifiedServices(config: UnifiedServicesConfig = {}): UseUnifi
     }
   }, [refresh])
 
-  const deleteItem = useCallback(async (id: string, type: 'tramite' | 'opa') => {
+  const deleteItem = useCallback(async (id: string, type?: 'tramite' | 'opa') => {
     try {
       setLoading(true)
       setError(null)
