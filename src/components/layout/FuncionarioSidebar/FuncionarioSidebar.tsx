@@ -50,24 +50,14 @@ const FuncionarioSidebar: React.FC = () => {
       icon: <HomeIcon className="w-5 h-5" />,
     },
     {
-      label: 'Trámites',
-      href: '/funcionarios/tramites',
-      icon: <DocumentTextIcon className="w-5 h-5" />,
-    },
-    {
-      label: 'OPAs',
-      href: '/funcionarios/opas',
-      icon: <BoltIcon className="w-5 h-5" />,
+      label: 'Servicios',
+      href: '/funcionarios/servicios',
+      icon: <CubeIcon className="w-5 h-5" />,
     },
     {
       label: 'FAQs',
       href: '/funcionarios/faqs',
       icon: <QuestionMarkCircleIcon className="w-5 h-5" />,
-    },
-    {
-      label: 'Servicios',
-      href: '/funcionarios/servicios',
-      icon: <CubeIcon className="w-5 h-5" />,
     },
   ]
 

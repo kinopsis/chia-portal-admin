@@ -20,32 +20,18 @@ function FuncionariosDashboard() {
   // Funcionario-specific modules
   const funcionarioModules = [
     {
+      title: 'Servicios',
+      description: 'Gestionar trámites, OPAs y servicios municipales',
+      icon: '🏛️',
+      color: 'blue',
+      href: '/funcionarios/servicios',
+    },
+    {
       title: 'FAQs',
       description: 'Gestionar preguntas frecuentes',
       icon: '❓',
       color: 'red',
       href: '/funcionarios/faqs',
-    },
-    {
-      title: 'Trámites',
-      description: 'Configurar trámites y procedimientos',
-      icon: '📋',
-      color: 'yellow',
-      href: '/funcionarios/tramites',
-    },
-    {
-      title: 'OPAs',
-      description: 'Administrar Órdenes de Pago y Autorización',
-      icon: '⚡',
-      color: 'purple',
-      href: '/funcionarios/opas',
-    },
-    {
-      title: 'Servicios',
-      description: 'Gestionar servicios municipales',
-      icon: '🏛️',
-      color: 'blue',
-      href: '/funcionarios/servicios',
     },
   ]
 

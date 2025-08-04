@@ -27,9 +27,9 @@ export default function FuncionariosServiciosPage() {
       <MainContent>
         <UnifiedServicesManager
           serviceType="both"
-          defaultServiceType="tramite"
-          viewMode="hybrid"
-          defaultViewMode="table"
+          defaultServiceType="both"
+          viewMode="cards"
+          defaultViewMode="cards"
           enableMetrics={true}
           enableAdvancedFilters={true}
           enableBulkActions={true}
