@@ -24,7 +24,7 @@ import {
 } from '@/components/organisms'
 import { ServiceCard } from '@/components/molecules'
 import { ResponsiveContainer } from '@/components/atoms'
-import { getMainServicesAsCards } from '@/data'
+import { HomepageServices } from '@/components/organisms/HomepageServices'
 
 /**
  * Enhanced Homepage Component
@@ -37,9 +37,6 @@ export default function Home() {
       window.location.href = `/tramites?q=${encodeURIComponent(query.trim())}`
     }
   }
-
-  // Get main services data
-  const mainServicesCards = getMainServicesAsCards()
 
   return (
     <main className="min-h-screen">
@@ -55,49 +52,8 @@ export default function Home() {
 
       {/* Metrics section removed for cleaner homepage experience */}
 
-      {/* Main Services - 6 Service Cards in 2x3 Grid */}
-      <section className="py-12 sm:py-16 lg:py-20">
-        <ResponsiveContainer
-          layout="stack"
-          gap="xl"
-          padding="adaptive"
-          maxWidth="7xl"
-          centered={true}
-        >
-          {/* Section Header */}
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100">
-              Servicios más solicitados
-            </h2>
-            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Accede rápidamente a los servicios más utilizados por los ciudadanos
-            </p>
-          </div>
-
-          {/* Services Grid - 2x3 Layout matching reference image */}
-          <ResponsiveContainer
-            layout="service-cards"
-            gap="lg"
-            padding="none"
-            className="w-full"
-          >
-            {mainServicesCards.map((service, index) => (
-              <ServiceCard
-                key={index}
-                icon={service.icon}
-                title={service.title}
-                description={service.description}
-                href={service.href}
-                stats={service.stats}
-                colorScheme={service.colorScheme}
-                buttonText={service.buttonText}
-                size="md"
-                animated={true}
-              />
-            ))}
-          </ResponsiveContainer>
-        </ResponsiveContainer>
-      </section>
+      {/* Main Services Section - Dynamic from Database */}
+      <HomepageServices />
 
       {/* Why Choose Our Digital Portal */}
       <WhyChooseSection

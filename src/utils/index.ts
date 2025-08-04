@@ -211,3 +211,7 @@ export function formatFileSize(bytes: number): string {
   const i = Math.floor(Math.log(bytes) / Math.log(1024))
   return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + ' ' + sizes[i]
 }
+
+// Export text utilities
+export * from './textUtils'
+export * from './textNormalization'

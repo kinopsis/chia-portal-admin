@@ -28,9 +28,9 @@ const serviceFormSchema = z.object({
     required_error: 'Selecciona el tipo de servicio'
   }),
   codigo: z.string()
-    .min(1, 'El código es requerido')
     .max(50, 'El código no puede exceder 50 caracteres')
-    .regex(/^[A-Z0-9-_]+$/, 'El código solo puede contener letras mayúsculas, números, guiones y guiones bajos'),
+    .regex(/^[A-Z0-9-_]*$/, 'El código solo puede contener letras mayúsculas, números, guiones y guiones bajos')
+    .optional(), // Make codigo optional since it will be auto-generated
   nombre: z.string()
     .min(1, 'El nombre es requerido')
     .max(200, 'El nombre no puede exceder 200 caracteres'),
@@ -46,6 +46,9 @@ const serviceFormSchema = z.object({
   tiene_pago: z.boolean(),
   subdependencia_id: z.string()
     .min(1, 'Selecciona una subdependencia'),
+  categoria: z.enum(['atencion_ciudadana', 'servicios_publicos', 'cultura_deporte', 'salud', 'educacion', 'medio_ambiente', 'infraestructura', 'otros'], {
+    required_error: 'Selecciona una categoría'
+  }),
   activo: z.boolean(),
   requisitos: z.array(z.string()).optional(),
   visualizacion_suit: z.string()
@@ -103,25 +106,25 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
     reset
   } = useForm<ServiceFormData>({
     resolver: zodResolver(serviceFormSchema),
+    mode: 'onChange', // Enable real-time validation
     defaultValues: {
-      tipo: serviceType || initialData?.tipo || 'tramite',
-      codigo: initialData?.codigo || '',
+      tipo: serviceType || (initialData?.tipo_servicio === 'servicio' ? 'tramite' : initialData?.tipo_servicio) || 'tramite',
+      codigo: mode === 'edit' ? initialData?.codigo : '', // Empty for create mode
       nombre: initialData?.nombre || '',
       descripcion: initialData?.descripcion || '',
-      formulario: mode === 'edit' ? (initialData?.tramiteData?.formulario || initialData?.opaData?.formulario) : '',
+      formulario: '',
       tiempo_respuesta: initialData?.tiempo_respuesta || '',
-      tiene_pago: initialData?.tiene_pago || false,
+      tiene_pago: initialData?.requiere_pago || false,
       subdependencia_id: initialData?.subdependencia?.id || '',
+      categoria: (initialData?.categoria as any) || 'atencion_ciudadana',
       activo: initialData?.activo ?? true,
       requisitos: initialData?.requisitos || [],
-      visualizacion_suit: initialData?.visualizacion_suit || '',
-      visualizacion_gov: initialData?.visualizacion_gov || ''
-    },
-    mode: 'onChange'
+      visualizacion_suit: initialData?.url_suit || '',
+      visualizacion_gov: initialData?.url_gov || ''
+    }
   })
 
   const watchedTipo = watch('tipo')
-  const watchedSubdependencia = watch('subdependencia_id')
 
   // Filter subdependencias based on selected dependencia
   useEffect(() => {
@@ -136,7 +139,7 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
   // Set initial dependencia if editing
   useEffect(() => {
     if (mode === 'edit' && initialData?.subdependencia?.id) {
-      const subdep = subdependencias.find(s => s.id === initialData.subdependencia.id)
+      const subdep = subdependencias.find(s => s.id === initialData?.subdependencia?.id)
       if (subdep) {
         setSelectedDependencia(subdep.dependencia_id)
       }
@@ -171,22 +174,23 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
       if (mode === 'create') {
         const createData: CreateServiceData = {
           tipo: data.tipo,
-          codigo: data.codigo,
+          codigo: data.codigo || undefined, // Let it be auto-generated if empty
           nombre: data.nombre,
           descripcion: data.descripcion,
           formulario: data.formulario,
           tiempo_respuesta: data.tiempo_respuesta,
           tiene_pago: data.tiene_pago,
           subdependencia_id: data.subdependencia_id,
+          categoria: data.categoria,
           activo: data.activo,
-          requisitos: data.requisitos,
+          requisitos: requisitos.length > 0 ? requisitos : undefined, // Use state requisitos
           visualizacion_suit: data.visualizacion_suit || undefined,
           visualizacion_gov: data.visualizacion_gov || undefined
         }
         await onSubmit(createData)
       } else {
         const updateData: UpdateServiceData = {
-          id: initialData!.id,
+          id: initialData?.id || '',
           tipo: data.tipo,
           codigo: data.codigo,
           nombre: data.nombre,
@@ -195,8 +199,9 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
           tiempo_respuesta: data.tiempo_respuesta,
           tiene_pago: data.tiene_pago,
           subdependencia_id: data.subdependencia_id,
+          categoria: data.categoria,
           activo: data.activo,
-          requisitos: data.requisitos,
+          requisitos: requisitos.length > 0 ? requisitos : undefined, // Use state requisitos
           visualizacion_suit: data.visualizacion_suit || undefined,
           visualizacion_gov: data.visualizacion_gov || undefined
         }
@@ -205,12 +210,12 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
     } catch (error) {
       console.error('Error submitting form:', error)
     }
-  }, [mode, initialData, onSubmit])
+  }, [mode, initialData, onSubmit, requisitos])
 
   // Service type options
   const tipoOptions = [
-    { value: 'tramite', label: '📄 Trámite' },
-    { value: 'opa', label: '⚡ OPA (Otros Procedimientos Administrativos)' }
+    { value: 'tramite', label: 'Trámite' },
+    { value: 'opa', label: 'OPA (Otros Procedimientos Administrativos)' }
   ]
 
   // Dependencia options
@@ -240,13 +245,13 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
             {mode === 'create' ? 'Crear Nuevo Servicio' : 'Editar Servicio'}
           </h2>
           <p className="text-sm text-gray-600 mt-1">
-            {mode === 'create' 
+            {mode === 'create'
               ? 'Completa la información para crear un nuevo servicio'
               : 'Modifica la información del servicio'
             }
           </p>
         </div>
-        
+
         {isDirty && (
           <Badge variant="warning" size="sm">
             Cambios sin guardar
@@ -288,7 +293,7 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
                     type="checkbox"
                     checked={value}
                     onChange={(e) => onChange(e.target.checked)}
-                    {...(loading && { })}
+                    disabled={loading}
                     className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
                     aria-label="Servicio activo y disponible"
                   />
@@ -301,151 +306,270 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
           />
         </div>
 
-        {/* Basic Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Controller
-            name="codigo"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                label="Código *"
-                placeholder={watchedTipo === 'tramite' ? 'TR-001' : 'OPA-001'}
-                disabled={loading}
-                error={errors.codigo?.message}
-                helperText="Código único del servicio (solo mayúsculas, números, guiones)"
-              />
-            )}
-          />
+        {/* INFORMACIÓN BÁSICA */}
+        <div className="space-y-6">
+          <div className="border-b border-gray-200 pb-2">
+            <h3 className="text-lg font-medium text-gray-900 flex items-center">
+              📋 Información Básica
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Datos principales del servicio
+            </p>
+          </div>
 
-          <Controller
-            name="tiempo_respuesta"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                label="Tiempo de Respuesta"
-                placeholder="15 días hábiles"
-                disabled={loading}
-                error={errors.tiempo_respuesta?.message}
-                helperText="Tiempo estimado de respuesta"
-              />
-            )}
-          />
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Código Inmutable */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Código del Servicio
+              </label>
+              <div className="relative">
+                <div className="flex items-center space-x-2 p-3 bg-gray-50 border border-gray-200 rounded-md">
+                  <span className="font-mono text-lg font-semibold text-gray-900">
+                    {mode === 'edit' && initialData?.codigo
+                      ? initialData.codigo
+                      : 'XXX-XXX-XXX'
+                    }
+                  </span>
+                  <div className="flex items-center text-gray-500">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-1 flex items-center">
+                  <span className="inline-block w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                  {mode === 'create'
+                    ? 'Se generará automáticamente al crear el servicio'
+                    : 'Código inmutable - No se puede modificar'
+                  }
+                </p>
+                {mode === 'create' && (
+                  <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+                    <strong>Formato:</strong> [Dependencia]-[Subdependencia]-[Consecutivo]
+                    <br />
+                    <strong>Ejemplo:</strong> 080-081-001
+                  </div>
+                )}
+              </div>
+            </div>
 
-        <Controller
-          name="nombre"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              label="Nombre del Servicio *"
-              placeholder="Ingresa el nombre completo del servicio"
-              disabled={loading}
-              error={errors.nombre?.message}
-            />
-          )}
-        />
-
-        {/* Dependencies */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Dependencia *
-            </label>
-            <Select
-              value={selectedDependencia}
-              onChange={handleDependenciaChange}
-              options={dependenciaOptions}
-              disabled={loading}
+            <Controller
+              name="tiempo_respuesta"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  label="Tiempo de Respuesta"
+                  placeholder="15 días hábiles"
+                  disabled={loading}
+                  error={errors.tiempo_respuesta?.message}
+                  helperText="Tiempo estimado de respuesta"
+                />
+              )}
             />
           </div>
 
           <Controller
-            name="subdependencia_id"
+            name="nombre"
             control={control}
             render={({ field }) => (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Subdependencia *
-                </label>
-                <Select
-                  {...field}
-                  options={subdependenciaOptions}
-                  disabled={loading || !selectedDependencia}
-                  error={errors.subdependencia_id?.message}
-                />
-              </div>
+              <Input
+                {...field}
+                label="Nombre del Servicio *"
+                placeholder="Ingresa el nombre completo del servicio"
+                disabled={loading}
+                error={errors.nombre?.message}
+              />
             )}
           />
         </div>
 
-        {/* Descriptions */}
-        <div className="space-y-4">
-          <Controller
-            name="descripcion"
-            control={control}
-            render={({ field }) => (
-              <Textarea
-                {...field}
-                label="Descripción"
-                placeholder="Describe brevemente el servicio"
-                rows={3}
-                disabled={loading}
-                error={errors.descripcion?.message}
-                helperText="Descripción general del servicio"
-              />
-            )}
-          />
+        {/* ORGANIZACIÓN */}
+        <div className="space-y-6">
+          <div className="border-b border-gray-200 pb-2">
+            <h3 className="text-lg font-medium text-gray-900 flex items-center">
+              🏢 Organización
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Dependencia y subdependencia responsable
+            </p>
+          </div>
 
-          {watchedTipo === 'opa' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Dependencia *
+              </label>
+              <Select
+                value={selectedDependencia}
+                onChange={handleDependenciaChange}
+                options={dependenciaOptions}
+                disabled={loading}
+              />
+            </div>
+
             <Controller
-              name="formulario"
+              name="subdependencia_id"
+              control={control}
+              render={({ field }) => (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Subdependencia *
+                  </label>
+                  <Select
+                    {...field}
+                    options={subdependenciaOptions}
+                    disabled={loading || !selectedDependencia}
+                    error={errors.subdependencia_id?.message}
+                  />
+                </div>
+              )}
+            />
+          </div>
+        </div>
+
+        {/* CONFIGURACIÓN */}
+        <div className="space-y-6">
+          <div className="border-b border-gray-200 pb-2">
+            <h3 className="text-lg font-medium text-gray-900 flex items-center">
+              ⚙️ Configuración
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Configuración específica del servicio
+            </p>
+          </div>
+
+          {/* Descripción y Formulario */}
+          <div className="space-y-4">
+            <Controller
+              name="descripcion"
               control={control}
               render={({ field }) => (
                 <Textarea
                   {...field}
-                  label="Formulario/Procedimiento"
-                  placeholder="Describe el formulario o procedimiento específico"
+                  label="Descripción"
+                  placeholder="Describe brevemente el servicio"
                   rows={3}
                   disabled={loading}
-                  error={errors.formulario?.message}
-                  helperText="Información específica del formulario para OPAs"
+                  error={errors.descripcion?.message}
+                  helperText="Descripción general del servicio"
                 />
               )}
             />
-          )}
-        </div>
 
-        {/* Payment */}
-        <Controller
-          name="tiene_pago"
-          control={control}
-          render={({ field: { value, onChange } }) => (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Información de Pago
-              </label>
-              <div className="flex items-center space-x-3">
-                <input
-                  type="checkbox"
-                  checked={value}
-                  onChange={(e) => onChange(e.target.checked)}
-                  {...(loading && { })}
-                  className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
-                  aria-label="Este servicio tiene costo"
+            {watchedTipo === 'opa' && (
+              <Controller
+                name="formulario"
+                control={control}
+                render={({ field }) => (
+                  <Textarea
+                    {...field}
+                    label="Formulario/Procedimiento"
+                    placeholder="Describe el formulario o procedimiento específico"
+                    rows={3}
+                    disabled={loading}
+                    error={errors.formulario?.message}
+                    helperText="Información específica del formulario para OPAs"
+                  />
+                )}
+              />
+            )}
+          </div>
+
+          {/* Categoría del Servicio */}
+          <Controller
+            name="categoria"
+            control={control}
+            render={({ field }) => (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Categoría del Servicio *
+                </label>
+                <Select
+                  {...field}
+                  options={[
+                    { value: 'atencion_ciudadana', label: 'Atención Ciudadana' },
+                    { value: 'servicios_publicos', label: 'Servicios Públicos' },
+                    { value: 'cultura_deporte', label: 'Cultura y Deporte' },
+                    { value: 'salud', label: 'Salud' },
+                    { value: 'educacion', label: 'Educación' },
+                    { value: 'medio_ambiente', label: 'Medio Ambiente' },
+                    { value: 'infraestructura', label: 'Infraestructura' },
+                    { value: 'otros', label: 'Otros' }
+                  ]}
+                  disabled={loading}
+                  error={errors.categoria?.message}
+                  helperText="Selecciona la categoría que mejor describe el servicio"
                 />
-                <span className="text-sm text-gray-700">
-                  Este servicio tiene costo
-                </span>
+              </div>
+            )}
+          />
+
+          {/* Configuración de Pago y Tiempo */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Controller
+              name="tiene_pago"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <div className="space-y-3">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Información de Pago
+                  </label>
+                  <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-md">
+                    <input
+                      type="checkbox"
+                      checked={value}
+                      onChange={(e) => onChange(e.target.checked)}
+                      disabled={loading}
+                      className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
+                      aria-label="Este servicio tiene costo"
+                    />
+                    <span className="text-sm text-gray-700">
+                      Este servicio tiene costo
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Marcar si el servicio requiere pago de derechos
+                  </p>
+                </div>
+              )}
+            />
+
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-gray-700">
+                Estado del Servicio
+              </label>
+              <div className="p-3 border border-gray-200 rounded-md bg-gray-50">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">Activo</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
+                    <span className="text-sm text-green-600 font-medium">
+                      {mode === 'create' ? 'Se activará al crear' : 'Configurado'}
+                    </span>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Los servicios se crean activos por defecto
+                </p>
               </div>
             </div>
-          )}
-        />
+          </div>
+        </div>
 
-        {/* Government Portal URLs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* ENLACES GUBERNAMENTALES */}
+        <div className="space-y-6">
+          <div className="border-b border-gray-200 pb-2">
+            <h3 className="text-lg font-medium text-gray-900 flex items-center">
+              🔗 Enlaces Gubernamentales
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Enlaces a portales oficiales (opcional)
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Controller
             name="visualizacion_suit"
             control={control}
@@ -476,6 +600,7 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
             )}
           />
         </div>
+        </div>
 
         {/* Requirements */}
         <div>
@@ -490,7 +615,7 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
               onChange={(e) => setNewRequisito(e.target.value)}
               placeholder="Agregar nuevo requisito"
               disabled={loading}
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   e.preventDefault()
                   addRequisito()
@@ -520,7 +645,7 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
                     onClick={() => removeRequisito(index)}
                     disabled={loading}
                   >
-                    ❌
+                    X
                   </Button>
                 </div>
               ))}
@@ -542,7 +667,7 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
           <Button
             type="submit"
             variant="primary"
-            loading={loading}
+            isLoading={loading}
             disabled={!isValid}
           >
             {mode === 'create' ? 'Crear Servicio' : 'Guardar Cambios'}

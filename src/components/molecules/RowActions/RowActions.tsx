@@ -6,14 +6,14 @@ import { clsx } from 'clsx'
 
 export interface RowAction<T = any> {
   key: string
-  label: string
-  icon?: React.ReactNode
+  label: string | ((record: T, index: number) => string)
+  icon?: React.ReactNode | ((record: T, index: number) => React.ReactNode)
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost'
   onClick: (record: T, index: number) => void | Promise<void>
   disabled?: boolean | ((record: T, index: number) => boolean)
   hidden?: boolean | ((record: T, index: number) => boolean)
   loading?: boolean
-  tooltip?: string
+  tooltip?: string | ((record: T, index: number) => string)
   confirmMessage?: string
   confirmTitle?: string
   shortcut?: string
@@ -150,13 +150,16 @@ const RowActions = <T extends Record<string, any>>({
 
     const isLoading = loadingActions.has(action.key) || action.loading
 
+    const labelValue = typeof action.label === 'function' ? action.label(record, index) : action.label
+    const tooltipValue = typeof action.tooltip === 'function' ? action.tooltip(record, index) : action.tooltip
+    const titleValue = tooltipValue || labelValue
     const buttonProps = {
       variant: action.variant || 'ghost',
       size: size,
       disabled: isDisabled || isLoading,
       onClick: () => handleActionClick(action),
-      title: action.tooltip || action.label,
-      'aria-label': action.label,
+      ...(titleValue && { title: titleValue }),
+      'aria-label': labelValue,
       className: clsx(
         isInDropdown && 'w-full justify-start',
         action.variant === 'danger' && 'text-red-600 hover:text-red-700 hover:bg-red-50'
@@ -174,8 +177,12 @@ const RowActions = <T extends Record<string, any>>({
             action.variant === 'danger' && 'text-red-600 hover:bg-red-50'
           )}
         >
-          {action.icon && <span className="flex-shrink-0">{action.icon}</span>}
-          <span>{action.label}</span>
+          {action.icon && (
+            <span className="flex-shrink-0">
+              {typeof action.icon === 'function' ? action.icon(record, index) : action.icon}
+            </span>
+          )}
+          <span>{typeof action.label === 'function' ? action.label(record, index) : action.label}</span>
           {action.shortcut && (
             <span className="ml-auto text-xs text-gray-400">{action.shortcut}</span>
           )}
@@ -185,7 +192,15 @@ const RowActions = <T extends Record<string, any>>({
 
     return (
       <Button key={action.key} {...buttonProps}>
-        {isLoading ? <span className="animate-spin">⟳</span> : action.icon || action.label}
+        {isLoading ? (
+          <span className="animate-spin">⟳</span>
+        ) : (
+          action.icon ? (
+            typeof action.icon === 'function' ? action.icon(record, index) : action.icon
+          ) : (
+            typeof action.label === 'function' ? action.label(record, index) : action.label
+          )
+        )}
       </Button>
     )
   }

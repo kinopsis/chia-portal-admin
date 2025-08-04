@@ -134,7 +134,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 className={clsx('mr-2 flex-shrink-0', iconSizeClasses[size])}
                 aria-hidden="true"
               >
-                {leftIcon}
+                {typeof leftIcon === 'function' ? leftIcon() : leftIcon}
               </span>
             )}
             <span className="truncate">{children}</span>
@@ -143,7 +143,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 className={clsx('ml-2 flex-shrink-0', iconSizeClasses[size])}
                 aria-hidden="true"
               >
-                {rightIcon}
+                {typeof rightIcon === 'function' ? rightIcon() : rightIcon}
               </span>
             )}
           </>

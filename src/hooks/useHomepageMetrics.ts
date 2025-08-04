@@ -29,17 +29,9 @@ interface MetricsResponse {
 }
 
 export function useHomepageMetrics(): UseHomepageMetricsReturn {
-  // Initialize with stable placeholder data to prevent layout shifts
-  // Using consistent values that match expected data structure
-  const [metrics, setMetrics] = useState<HomepageMetrics | null>({
-    dependencias: 14,
-    subdependencias: 75,
-    tramites: 109,
-    opas: 722,
-    faqs: 331,
-    lastUpdated: new Date().toISOString()
-  })
-  const [loading, setLoading] = useState(false) // Start as false to prevent skeleton flash
+  // Initialize with null to force loading from database
+  const [metrics, setMetrics] = useState<HomepageMetrics | null>(null)
+  const [loading, setLoading] = useState(true) // Start as true to show loading state
   const [error, setError] = useState<string | null>(null)
 
   const fetchMetrics = useCallback(async () => {
@@ -83,15 +75,8 @@ export function useHomepageMetrics(): UseHomepageMetricsReturn {
       console.error('Error fetching homepage metrics:', errorMessage)
       setError(errorMessage)
       
-      // Set fallback metrics only if we don't have any metrics yet
-      setMetrics(prevMetrics => prevMetrics || {
-        dependencias: 12,
-        subdependencias: 45,
-        tramites: 156,
-        opas: 89,
-        faqs: 234,
-        lastUpdated: new Date().toISOString()
-      })
+      // Don't set fallback metrics - let the error state handle it
+      setMetrics(null)
     } finally {
       setLoading(false)
     }

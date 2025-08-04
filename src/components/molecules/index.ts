@@ -55,3 +55,6 @@ export type { PasswordChangeModalProps } from './PasswordChangeModal'
 
 export { ServiceCard, ServiceCardPresets } from './ServiceCard'
 export type { ServiceCardProps, ServiceCardColorScheme } from './ServiceCard'
+
+export { UnifiedServiceCard, UnifiedServiceCardSkeleton, UnifiedServiceCardGrid } from './UnifiedServiceCard'
+export type { UnifiedServiceCardProps, UnifiedServiceData, ManagementActions } from './UnifiedServiceCard'

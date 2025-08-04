@@ -42,5 +42,10 @@ export type { DepartmentShowcaseProps, DepartmentData } from './DepartmentShowca
 export { FAQPreview, FAQPreviewPresets } from './FAQPreview'
 export type { FAQPreviewProps, FAQItem } from './FAQPreview'
 
+export { TramitesFilters } from './TramitesFilters/TramitesFilters'
+export type { TramitesFiltersProps } from './TramitesFilters/TramitesFilters'
+
+export { HomepageServices } from './HomepageServices'
+
 // Additional organisms to be implemented:
 // export { default as UserForm } from './UserForm'
