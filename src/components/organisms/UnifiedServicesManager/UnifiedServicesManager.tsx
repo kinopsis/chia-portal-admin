@@ -15,13 +15,17 @@
 
 import React, { useState, useCallback } from 'react'
 import { Card, Button, Badge, Modal, ConfirmDialog } from '@/components/atoms'
+import { ToggleSwitch } from '@/components/atoms/ToggleSwitch'
+import { TramitesFilters } from '@/components/organisms'
 import { PageHeader } from '@/components/layout'
-import { DataTable } from '@/components/organisms'
+
 import { UnifiedMetrics } from '@/components/organisms/UnifiedMetrics'
-import { UnifiedFilters } from '@/components/organisms/UnifiedFilters'
+
 import { UnifiedServiceForm } from '@/components/organisms/UnifiedServiceForm'
+import { ServiceCardView } from './ServiceCardView'
 import { useUnifiedServices } from '@/hooks/useUnifiedServices'
-import { useAdminBreadcrumbs } from '@/hooks'
+import { useServiceToggle } from '@/hooks/useServiceToggle'
+import { useAdminBreadcrumbs, useFuncionarioBreadcrumbs, useAuth } from '@/hooks'
 import type { UnifiedServiceItem, CreateServiceData, UpdateServiceData } from '@/services/unifiedServices'
 import type { Column } from '@/components/organisms/DataTable'
 import { formatDate } from '@/utils'
@@ -31,8 +35,6 @@ export interface UnifiedServicesManagerProps {
   // Configuration
   serviceType?: 'tramite' | 'opa' | 'both'
   defaultServiceType?: 'tramite' | 'opa'
-  viewMode?: 'table' | 'cards' | 'hybrid'
-  defaultViewMode?: 'table' | 'cards'
   
   // Features
   enableMetrics?: boolean
@@ -57,7 +59,6 @@ export interface UnifiedServicesManagerProps {
   
   // Callbacks
   onServiceTypeChange?: (type: 'tramite' | 'opa') => void
-  onViewModeChange?: (mode: 'table' | 'cards') => void
   onItemSelect?: (item: UnifiedServiceItem) => void
   onBulkAction?: (action: string, items: UnifiedServiceItem[]) => void
 }
@@ -68,8 +69,6 @@ export interface UnifiedServicesManagerProps {
 export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
   serviceType = 'both',
   defaultServiceType = 'tramite',
-  viewMode = 'hybrid',
-  defaultViewMode = 'table',
   enableMetrics = true,
   enableAdvancedFilters = true,
   enableBulkActions = true,
@@ -86,12 +85,16 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
   compactMode = false,
   className,
   onServiceTypeChange,
-  onViewModeChange,
   onItemSelect,
   onBulkAction
 }) => {
-  // Breadcrumbs
-  const breadcrumbs = useAdminBreadcrumbs('Servicios Unificados')
+  // Get user profile to determine role
+  const { userProfile } = useAuth()
+
+  // Breadcrumbs - Use appropriate breadcrumbs based on user role
+  const adminBreadcrumbs = useAdminBreadcrumbs('Servicios Unificados')
+  const funcionarioBreadcrumbs = useFuncionarioBreadcrumbs()
+  const breadcrumbs = userProfile?.rol === 'funcionario' ? funcionarioBreadcrumbs : adminBreadcrumbs
 
   // Unified services hook
   const {
@@ -106,8 +109,7 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
     dependencias,
     subdependencias,
     filteredSubdependencias,
-    viewMode: currentViewMode,
-    setViewMode,
+
     selectedItems,
     setSelectedItems,
     refresh,
@@ -125,16 +127,35 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
     clearSelection
   } = useUnifiedServices({
     defaultServiceType: serviceType === 'both' ? defaultServiceType : serviceType,
-    defaultViewMode,
     enableMetrics,
     pageSize: compactMode ? 10 : 20
   })
+
+  // Service toggle hook
+  const {
+    toggleService,
+    loadingStates,
+    errorStates,
+    clearError
+  } = useServiceToggle({
+    onSuccess: (item, newState) => {
+      console.log(`SUCCESS: ${item.nombre} ${newState ? 'activado' : 'desactivado'}`)
+      refresh() // Refresh data after successful toggle
+    },
+    onError: (error, item) => {
+      console.error(`ERROR: Error toggling ${item.nombre}:`, error)
+    }
+  })
+
+
 
   // Modal states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState<UnifiedServiceItem | null>(null)
+
+
 
   // Handle service type change
   const handleServiceTypeChange = useCallback((newServiceType: 'tramite' | 'opa' | 'both') => {
@@ -144,13 +165,7 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
     }
   }, [setFilters, onServiceTypeChange])
 
-  // Handle view mode change
-  const handleViewModeChange = useCallback((newViewMode: 'table' | 'cards') => {
-    setViewMode(newViewMode)
-    if (onViewModeChange) {
-      onViewModeChange(newViewMode)
-    }
-  }, [setViewMode, onViewModeChange])
+
 
   // Handle item actions
   const handleEdit = useCallback((item: UnifiedServiceItem) => {
@@ -160,6 +175,14 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
       onItemSelect(item)
     }
   }, [onItemSelect])
+
+  const handleView = useCallback((item: UnifiedServiceItem) => {
+    // TODO: Implement view details modal or navigate to detail page
+    console.log('View details for:', item.nombre)
+    // For now, just open edit modal in read-only mode
+    setSelectedItem(item)
+    setIsEditModalOpen(true)
+  }, [])
 
   const handleDelete = useCallback((item: UnifiedServiceItem) => {
     setSelectedItem(item)
@@ -190,7 +213,7 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
     if (!selectedItem) return
 
     try {
-      await deleteItem(selectedItem.id, selectedItem.tipo)
+      await deleteItem(selectedItem.id, selectedItem.tipo_servicio)
       setIsDeleteDialogOpen(false)
       setSelectedItem(null)
     } catch (error) {
@@ -200,7 +223,7 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
 
   const handleBulkAction = useCallback(async (action: string) => {
     if (selectedItems.length === 0) return
-    
+
     try {
       await bulkAction(action, selectedItems)
       clearSelection()
@@ -212,119 +235,32 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
     }
   }, [selectedItems, bulkAction, clearSelection, onBulkAction])
 
-  // Table columns configuration
-  const columns: Column<UnifiedServiceItem>[] = [
-    {
-      key: 'codigo',
-      title: 'Código',
-      sortable: true,
-      render: (value, record) => (
-        <div className="font-mono text-sm">
-          {value}
-        </div>
-      )
-    },
-    {
-      key: 'nombre',
-      title: 'Nombre',
-      sortable: true,
-      render: (value, record) => (
-        <div>
-          <div className="font-medium text-gray-900">{value}</div>
-          {record.descripcion && (
-            <div className="text-sm text-gray-500 truncate max-w-xs">
-              {record.descripcion}
-            </div>
-          )}
-        </div>
-      )
-    },
-    {
-      key: 'tipo',
-      title: 'Tipo',
-      align: 'center',
-      render: (value, record) => (
-        <Badge 
-          variant={value === 'tramite' ? 'primary' : 'secondary'}
-          size="sm"
-        >
-          {value === 'tramite' ? '📄 Trámite' : '⚡ OPA'}
-        </Badge>
-      )
-    },
-    {
-      key: 'dependencia',
-      title: 'Dependencia',
-      render: (value, record) => (
-        <div className="text-sm">
-          <div className="font-medium text-gray-900">{value.nombre}</div>
-          <div className="text-gray-500">{record.subdependencia.nombre}</div>
-        </div>
-      )
-    },
-    {
-      key: 'tiene_pago',
-      title: 'Pago',
-      align: 'center',
-      render: (value, record) => (
-        <Badge 
-          variant={value ? 'warning' : 'success'}
-          size="sm"
-        >
-          {value ? '💰 Con pago' : '🆓 Gratuito'}
-        </Badge>
-      )
-    },
-    {
-      key: 'activo',
-      title: 'Estado',
-      align: 'center',
-      render: (value, record) => (
-        <Badge 
-          variant={value ? 'success' : 'danger'}
-          size="sm"
-        >
-          {value ? '✅ Activo' : '❌ Inactivo'}
-        </Badge>
-      )
-    },
-    {
-      key: 'updated_at',
-      title: 'Actualizado',
-      sortable: true,
-      render: (value, record) => (
-        <span className="text-sm text-gray-500">
-          {formatDate(value)}
-        </span>
-      )
-    }
+  // Filter options for TramitesFilters component
+  const dependenciasOptions = dependencias.map(dep => ({
+    value: dep.id,
+    label: dep.nombre,
+    count: undefined // Could be added later for better UX
+  }))
+
+  const subdependenciasOptions = filteredSubdependencias.map(sub => ({
+    value: sub.id,
+    label: sub.nombre,
+    count: undefined
+  }))
+
+  const tipoOptions = [
+    { value: 'tramite', label: 'Trámites', count: metrics?.tramites.total },
+    { value: 'opa', label: 'OPAs', count: metrics?.opas.total }
   ]
 
-  // Row actions
-  const rowActions = [
-    {
-      key: 'edit',
-      label: 'Editar',
-      icon: '✏️',
-      onClick: handleEdit,
-      disabled: !permissions.update
-    },
-    {
-      key: 'delete',
-      label: 'Eliminar',
-      icon: '🗑️',
-      onClick: handleDelete,
-      disabled: !permissions.delete,
-      variant: 'danger' as const
-    }
+  const tiposPagoOptions = [
+    { value: 'gratuito', label: 'Gratuito', count: metrics?.combined.gratuitos },
+    { value: 'con_pago', label: 'Con Pago', count: metrics?.combined.conPago }
   ]
 
-  // Service type tabs
-  const serviceTypeTabs = [
-    { key: 'both', label: 'Todos', count: metrics?.combined.total || 0 },
-    { key: 'tramite', label: 'Trámites', count: metrics?.tramites.total || 0 },
-    { key: 'opa', label: 'OPAs', count: metrics?.opas.total || 0 }
-  ]
+
+
+
 
   return (
     <div className={clsx('space-y-6', className)}>
@@ -336,69 +272,76 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
           breadcrumbs={showBreadcrumbs ? breadcrumbs : undefined}
           variant="admin"
           actions={
-            <div className="flex items-center space-x-3">
-              {/* View Mode Toggle */}
-              <div className="flex rounded-lg border border-gray-300 overflow-hidden">
-                <Button
-                  variant={currentViewMode === 'table' ? 'primary' : 'ghost'}
-                  size="sm"
-                  onClick={() => handleViewModeChange('table')}
-                  className="rounded-none"
-                >
-                  📊 Tabla
-                </Button>
-                <Button
-                  variant={currentViewMode === 'cards' ? 'primary' : 'ghost'}
-                  size="sm"
-                  onClick={() => handleViewModeChange('cards')}
-                  className="rounded-none"
-                >
-                  🗃️ Cards
-                </Button>
-              </div>
-
-              {/* Create Button */}
-              {permissions.create && (
-                <Button
-                  variant="primary"
-                  onClick={() => setIsCreateModalOpen(true)}
-                  className="flex items-center space-x-2"
-                >
-                  <span>➕</span>
-                  <span>Nuevo Servicio</span>
-                </Button>
-              )}
-            </div>
+            permissions.create && (
+              <Button
+                variant="primary"
+                onClick={() => setIsCreateModalOpen(true)}
+                className="flex items-center space-x-2"
+              >
+                <span>+</span>
+                <span>Nuevo Servicio</span>
+              </Button>
+            )
           }
         />
       )}
 
-      {/* Service Type Tabs */}
-      <Card className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex space-x-1">
-            {serviceTypeTabs.map((tab) => (
-              <Button
-                key={tab.key}
-                variant={filters.serviceType === tab.key ? 'primary' : 'ghost'}
-                size="sm"
-                onClick={() => handleServiceTypeChange(tab.key as any)}
-                className="flex items-center space-x-2"
-              >
-                <span>{tab.label}</span>
-                <Badge variant="secondary" size="xs">
-                  {tab.count}
-                </Badge>
-              </Button>
-            ))}
-          </div>
+      {/* Compact Metrics Section */}
+      {enableMetrics && (
+        <div className="bg-white border border-gray-200 rounded-lg p-3">
+          <UnifiedMetrics
+            metrics={metrics}
+            loading={loading}
+            serviceType={filters.serviceType || 'both'}
+            compact={true}
+            simplified={true}
+          />
+        </div>
+      )}
 
-          {/* Bulk Actions */}
-          {enableBulkActions && selectedItems.length > 0 && (
+      {/* TramitesFilters Component - Same as /tramites page */}
+      <TramitesFilters
+        searchQuery={filters.query || ''}
+        onSearchChange={(query) => setFilters({ query, page: 1 })}
+        dependenciasOptions={dependenciasOptions}
+        subdependenciasOptions={subdependenciasOptions}
+        tipoOptions={tipoOptions}
+        tiposPagoOptions={tiposPagoOptions}
+        selectedDependencias={filters.dependencia_id ? [filters.dependencia_id] : []}
+        selectedSubdependencias={filters.subdependencia_id ? [filters.subdependencia_id] : []}
+        selectedTipos={filters.serviceType && filters.serviceType !== 'both' ? [filters.serviceType] : []}
+        selectedTiposPago={filters.tipoPago && filters.tipoPago !== 'both' ? [filters.tipoPago] : []}
+        onDependenciasChange={(values) => setFilters({
+          dependencia_id: values[0] || '',
+          subdependencia_id: '', // Reset subdependencia when dependencia changes
+          page: 1
+        })}
+        onSubdependenciasChange={(values) => setFilters({
+          subdependencia_id: values[0] || '',
+          page: 1
+        })}
+        onTiposChange={(values) => setFilters({
+          serviceType: values[0] as 'tramite' | 'opa' | 'both' || 'both',
+          page: 1
+        })}
+        onTiposPagoChange={(values) => setFilters({
+          tipoPago: values[0] as 'gratuito' | 'con_pago' | 'both' || 'both',
+          page: 1
+        })}
+        dependenciasLoading={loading}
+        subdependenciasLoading={loading}
+        totalResults={pagination.total}
+        onClearFilters={clearFilters}
+      />
+
+      {/* Bulk Actions Bar */}
+      {enableBulkActions && selectedItems.length > 0 && (
+        <Card className="p-4">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">
+              {selectedItems.length} seleccionado{selectedItems.length !== 1 ? 's' : ''}
+            </span>
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600">
-                {selectedItems.length} seleccionado{selectedItems.length !== 1 ? 's' : ''}
-              </span>
               <Button
                 variant="neutral"
                 size="sm"
@@ -421,63 +364,56 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
                 Eliminar
               </Button>
             </div>
-          )}
-        </div>
-      </Card>
-
-      {/* Metrics */}
-      {enableMetrics && (
-        <UnifiedMetrics
-          metrics={metrics}
-          loading={loading}
-          serviceType={filters.serviceType || 'both'}
-          compact={compactMode}
-        />
+          </div>
+        </Card>
       )}
 
-      {/* Filters */}
-      {enableAdvancedFilters && (
-        <UnifiedFilters
-          filters={filters}
-          onFiltersChange={setFilters}
-          onClearFilters={clearFilters}
-          dependencias={dependencias}
-          subdependencias={filteredSubdependencias}
-          loading={loading}
-        />
-      )}
 
-      {/* Data Display */}
+
+      {/* Data Display - Card View Only */}
       <Card>
-        <DataTable
-          data={data}
-          columns={columns}
-          loading={loading}
-          error={error}
-          rowActions={rowActions}
-          searchPlaceholder="Buscar servicios..."
-          showSearchAndFilters={false} // Using custom filters above
-          enableSelection={enableBulkActions}
-          selectedRows={selectedItems}
-          onSelectionChange={setSelectedItems}
-          emptyStateProps={{
-            title: 'No hay servicios',
-            description: 'No se encontraron servicios con los filtros aplicados.',
-            action: permissions.create ? (
-              <Button variant="primary" onClick={() => setIsCreateModalOpen(true)}>
-                Crear Primer Servicio
+        <div className="p-4">
+          <ServiceCardView
+            items={data}
+            loading={loading}
+            error={error}
+            onToggle={toggleService}
+            onEdit={handleEdit}
+            onView={handleView}
+            onDelete={handleDelete}
+            loadingStates={loadingStates}
+            errorStates={errorStates}
+            onClearError={clearError}
+            permissions={permissions}
+          />
+
+          {/* Pagination for card view */}
+          {data.length > 0 && (
+            <div className="flex justify-center mt-6 space-x-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={prevPage}
+                disabled={pagination.page === 1}
+              >
+                Anterior
               </Button>
-            ) : undefined
-          }}
-          pagination={{
-            current: pagination.page,
-            total: pagination.total,
-            pageSize: pagination.limit,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            onChange: goToPage
-          }}
-        />
+              <span className="flex items-center px-3 text-sm text-gray-600">
+                Página {pagination.page} de {Math.ceil((pagination.total || 0) / (pagination.limit || 1))}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={nextPage}
+                disabled={pagination.page >= Math.ceil((pagination.total || 0) / (pagination.limit || 1))}
+              >
+                Siguiente
+              </Button>
+            </div>
+          )}
+
+
+        </div>
       </Card>
 
       {/* Create Modal */}
