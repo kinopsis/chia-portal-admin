@@ -22,6 +22,8 @@
     "test:e2e:funcionario:search": "bash scripts/run-funcionario-search-tests.sh",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
+    "test:e2e:services": "playwright test tests/e2e/ServiceManagementCRUD.playwright.test.js",
+    "test:e2e:services:headed": "playwright test tests/e2e/ServiceManagementCRUD.playwright.test.js --headed",
     "verify-database": "tsx src/scripts/verify-database.ts",
     "verify-production": "tsx src/scripts/verify-production.ts",
     "format": "prettier --write .",

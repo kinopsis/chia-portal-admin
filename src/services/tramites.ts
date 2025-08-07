@@ -27,13 +27,17 @@ export class TramitesServerService {
 
 // Client-side service functions
 export class TramitesClientService {
-  async getAll(filters?: SearchFilters & { page?: number; limit?: number }) {
+  async getAll(filters?: SearchFilters & { page?: number; limit?: number; modalidad?: string; categoria?: string }) {
     let query = supabase
       .from('tramites')
       .select(
         `
         *,
         requisitos,
+        instructivo,
+        modalidad,
+        categoria,
+        observaciones,
         visualizacion_suit,
         visualizacion_gov,
         subdependencias (
@@ -126,6 +130,15 @@ export class TramitesClientService {
       query = query.eq('activo', filters.activo)
     }
 
+    // NEW FILTERS: Add filtering by new fields
+    if (filters?.modalidad) {
+      query = query.eq('modalidad', filters.modalidad)
+    }
+
+    if (filters?.categoria) {
+      query = query.eq('categoria', filters.categoria)
+    }
+
     // Apply pagination
     const page = filters?.page || 1
     const limit = filters?.limit || 10
@@ -180,6 +193,10 @@ export class TramitesClientService {
       .select(
         `
         *,
+        instructivo,
+        modalidad,
+        categoria,
+        observaciones,
         subdependencias (
           id,
           nombre,
@@ -206,6 +223,10 @@ export class TramitesClientService {
       .select(
         `
         *,
+        instructivo,
+        modalidad,
+        categoria,
+        observaciones,
         subdependencias (
           nombre,
           dependencias (
@@ -237,7 +258,7 @@ export class TramitesClientService {
     })
 
     const prefixQueries = searchTerms.map(term =>
-      `nombre.ilike.%${term}%,formulario.ilike.%${term}%`
+      `nombre.ilike.%${term}%,formulario.ilike.%${term}%,categoria.ilike.%${term}%,observaciones.ilike.%${term}%`
     ).join(',')
 
     const { data, error } = await supabase
@@ -245,6 +266,10 @@ export class TramitesClientService {
       .select(
         `
         *,
+        instructivo,
+        modalidad,
+        categoria,
+        observaciones,
         subdependencias (
           nombre,
           dependencias (

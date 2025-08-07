@@ -251,6 +251,51 @@ const TramitesAdminPage: React.FC = () => {
       helperText: 'URL completa del trámite en el portal GOV.CO',
     },
     {
+      name: 'instructivo',
+      label: 'Instructivo',
+      type: 'textarea',
+      placeholder: 'Ingrese cada paso en una línea separada...',
+      rows: 6,
+      helperText: 'Instrucciones paso a paso para completar el trámite (una por línea)',
+    },
+    {
+      name: 'modalidad',
+      label: 'Modalidad',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'virtual', label: 'Virtual (En línea)' },
+        { value: 'presencial', label: 'Presencial (Oficina)' },
+        { value: 'mixto', label: 'Mixto (Híbrido)' },
+      ],
+      defaultValue: 'presencial',
+      helperText: 'Modalidad de procesamiento del trámite',
+    },
+    {
+      name: 'categoria',
+      label: 'Categoría',
+      type: 'select',
+      options: [
+        { value: '', label: 'Seleccionar categoría' },
+        { value: 'impuestos', label: 'Impuestos y Tasas' },
+        { value: 'licencias', label: 'Licencias y Permisos' },
+        { value: 'informativo', label: 'Informativo y Certificados' },
+        { value: 'salud', label: 'Salud y Sanidad' },
+        { value: 'movilidad', label: 'Movilidad y Tránsito' },
+        { value: 'ambiental', label: 'Ambiental' },
+        { value: 'general', label: 'General' },
+      ],
+      helperText: 'Categoría temática del trámite',
+    },
+    {
+      name: 'observaciones',
+      label: 'Observaciones',
+      type: 'textarea',
+      placeholder: 'Información adicional sobre el trámite...',
+      rows: 3,
+      helperText: 'Información adicional no cubierta por el proceso estándar',
+    },
+    {
       name: 'activo',
       label: 'Activo',
       type: 'checkbox',
@@ -349,6 +394,12 @@ const TramitesAdminPage: React.FC = () => {
         requisitos: formData.requisitos
           ? formData.requisitos.split('\n').filter((req: string) => req.trim())
           : [],
+        instructivo: formData.instructivo
+          ? formData.instructivo.split('\n').filter((inst: string) => inst.trim())
+          : [],
+        modalidad: formData.modalidad || 'presencial',
+        categoria: formData.categoria || null,
+        observaciones: formData.observaciones || null,
         costo: formData.costo || 0,
         activo: formData.activo || false,
         created_at: new Date().toISOString(),

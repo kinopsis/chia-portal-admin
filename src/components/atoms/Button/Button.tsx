@@ -12,6 +12,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
   shadow?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
   children: React.ReactNode
+  'data-testid'?: string
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -29,6 +30,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       className,
       disabled,
+      'data-testid': testId,
       ...props
     },
     ref
@@ -109,7 +111,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           className
         )}
         disabled={disabled || isLoading}
-        aria-disabled={disabled || isLoading ? 'true' : 'false'}
+        aria-disabled={!!(disabled || isLoading)}
+        data-testid={testId}
         {...props}
       >
         {isLoading ? (

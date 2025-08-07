@@ -44,7 +44,8 @@ export interface UnifiedServiceItem {
   tiempo_respuesta?: string
   activo: boolean
   requisitos?: string[]
-  
+  instrucciones?: string[]
+
   // Government portal URLs
   url_suit?: string
   url_gov?: string
@@ -128,6 +129,7 @@ export interface CreateServiceData {
   tiempo_respuesta?: string
   activo: boolean
   requisitos?: string[]
+  instrucciones?: string[] // Add instrucciones field
   formulario?: string // For OPAs
   url_suit?: string
   url_gov?: string
@@ -269,6 +271,7 @@ export class UnifiedServicesService {
         tiempo_respuesta: item.tiempo_respuesta,
         activo: item.activo,
         requisitos: Array.isArray(item.requisitos) ? item.requisitos : [],
+        instrucciones: Array.isArray(item.instrucciones) ? item.instrucciones : [],
         url_suit: item.url_suit,
         url_gov: item.url_gov,
         visualizacion_suit: item.visualizacion_suit,
@@ -391,6 +394,25 @@ export class UnifiedServicesService {
    */
   async toggleActive(id: string, activo: boolean): Promise<UnifiedServiceItem> {
     try {
+      console.log('🔄 Toggling service status:', { id, activo })
+
+      // First, check if the service exists
+      const { data: existingService, error: checkError } = await supabase
+        .from('servicios')
+        .select('id, nombre, tipo_servicio, activo')
+        .eq('id', id)
+        .single()
+
+      if (checkError) {
+        if (checkError.code === 'PGRST116') {
+          throw new Error(`Service with ID ${id} not found`)
+        }
+        throw new Error(`Error checking service existence: ${checkError.message}`)
+      }
+
+      console.log('✅ Service exists:', existingService)
+
+      // Perform the toggle operation
       const { data: updatedService, error } = await supabase
         .from('servicios')
         .update({
@@ -406,12 +428,18 @@ export class UnifiedServicesService {
         .single()
 
       if (error) {
+        console.error('❌ Database toggle error:', error)
         throw new Error(`Error toggling service status: ${error.message}`)
       }
 
+      if (!updatedService) {
+        throw new Error('Toggle operation completed but no data was returned')
+      }
+
+      console.log('✅ Service status toggled successfully:', updatedService.id)
       return this.transformServiceItem(updatedService)
     } catch (error) {
-      console.error('Error toggling service status:', error)
+      console.error('❌ Error toggling service status:', error)
       throw error
     }
   }
@@ -443,7 +471,7 @@ export class UnifiedServicesService {
       // Generate automatic code if not provided
       let codigo = data.codigo
       if (!codigo || codigo === 'XXX-XXX-XXX' || codigo === '') {
-        codigo = await this.generateServiceCode(data.subdependencia_id, tipoServicio)
+        codigo = await this.generateServiceCode(data.subdependencia_id, tipoServicio as 'tramite' | 'opa')
       }
 
       // Prepare data for insertion
@@ -459,6 +487,7 @@ export class UnifiedServicesService {
         tiempo_respuesta: data.tiempo_respuesta,
         activo: data.activo,
         requisitos: data.requisitos || null,
+        instrucciones: data.instrucciones || null, // Handle instrucciones field
         url_suit: typeof data.visualizacion_suit === 'string' ? data.visualizacion_suit : data.url_suit,
         url_gov: typeof data.visualizacion_gov === 'string' ? data.visualizacion_gov : data.url_gov,
         visualizacion_suit: typeof data.visualizacion_suit === 'boolean' ? data.visualizacion_suit : false,
@@ -479,6 +508,9 @@ export class UnifiedServicesService {
         throw new Error(`Error creating service: ${error.message}`)
       }
 
+      // Sync with original tables (tramites/opas) for data consistency
+      await this.syncToOriginalTables(result)
+
       return this.transformServiceItem(result)
     } catch (error) {
       console.error('Error in service creation:', error)
@@ -492,6 +524,40 @@ export class UnifiedServicesService {
   async update(data: UpdateServiceData): Promise<UnifiedServiceItem> {
     try {
       const { id, ...updateData } = data
+
+      // Validate that ID is provided
+      if (!id) {
+        throw new Error('Service ID is required for update operation')
+      }
+
+      console.log('🔧 Updating service with ID:', id)
+      console.log('🔧 Update data:', updateData)
+
+      // Log URL field mapping for debugging
+      if ('visualizacion_suit' in updateData || 'visualizacion_gov' in updateData) {
+        console.log('🔗 URL field mapping detected:', {
+          visualizacion_suit: updateData.visualizacion_suit,
+          visualizacion_gov: updateData.visualizacion_gov,
+          visualizacion_suit_type: typeof updateData.visualizacion_suit,
+          visualizacion_gov_type: typeof updateData.visualizacion_gov
+        })
+      }
+
+      // First, check if the service exists
+      const { data: existingService, error: checkError } = await supabase
+        .from('servicios')
+        .select('id, nombre, tipo_servicio')
+        .eq('id', id)
+        .single()
+
+      if (checkError) {
+        if (checkError.code === 'PGRST116') {
+          throw new Error(`Service with ID ${id} not found`)
+        }
+        throw new Error(`Error checking service existence: ${checkError.message}`)
+      }
+
+      console.log('✅ Service exists:', existingService)
 
       // Normalize field names for database compatibility
       const normalizedData = { ...updateData }
@@ -508,13 +574,54 @@ export class UnifiedServicesService {
         delete normalizedData.tipo
       }
 
+      // Fix URL field mapping issue - form sends URL strings with visualization field names
+      // Map visualizacion_suit/visualizacion_gov form fields to correct database columns
+      if ('visualizacion_suit' in normalizedData) {
+        if (typeof normalizedData.visualizacion_suit === 'string') {
+          // URL string value goes to url_suit column
+          normalizedData.url_suit = normalizedData.visualizacion_suit
+          // Set visualization flag based on whether URL is provided
+          normalizedData.visualizacion_suit = Boolean(normalizedData.visualizacion_suit)
+        }
+        // If it's already a boolean, keep it as is for the visualization flag
+      }
+
+      if ('visualizacion_gov' in normalizedData) {
+        if (typeof normalizedData.visualizacion_gov === 'string') {
+          // URL string value goes to url_gov column
+          normalizedData.url_gov = normalizedData.visualizacion_gov
+          // Set visualization flag based on whether URL is provided
+          normalizedData.visualizacion_gov = Boolean(normalizedData.visualizacion_gov)
+        }
+        // If it's already a boolean, keep it as is for the visualization flag
+      }
+
+      // Clean up undefined values to avoid database issues
+      const cleanedData = Object.fromEntries(
+        Object.entries(normalizedData).filter(([_, value]) => value !== undefined)
+      )
+
       // Prepare data for update
-      const updatePayload = {
-        ...normalizedData,
-        requisitos: normalizedData.requisitos || undefined,
+      const updatePayload: any = {
+        ...cleanedData,
+        requisitos: normalizedData.requisitos || null,
+        instrucciones: normalizedData.instrucciones || null,
         updated_at: new Date().toISOString()
       }
 
+      console.log('🔧 Final update payload:', updatePayload)
+
+      // Log URL field mapping results for debugging
+      if (updatePayload.url_suit || updatePayload.url_gov || updatePayload.visualizacion_suit !== undefined || updatePayload.visualizacion_gov !== undefined) {
+        console.log('🔗 URL mapping results:', {
+          url_suit: updatePayload.url_suit,
+          url_gov: updatePayload.url_gov,
+          visualizacion_suit: updatePayload.visualizacion_suit,
+          visualizacion_gov: updatePayload.visualizacion_gov
+        })
+      }
+
+      // Perform the update
       const { data: result, error } = await supabase
         .from('servicios')
         .update(updatePayload)
@@ -527,12 +634,36 @@ export class UnifiedServicesService {
         .single()
 
       if (error) {
+        console.error('❌ Database update error:', error)
+
+        // Provide specific error message for boolean type mismatch (the original issue)
+        if (error.message && error.message.includes('invalid input syntax for type boolean')) {
+          console.error('🔗 URL field mapping error detected. This usually means URL strings are being sent to boolean columns.')
+          console.error('🔧 Check that visualizacion_suit/visualizacion_gov form fields are properly mapped to url_suit/url_gov database columns.')
+          throw new Error(`Database field type mismatch: ${error.message}. This is likely a URL field mapping issue where string values are being sent to boolean columns.`)
+        }
+
         throw new Error(`Error updating service: ${error.message}`)
       }
 
+      if (!result) {
+        throw new Error('Update operation completed but no data was returned')
+      }
+
+      console.log('✅ Service updated successfully:', result.id)
+
+      // Validate updated service data
+      const validation = this.validateServiceData(result)
+      if (!validation.isValid) {
+        console.warn('⚠️ Service validation warnings:', validation.errors)
+      }
+
+      // Sync with original tables (tramites/opas) for data consistency
+      await this.syncToOriginalTables(result)
+
       return this.transformServiceItem(result)
     } catch (error) {
-      console.error('Error in service update:', error)
+      console.error('❌ Error in service update:', error)
       throw error
     }
   }
@@ -665,12 +796,159 @@ export class UnifiedServicesService {
       tiempo_respuesta: item.tiempo_respuesta,
       activo: item.activo,
       requisitos: Array.isArray(item.requisitos) ? item.requisitos : [],
+      instrucciones: Array.isArray(item.instrucciones) ? item.instrucciones : [],
       url_suit: item.url_suit,
       url_gov: item.url_gov,
       visualizacion_suit: item.visualizacion_suit,
       visualizacion_gov: item.visualizacion_gov,
       created_at: item.created_at,
       updated_at: item.updated_at
+    }
+  }
+
+  /**
+   * Validate service data for consistency
+   */
+  private validateServiceData(service: any): { isValid: boolean; errors: string[] } {
+    const errors: string[] = []
+
+    if (!service.nombre || service.nombre.trim() === '') {
+      errors.push('Service name is required')
+    }
+
+    if (!service.codigo || service.codigo.trim() === '') {
+      errors.push('Service code is required')
+    }
+
+    if (!service.subdependencia_id) {
+      errors.push('Subdependencia ID is required')
+    }
+
+    if (!service.dependencia_id) {
+      errors.push('Dependencia ID is required')
+    }
+
+    if (service.tipo_servicio && !['tramite', 'opa', 'servicio'].includes(service.tipo_servicio)) {
+      errors.push('Invalid service type')
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    }
+  }
+
+  /**
+   * Synchronize servicios table data with original tramites/opas tables
+   * This ensures data consistency between the unified table and original tables
+   */
+  private async syncToOriginalTables(service: any): Promise<void> {
+    try {
+      console.log('🔄 [SYNC] Starting synchronization for service:', {
+        id: service.id,
+        codigo: service.codigo,
+        nombre: service.nombre,
+        tipo_servicio: service.tipo_servicio,
+        requisitos_count: service.requisitos?.length || 0,
+        instrucciones_count: service.instrucciones?.length || 0
+      })
+
+      if (service.tipo_servicio === 'tramite') {
+        // Find corresponding tramite by codigo
+        const { data: tramite, error: findError } = await supabase
+          .from('tramites')
+          .select('id, codigo_unico')
+          .eq('codigo_unico', service.codigo)
+          .single()
+
+        if (findError && findError.code !== 'PGRST116') {
+          console.error('🚨 [SYNC] Error finding tramite:', findError)
+          return
+        }
+
+        if (tramite) {
+          console.log('📋 [SYNC] Found tramite to update:', tramite.id, tramite.codigo_unico)
+          // Update tramite with synchronized data
+          const { error: updateError } = await supabase
+            .from('tramites')
+            .update({
+              nombre: service.nombre,
+              descripcion: service.descripcion,
+              requisitos: service.requisitos || [],
+              instructivo: service.instrucciones || [], // Map instrucciones to instructivo
+              tiempo_respuesta: service.tiempo_respuesta,
+              tiene_pago: service.requiere_pago,
+              visualizacion_suit: service.url_suit || '',
+              visualizacion_gov: service.url_gov || '',
+              activo: service.activo,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', tramite.id)
+
+          if (updateError) {
+            console.error('🚨 [SYNC] Error updating tramite:', updateError)
+          } else {
+            console.log('✅ [SYNC] Tramite synchronized successfully:', {
+              id: tramite.id,
+              codigo: service.codigo,
+              requisitos_synced: service.requisitos?.length || 0,
+              instructivo_synced: service.instrucciones?.length || 0
+            })
+          }
+        }
+      } else if (service.tipo_servicio === 'opa') {
+        // Find corresponding OPA by codigo
+        const { data: opa, error: findError } = await supabase
+          .from('opas')
+          .select('id, codigo_opa')
+          .eq('codigo_opa', service.codigo)
+          .single()
+
+        if (findError && findError.code !== 'PGRST116') {
+          console.error('🚨 [SYNC] Error finding OPA:', findError)
+          return
+        }
+
+        if (opa) {
+          console.log('⚡ [SYNC] Found OPA to update:', opa.id, opa.codigo_opa)
+          // Update OPA with synchronized data
+          const { error: updateError } = await supabase
+            .from('opas')
+            .update({
+              nombre: service.nombre,
+              descripcion: service.descripcion,
+              requisitos: service.requisitos || [],
+              instructivo: service.instrucciones || [], // Map instrucciones to instructivo
+              tiempo_respuesta: service.tiempo_respuesta,
+              tiene_pago: service.requiere_pago,
+              visualizacion_suit: service.url_suit || '',
+              visualizacion_gov: service.url_gov || '',
+              activo: service.activo,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', opa.id)
+
+          if (updateError) {
+            console.error('🚨 [SYNC] Error updating OPA:', updateError)
+          } else {
+            console.log('✅ [SYNC] OPA synchronized successfully:', {
+              id: opa.id,
+              codigo: service.codigo,
+              requisitos_synced: service.requisitos?.length || 0,
+              instructivo_synced: service.instrucciones?.length || 0
+            })
+          }
+        } else {
+          console.log('⚠️ [SYNC] No corresponding OPA found for codigo:', service.codigo)
+        }
+      } else {
+        console.log('⚠️ [SYNC] Unknown service type:', service.tipo_servicio)
+      }
+
+      console.log('🏁 [SYNC] Synchronization completed for service:', service.id)
+    } catch (error) {
+      console.error('🚨 [SYNC] Error in syncToOriginalTables:', error)
+      // Don't throw error to avoid breaking the main update operation
     }
   }
 }

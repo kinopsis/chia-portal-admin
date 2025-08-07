@@ -19,6 +19,7 @@ export interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectE
   size?: 'sm' | 'md' | 'lg'
   variant?: 'default' | 'outlined'
   onChange?: (value: string) => void
+  'data-testid'?: string
 }
 
 const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
@@ -35,6 +36,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       className,
       id,
       onChange,
+      'data-testid': testId,
       ...props
     },
     ref
@@ -90,6 +92,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
               className
             )}
             onChange={handleChange}
+            data-testid={testId}
             {...props}
           >
             {placeholder && (
