@@ -149,8 +149,8 @@ const TramitesPage: React.FC = () => {
     if (searchQuery.trim()) {
       const normalizedQuery = normalizeSpanishText(searchQuery.toLowerCase())
       filtered = filtered.filter(service => {
-        const normalizedNombre = normalizeSpanishText(service.nombre.toLowerCase())
-        const normalizedCodigo = normalizeSpanishText(service.codigo.toLowerCase())
+        const normalizedNombre = normalizeSpanishText((service.nombre || '').toLowerCase())
+        const normalizedCodigo = normalizeSpanishText((service.codigo || '').toLowerCase())
         const normalizedDependencia = normalizeSpanishText((service.dependencia || '').toLowerCase())
         const normalizedSubdependencia = normalizeSpanishText((service.subdependencia || '').toLowerCase())
         const normalizedDescripcion = normalizeSpanishText((service.descripcion || service.formulario || '').toLowerCase())
