@@ -17,7 +17,8 @@ import { TramitesFilters } from '@/components/organisms/TramitesFilters/Tramites
 import { FilterOption } from '@/components/molecules/FilterChips/FilterChips'
 import { PageHeader } from '@/components/layout'
 import type { BreadcrumbItem } from '@/components/molecules'
-import { tramitesOpasUnifiedService } from '@/services/tramitesOpasUnified'
+import { unifiedServicesService } from '@/services/unifiedServices'
+import { transformUnifiedServiceToServiceEnhanced } from '@/utils/serviceTransformers'
 import { normalizeSpanishText } from '@/lib/utils'
 import { dependenciasClientService } from '@/services/dependencias'
 import { subdependenciasClientService } from '@/services/subdependencias'
@@ -68,14 +69,18 @@ const TramitesPage: React.FC = () => {
       setLoading(true)
       setError(null)
 
-      // Use unified service to get both tramites and OPAs
-      const result = await tramitesOpasUnifiedService.getAllServices({
+      // Use unified service to get both tramites and OPAs from servicios table
+      const result = await unifiedServicesService.getAll({
+        serviceType: 'both',
         activo: true,
         limit: 1000 // Get all active services
       })
 
-      setServices(result.data)
-      setFilteredServices(result.data)
+      // Transform UnifiedServiceItem[] to ServiceEnhanced[]
+      const transformedServices = result.data.map(transformUnifiedServiceToServiceEnhanced)
+
+      setServices(transformedServices)
+      setFilteredServices(transformedServices)
     } catch (err) {
       console.error('Error fetching services:', err)
       setError('Error al cargar los servicios. Por favor, intenta de nuevo.')
