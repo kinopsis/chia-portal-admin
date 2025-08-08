@@ -44,6 +44,8 @@ const serviceFormSchema = z.object({
     .max(100, 'El tiempo de respuesta no puede exceder 100 caracteres')
     .optional(),
   tiene_pago: z.boolean(),
+  dependencia_id: z.string()
+    .min(1, 'Selecciona una dependencia'),
   subdependencia_id: z.string()
     .min(1, 'Selecciona una subdependencia'),
   categoria: z.enum(['atencion_ciudadana', 'servicios_publicos', 'cultura_deporte', 'salud', 'educacion', 'medio_ambiente', 'infraestructura', 'otros'], {
@@ -51,6 +53,7 @@ const serviceFormSchema = z.object({
   }),
   activo: z.boolean(),
   requisitos: z.array(z.string()).optional(),
+  instrucciones: z.array(z.string()).optional(), // Add instrucciones field
   visualizacion_suit: z.string()
     .url('Debe ser una URL válida')
     .optional()
@@ -91,10 +94,18 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
   autoSave = false,
   className
 }) => {
-  const [selectedDependencia, setSelectedDependencia] = useState<string>('')
   const [filteredSubdependencias, setFilteredSubdependencias] = useState<Subdependencia[]>([])
   const [requisitos, setRequisitos] = useState<string[]>(initialData?.requisitos || [])
   const [newRequisito, setNewRequisito] = useState('')
+  const [instrucciones, setInstrucciones] = useState<string[]>(initialData?.instrucciones || [])
+  const [newInstruccion, setNewInstruccion] = useState('')
+
+  // Helper function to get dependencia_id from subdependencia_id
+  const getDependenciaIdFromSubdependencia = (subdependenciaId: string): string => {
+    if (!subdependenciaId || !subdependencias.length) return ''
+    const subdep = subdependencias.find(sub => sub.id === subdependenciaId)
+    return subdep?.dependencia_id || ''
+  }
 
   // Form setup
   const {
@@ -108,49 +119,124 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
     resolver: zodResolver(serviceFormSchema),
     mode: 'onChange', // Enable real-time validation
     defaultValues: {
-      tipo: serviceType || (initialData?.tipo_servicio === 'servicio' ? 'tramite' : initialData?.tipo_servicio) || 'tramite',
+      // CRITICAL FIX: Robust service type initialization for OPA editing
+      // Priority: serviceType prop > initialData.tipo > initialData.tipo_servicio > default 'tramite'
+      tipo: serviceType ||
+            (initialData?.tipo === 'opa' ? 'opa' :
+             initialData?.tipo === 'tramite' ? 'tramite' :
+             initialData?.tipo_servicio === 'opa' ? 'opa' :
+             initialData?.tipo_servicio === 'servicio' ? 'tramite' :
+             initialData?.tipo_servicio === 'tramite' ? 'tramite' : 'tramite'),
       codigo: mode === 'edit' ? initialData?.codigo : '', // Empty for create mode
       nombre: initialData?.nombre || '',
       descripcion: initialData?.descripcion || '',
       formulario: '',
       tiempo_respuesta: initialData?.tiempo_respuesta || '',
       tiene_pago: initialData?.requiere_pago || false,
-      subdependencia_id: initialData?.subdependencia?.id || '',
+      // Fix: Get dependencia_id from subdependencia relationship or directly from initialData
+      dependencia_id: initialData?.subdependencia?.dependencia_id ||
+                     initialData?.dependencia_id ||
+                     getDependenciaIdFromSubdependencia(initialData?.subdependencia_id || ''),
+      // Fix: Get subdependencia_id from nested object or directly from initialData
+      subdependencia_id: initialData?.subdependencia?.id || initialData?.subdependencia_id || '',
       categoria: (initialData?.categoria as any) || 'atencion_ciudadana',
       activo: initialData?.activo ?? true,
       requisitos: initialData?.requisitos || [],
+      instrucciones: initialData?.instrucciones || [],
       visualizacion_suit: initialData?.url_suit || '',
       visualizacion_gov: initialData?.url_gov || ''
     }
   })
 
   const watchedTipo = watch('tipo')
+  const watchedDependenciaId = watch('dependencia_id')
+
+  // CRITICAL FIX: Reset form when initialData changes (for modal reuse)
+  useEffect(() => {
+    if (initialData) {
+      // Calculate the correct service type using the same logic as defaultValues
+      const resolvedTipo = serviceType ||
+                          (initialData?.tipo === 'opa' ? 'opa' :
+                           initialData?.tipo === 'tramite' ? 'tramite' :
+                           initialData?.tipo_servicio === 'opa' ? 'opa' :
+                           initialData?.tipo_servicio === 'servicio' ? 'tramite' :
+                           initialData?.tipo_servicio === 'tramite' ? 'tramite' : 'tramite')
+
+      // CRITICAL FIX: Update local state variables to match initialData
+      const newRequisitos = initialData?.requisitos || []
+
+      const newInstrucciones = initialData?.instrucciones || []
+
+      setRequisitos(newRequisitos)
+      setInstrucciones(newInstrucciones)
+
+      // Reset form with new values
+      reset({
+        tipo: resolvedTipo,
+        codigo: mode === 'edit' ? initialData?.codigo : '',
+        nombre: initialData?.nombre || '',
+        descripcion: initialData?.descripcion || '',
+        formulario: '',
+        tiempo_respuesta: initialData?.tiempo_respuesta || '',
+        tiene_pago: initialData?.requiere_pago || false,
+        dependencia_id: initialData?.subdependencia?.dependencia_id ||
+                       initialData?.dependencia_id ||
+                       getDependenciaIdFromSubdependencia(initialData?.subdependencia_id || ''),
+        subdependencia_id: initialData?.subdependencia?.id || initialData?.subdependencia_id || '',
+        categoria: (initialData?.categoria as any) || 'atencion_ciudadana',
+        activo: initialData?.activo ?? true,
+        requisitos: newRequisitos,
+        instrucciones: newInstrucciones,
+        visualizacion_suit: initialData?.url_suit || '',
+        visualizacion_gov: initialData?.url_gov || ''
+      })
+    }
+  }, [initialData, serviceType, mode, reset])
+
+  // Initialize form with proper dependencia_id in edit mode
+  useEffect(() => {
+    if (mode === 'edit' && initialData?.subdependencia_id && subdependencias.length > 0) {
+      const subdep = subdependencias.find(sub => sub.id === initialData.subdependencia_id)
+      if (subdep && subdep.dependencia_id) {
+        const currentDependenciaId = watch('dependencia_id')
+        if (!currentDependenciaId || currentDependenciaId !== subdep.dependencia_id) {
+          setValue('dependencia_id', subdep.dependencia_id, { shouldValidate: true })
+        }
+      }
+    }
+  }, [mode, initialData, subdependencias, setValue, watch])
 
   // Filter subdependencias based on selected dependencia
   useEffect(() => {
-    if (selectedDependencia) {
-      const filtered = subdependencias.filter(sub => sub.dependencia_id === selectedDependencia)
+    if (watchedDependenciaId) {
+      const filtered = subdependencias.filter(sub => sub.dependencia_id === watchedDependenciaId)
       setFilteredSubdependencias(filtered)
+      // Reset subdependencia when dependencia changes (but not during initial load)
+      if (filtered.length > 0) {
+        const currentSubdep = filtered.find(sub => sub.id === watch('subdependencia_id'))
+        if (!currentSubdep && mode === 'create') {
+          setValue('subdependencia_id', '', { shouldValidate: true })
+        }
+      }
     } else {
-      setFilteredSubdependencias(subdependencias)
-    }
-  }, [selectedDependencia, subdependencias])
-
-  // Set initial dependencia if editing
-  useEffect(() => {
-    if (mode === 'edit' && initialData?.subdependencia?.id) {
-      const subdep = subdependencias.find(s => s.id === initialData?.subdependencia?.id)
-      if (subdep) {
-        setSelectedDependencia(subdep.dependencia_id)
+      setFilteredSubdependencias([])
+      if (mode === 'create') {
+        setValue('subdependencia_id', '', { shouldValidate: true })
       }
     }
-  }, [mode, initialData, subdependencias])
+  }, [watchedDependenciaId, subdependencias, setValue, watch, mode])
 
-  // Handle dependencia change
-  const handleDependenciaChange = useCallback((dependenciaId: string) => {
-    setSelectedDependencia(dependenciaId)
-    setValue('subdependencia_id', '') // Reset subdependencia when dependencia changes
-  }, [setValue])
+  // Sync array changes with form state to trigger validation
+  useEffect(() => {
+    setValue('requisitos', requisitos, { shouldDirty: true, shouldValidate: true })
+  }, [requisitos, setValue])
+
+  useEffect(() => {
+
+    setValue('instrucciones', instrucciones, { shouldDirty: true, shouldValidate: true })
+  }, [instrucciones, setValue])
+
+  // Handle dependencia change - now handled by React Hook Form Controller
 
   // Handle requisitos
   const addRequisito = useCallback(() => {
@@ -168,6 +254,22 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
     setValue('requisitos', updatedRequisitos)
   }, [requisitos, setValue])
 
+  // Handle instrucciones
+  const addInstruccion = useCallback(() => {
+    if (newInstruccion.trim() && !instrucciones.includes(newInstruccion.trim())) {
+      const updatedInstrucciones = [...instrucciones, newInstruccion.trim()]
+      setInstrucciones(updatedInstrucciones)
+      setValue('instrucciones', updatedInstrucciones)
+      setNewInstruccion('')
+    }
+  }, [newInstruccion, instrucciones, setValue])
+
+  const removeInstruccion = useCallback((index: number) => {
+    const updatedInstrucciones = instrucciones.filter((_, i) => i !== index)
+    setInstrucciones(updatedInstrucciones)
+    setValue('instrucciones', updatedInstrucciones)
+  }, [instrucciones, setValue])
+
   // Form submission
   const onFormSubmit = useCallback(async (data: ServiceFormData) => {
     try {
@@ -184,13 +286,19 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
           categoria: data.categoria,
           activo: data.activo,
           requisitos: requisitos.length > 0 ? requisitos : undefined, // Use state requisitos
+          instrucciones: instrucciones.length > 0 ? instrucciones : undefined, // Use state instrucciones
           visualizacion_suit: data.visualizacion_suit || undefined,
           visualizacion_gov: data.visualizacion_gov || undefined
         }
         await onSubmit(createData)
       } else {
+        // Validate that we have an ID for update mode
+        if (!initialData?.id) {
+          throw new Error('Service ID is required for update operation')
+        }
+
         const updateData: UpdateServiceData = {
-          id: initialData?.id || '',
+          id: initialData.id,
           tipo: data.tipo,
           codigo: data.codigo,
           nombre: data.nombre,
@@ -202,15 +310,18 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
           categoria: data.categoria,
           activo: data.activo,
           requisitos: requisitos.length > 0 ? requisitos : undefined, // Use state requisitos
+          instrucciones: instrucciones.length > 0 ? instrucciones : undefined, // Use state instrucciones
           visualizacion_suit: data.visualizacion_suit || undefined,
           visualizacion_gov: data.visualizacion_gov || undefined
         }
+
+        console.log('🔧 Form submitting update data:', updateData)
         await onSubmit(updateData)
       }
     } catch (error) {
       console.error('Error submitting form:', error)
     }
-  }, [mode, initialData, onSubmit, requisitos])
+  }, [mode, initialData, onSubmit, requisitos, instrucciones])
 
   // Service type options
   const tipoOptions = [
@@ -275,6 +386,7 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
                   options={tipoOptions}
                   disabled={loading || (mode === 'edit')} // Can't change type when editing
                   error={errors.tipo?.message}
+                  data-testid="tipo-select"
                 />
               </div>
             )}
@@ -380,6 +492,7 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
                 placeholder="Ingresa el nombre completo del servicio"
                 disabled={loading}
                 error={errors.nombre?.message}
+                data-testid="nombre-input"
               />
             )}
           />
@@ -397,17 +510,24 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Dependencia *
-              </label>
-              <Select
-                value={selectedDependencia}
-                onChange={handleDependenciaChange}
-                options={dependenciaOptions}
-                disabled={loading}
-              />
-            </div>
+            <Controller
+              name="dependencia_id"
+              control={control}
+              render={({ field }) => (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Dependencia *
+                  </label>
+                  <Select
+                    {...field}
+                    options={dependenciaOptions}
+                    disabled={loading}
+                    error={errors.dependencia_id?.message}
+                    data-testid="dependencia-select"
+                  />
+                </div>
+              )}
+            />
 
             <Controller
               name="subdependencia_id"
@@ -420,8 +540,9 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
                   <Select
                     {...field}
                     options={subdependenciaOptions}
-                    disabled={loading || !selectedDependencia}
+                    disabled={loading || !watchedDependenciaId}
                     error={errors.subdependencia_id?.message}
+                    data-testid="subdependencia-select"
                   />
                 </div>
               )}
@@ -653,6 +774,58 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
           )}
         </div>
 
+        {/* Instructions */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Instrucciones
+          </label>
+
+          {/* Add new instruction */}
+          <div className="flex space-x-2 mb-3">
+            <Input
+              type="text"
+              placeholder="Agregar nueva instrucción"
+              value={newInstruccion}
+              onChange={(e) => setNewInstruccion(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  addInstruccion()
+                }
+              }}
+              disabled={loading}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={addInstruccion}
+              disabled={loading || !newInstruccion.trim()}
+            >
+              Agregar
+            </Button>
+          </div>
+
+          {/* Instructions list */}
+          {instrucciones.length > 0 && (
+            <div className="space-y-2">
+              {instrucciones.map((instruccion, index) => (
+                <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                  <span className="text-sm text-gray-700">{instruccion}</span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeInstruccion(index)}
+                    disabled={loading}
+                  >
+                    X
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Form Actions */}
         <div className="flex items-center justify-end space-x-3 pt-6 border-t border-gray-200">
           <Button
@@ -668,7 +841,8 @@ export const UnifiedServiceForm: React.FC<UnifiedServiceFormProps> = ({
             type="submit"
             variant="primary"
             isLoading={loading}
-            disabled={!isValid}
+            disabled={mode === 'create' ? !isValid : (!isValid || !isDirty)}
+            data-testid="submit-button"
           >
             {mode === 'create' ? 'Crear Servicio' : 'Guardar Cambios'}
           </Button>

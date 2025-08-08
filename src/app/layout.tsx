@@ -5,6 +5,7 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { ServiceUpdateProvider } from '@/contexts/ServiceUpdateContext'
 import { QueryProvider } from '@/providers/QueryProvider'
+import { ToastProvider } from '@/components/ui/toast'
 import { ConditionalLayout } from '@/components/layout'
 import { SkipLink } from '@/components/atoms'
 import ErrorBoundary from '@/components/ErrorBoundary'
@@ -52,10 +53,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <QueryProvider>
                     <AuthProvider>
                       <ServiceUpdateProvider>
-                        <ConditionalLayout>{children}</ConditionalLayout>
-                        <PerformanceMonitor />
-                        {/* UX-008: Privacy Consent Banner */}
-                        <PrivacyConsent showDetailedOptions={true} />
+                        <ToastProvider>
+                          <ConditionalLayout>{children}</ConditionalLayout>
+                          <PerformanceMonitor />
+                          {/* UX-008: Privacy Consent Banner */}
+                          <PrivacyConsent showDetailedOptions={true} />
+                        </ToastProvider>
                       </ServiceUpdateProvider>
                     </AuthProvider>
                   </QueryProvider>

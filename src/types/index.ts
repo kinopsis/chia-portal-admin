@@ -62,6 +62,13 @@ export interface Tramite {
   subdependencia_id: string
   activo: boolean
   requisitos?: string[]        // Array of requirements from database
+
+  // NEW FIELDS
+  instructivo?: string[]       // Array of step-by-step instructions
+  modalidad: 'virtual' | 'presencial' | 'mixto'  // Processing mode (required)
+  categoria?: string          // Thematic category (optional but recommended)
+  observaciones?: string      // Additional observations (optional)
+
   created_at: string
   updated_at: string
   // Relations for display
@@ -77,6 +84,20 @@ export interface Tramite {
     }
   }
 }
+
+// Type for modalidad options
+export type TramiteModalidad = 'virtual' | 'presencial' | 'mixto'
+
+// Type for common categories
+export type TramiteCategoria =
+  | 'impuestos'
+  | 'licencias'
+  | 'informativo'
+  | 'salud'
+  | 'movilidad'
+  | 'ambiental'
+  | 'general'
+  | string // Allow custom categories
 
 // OPAs Types
 export interface OPA {
@@ -380,4 +401,61 @@ export interface ThemeConfig {
     sans: string[]
     heading: string[]
   }
+}
+
+// ===================================
+// UNIFIED SERVICE TYPES
+// ===================================
+
+/**
+ * Unified interface for both Trámites and OPAs
+ * This allows using the same components and logic for both service types
+ */
+export interface ServiceEnhanced {
+  id: string
+  codigo: string  // Unificado: codigo_unico (trámites) o codigo_opa (OPAs)
+  nombre: string
+  descripcion?: string
+  formulario?: string
+  tiempo_respuesta?: string
+  tiene_pago: boolean
+  visualizacion_suit?: string | boolean  // Support both URL string (old) and boolean (new)
+  visualizacion_gov?: string | boolean   // Support both URL string (old) and boolean (new)
+  // New URL fields for proper database mapping
+  url_suit?: string
+  url_gov?: string
+  requisitos?: string[]
+  instructivo?: string[]
+  instrucciones?: string[]  // Support both field names
+  modalidad: 'virtual' | 'presencial' | 'mixto'
+  categoria?: string
+  observaciones?: string
+  tipo: 'tramite' | 'opa'  // Campo para distinguir el tipo de servicio
+  dependencia?: string     // Nombre de la dependencia (calculado)
+  subdependencia?: string  // Nombre de la subdependencia (calculado)
+  dependencia_id: string   // ID de la dependencia (requerido para filtros)
+  subdependencia_id: string
+  activo: boolean
+  created_at: string
+  updated_at: string
+  // Datos originales preservados para compatibilidad
+  originalData: Tramite | OPA
+}
+
+/**
+ * Extended TramiteEnhanced interface that now extends ServiceEnhanced
+ * Maintains backward compatibility while adding unified functionality
+ */
+export interface TramiteEnhanced extends ServiceEnhanced {
+  tipo: 'tramite'
+  originalData: Tramite
+}
+
+/**
+ * New OPAEnhanced interface that extends ServiceEnhanced
+ * Provides same structure as TramiteEnhanced for OPAs
+ */
+export interface OPAEnhanced extends ServiceEnhanced {
+  tipo: 'opa'
+  originalData: OPA
 }

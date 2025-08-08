@@ -75,7 +75,14 @@ export const ServiceCardView: React.FC<ServiceCardViewProps> = ({
       updated_at: item.updated_at,
       originalData: {
         tiene_pago: item.requiere_pago,
-        requiere_pago: item.requiere_pago
+        requiere_pago: item.requiere_pago,
+        requisitos: item.requisitos,
+        instrucciones: item.instrucciones,
+        // Fix: Map URL fields correctly for card display
+        url_suit: item.url_suit,
+        url_gov: item.url_gov,
+        visualizacion_suit: item.visualizacion_suit,
+        visualizacion_gov: item.visualizacion_gov
       }
     }))
 

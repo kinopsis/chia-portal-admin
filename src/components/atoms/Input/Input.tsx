@@ -9,6 +9,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   rightIcon?: React.ReactNode
   variant?: 'default' | 'search'
   fullWidth?: boolean
+  'data-testid'?: string
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -23,6 +24,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       fullWidth = false,
       className,
       id,
+      'data-testid': testId,
       ...props
     },
     ref
@@ -76,8 +78,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               error ? `${inputId}-error` :
               helperText ? `${inputId}-helper` : undefined
             }
-            aria-invalid={error ? true : false}
-            aria-required={props.required ? true : false}
+            aria-invalid={!!error}
+            aria-required={!!props.required}
+            data-testid={testId}
             {...props}
           />
 

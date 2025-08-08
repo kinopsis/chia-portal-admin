@@ -447,6 +447,7 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
         {selectedItem && (
           <UnifiedServiceForm
             mode="edit"
+            serviceType={selectedItem.tipo_servicio as 'tramite' | 'opa'}
             initialData={selectedItem}
             dependencias={dependencias}
             subdependencias={subdependencias}
@@ -477,7 +478,7 @@ export const UnifiedServicesManager: React.FC<UnifiedServicesManagerProps> = ({
                 <p className="font-medium">{selectedItem.nombre}</p>
                 <p className="text-sm text-gray-600">Código: {selectedItem.codigo}</p>
                 <p className="text-sm text-gray-600">
-                  Tipo: {selectedItem.tipo === 'tramite' ? 'Trámite' : 'OPA'}
+                  Tipo: {selectedItem.tipo_servicio === 'tramite' ? 'Trámite' : 'OPA'}
                 </p>
               </div>
               <p className="mt-3 text-sm text-red-600">

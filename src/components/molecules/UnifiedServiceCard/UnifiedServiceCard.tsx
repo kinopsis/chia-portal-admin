@@ -303,14 +303,19 @@ export const UnifiedServiceCard: React.FC<UnifiedServiceCardProps> = ({
                     ))}
                   </ul>
                   
-                  {/* Government portal links */}
-                  {(service.originalData?.visualizacion_suit || service.originalData?.visualizacion_gov) && (
+                  {/* Government portal links - Fix: Support both old and new URL field structure */}
+                  {((service.originalData?.url_suit && service.originalData?.visualizacion_suit) ||
+                    (service.originalData?.url_gov && service.originalData?.visualizacion_gov) ||
+                    (typeof service.originalData?.visualizacion_suit === 'string' && service.originalData?.visualizacion_suit) ||
+                    (typeof service.originalData?.visualizacion_gov === 'string' && service.originalData?.visualizacion_gov)) && (
                     <div className="mt-3 pt-3 border-t border-amber-200">
                       <div className="flex items-center gap-2 text-xs text-gray-600">
                         <span>Enlaces oficiales:</span>
-                        {service.originalData?.visualizacion_suit && (
-                          <a 
-                            href={service.originalData.visualizacion_suit}
+                        {/* SUIT Link - Support both new and old formats */}
+                        {((service.originalData?.url_suit && service.originalData?.visualizacion_suit) ||
+                          (typeof service.originalData?.visualizacion_suit === 'string' && service.originalData?.visualizacion_suit)) && (
+                          <a
+                            href={service.originalData.url_suit || (typeof service.originalData.visualizacion_suit === 'string' ? service.originalData.visualizacion_suit : '')}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:text-blue-800"
@@ -318,9 +323,11 @@ export const UnifiedServiceCard: React.FC<UnifiedServiceCardProps> = ({
                             SUIT
                           </a>
                         )}
-                        {service.originalData?.visualizacion_gov && (
-                          <a 
-                            href={service.originalData.visualizacion_gov}
+                        {/* GOV.CO Link - Support both new and old formats */}
+                        {((service.originalData?.url_gov && service.originalData?.visualizacion_gov) ||
+                          (typeof service.originalData?.visualizacion_gov === 'string' && service.originalData?.visualizacion_gov)) && (
+                          <a
+                            href={service.originalData.url_gov || (typeof service.originalData.visualizacion_gov === 'string' ? service.originalData.visualizacion_gov : '')}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:text-blue-800"
