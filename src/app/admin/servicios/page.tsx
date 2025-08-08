@@ -203,7 +203,7 @@ const AdminServiciosPage: React.FC = () => {
     if (searchQuery.trim()) {
       const normalizedQuery = normalizeSpanishText(searchQuery.toLowerCase())
       filtered = filtered.filter(service => {
-        const normalizedNombre = normalizeSpanishText(service.nombre.toLowerCase())
+        const normalizedNombre = normalizeSpanishText((service.nombre || '').toLowerCase())
         const normalizedDescripcion = normalizeSpanishText((service.descripcion || '').toLowerCase())
         const normalizedCodigo = normalizeSpanishText((service.codigo || '').toLowerCase())
         const normalizedDependencia = normalizeSpanishText((service.dependencia_nombre || '').toLowerCase())

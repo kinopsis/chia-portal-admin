@@ -83,12 +83,12 @@ export default function DependenciasPage() {
   // Filter dependencias based on search
   const filteredDependencias = searchQuery
     ? dependencias.filter(dep =>
-        dep.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        dep.descripcion.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (dep.nombre || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (dep.descripcion || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         dep.subdependencias?.some(sub =>
-          sub.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          sub.tramites?.some(t => t.nombre.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          sub.opas?.some(o => o.nombre.toLowerCase().includes(searchQuery.toLowerCase()))
+          (sub.nombre || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+          sub.tramites?.some(t => (t.nombre || '').toLowerCase().includes(searchQuery.toLowerCase())) ||
+          sub.opas?.some(o => (o.nombre || '').toLowerCase().includes(searchQuery.toLowerCase()))
         )
       )
     : dependencias

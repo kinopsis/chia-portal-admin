@@ -221,7 +221,9 @@ export function delay(ms: number): Promise<void> {
  * @param text - Text to normalize
  * @returns Normalized text without accents
  */
-export function normalizeSpanishText(text: string): string {
+export function normalizeSpanishText(text: string | null | undefined): string {
+  if (!text) return ''
+
   return text
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
