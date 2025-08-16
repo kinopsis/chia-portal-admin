@@ -175,7 +175,7 @@ class TramitesOpasUnifiedService {
       ]
 
       return searchableFields.some(field => {
-        const normalizedField = normalizeSpanishText(field.toLowerCase())
+        const normalizedField = normalizeSpanishText((field || '').toLowerCase())
         return normalizedField.includes(normalizedQuery)
       })
     })

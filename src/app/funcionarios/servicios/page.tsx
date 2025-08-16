@@ -217,7 +217,7 @@ const FuncionariosServiciosPage: React.FC = () => {
       if (searchQuery.trim()) {
         const normalizedQuery = normalizeSpanishText(searchQuery.toLowerCase())
         filtered = filtered.filter(service => {
-          const normalizedNombre = normalizeSpanishText(service.nombre.toLowerCase())
+          const normalizedNombre = normalizeSpanishText((service.nombre || '').toLowerCase())
           const normalizedDescripcion = normalizeSpanishText((service.descripcion || '').toLowerCase())
           const normalizedCodigo = normalizeSpanishText((service.codigo || '').toLowerCase())
           // Fix field name: use service.dependencia instead of service.dependencia_nombre
