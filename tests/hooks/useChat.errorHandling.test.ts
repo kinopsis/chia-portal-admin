@@ -10,7 +10,7 @@ describe('useChat error handling for non-JSON responses', () => {
   })
 
   it('handles HTML error response without throwing JSON parse error', async () => {
-    const fetchMock = jest.spyOn(global as any, 'fetch').mockImplementation(async (...args: any[]) => {
+    const fetchMock = jest.spyOn(globalThis, 'fetch').mockImplementation(async (...args: any[]) => {
       const input = args[0]
       if (typeof input === 'string' && input.startsWith('/api/chat')) {
         return new Response('<html>Internal Server Error</html>', {

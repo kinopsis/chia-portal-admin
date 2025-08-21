@@ -22,9 +22,9 @@ describe('ChatWidget reduced motion', () => {
 
     render(<ChatWidget defaultOpen />)
 
-    // The backdrop div is the sibling of Card with fixed inset-0 and should not include backdrop-blur when reduced motion
-    const backdrop = screen.getByText((_, el) => el?.className?.includes('fixed inset-0') ?? false)
-    expect(backdrop?.className).toMatch(/bg-black\/50/)
+    // The backdrop div should use solid overlay when reduced motion is enabled
+    const backdrop = screen.getByTestId('chat-backdrop')
+    expect(backdrop.className).toMatch(/bg-black\/50/)
   })
 })
 

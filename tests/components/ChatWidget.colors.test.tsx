@@ -23,6 +23,8 @@ describe('ChatWidget color tokens', () => {
     expect(header?.className).toContain('from-[color:var(--color-primary-green)]')
     expect(header?.className).toContain('to-[color:var(--color-primary-green-dark)]')
 
+    // FAB is not rendered when widget is defaultOpen, test when closed
+    const { rerender } = render(<ChatWidget />)
     const fab = screen.getByTestId('chat-fab')
     expect(fab.className).toContain('from-[color:var(--color-primary-green)]')
     expect(fab.className).toContain('to-[color:var(--color-primary-green-dark)]')
