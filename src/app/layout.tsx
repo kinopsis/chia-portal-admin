@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Header, Footer } from '@/components'
 import { AuthProvider } from '@/contexts/AuthContext'
-import { ThemeProvider } from '@/contexts/ThemeContext'
 import { ServiceUpdateProvider } from '@/contexts/ServiceUpdateContext'
 import { QueryProvider } from '@/providers/QueryProvider'
 import { ToastProvider } from '@/components/ui/toast'
@@ -49,20 +48,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AccessibilityProvider>
             <PerformanceProvider enableMonitoring={true}>
               <MobileOptimizationProvider>
-                <ThemeProvider defaultTheme="system" enableTransitions={true}>
-                  <QueryProvider>
-                    <AuthProvider>
-                      <ServiceUpdateProvider>
-                        <ToastProvider>
-                          <ConditionalLayout>{children}</ConditionalLayout>
-                          <PerformanceMonitor />
-                          {/* UX-008: Privacy Consent Banner */}
-                          <PrivacyConsent showDetailedOptions={true} />
-                        </ToastProvider>
-                      </ServiceUpdateProvider>
-                    </AuthProvider>
-                  </QueryProvider>
-                </ThemeProvider>
+                <QueryProvider>
+                  <AuthProvider>
+                    <ServiceUpdateProvider>
+                      <ToastProvider>
+                        <ConditionalLayout>{children}</ConditionalLayout>
+                        <PerformanceMonitor />
+                        {/* UX-008: Privacy Consent Banner */}
+                        <PrivacyConsent showDetailedOptions={true} />
+                      </ToastProvider>
+                    </ServiceUpdateProvider>
+                  </AuthProvider>
+                </QueryProvider>
               </MobileOptimizationProvider>
             </PerformanceProvider>
           </AccessibilityProvider>

@@ -193,12 +193,25 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
         signal: abortControllerRef.current.signal
       })
 
+      const contentType = response.headers.get('content-type') || ''
+
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || `HTTP ${response.status}`)
+        if (contentType.includes('application/json')) {
+          const errorData = await response.json().catch(() => ({} as any))
+          throw new Error(errorData.error || `HTTP ${response.status}`)
+        } else {
+          const text = await response.text().catch(() => '')
+          throw new Error(`HTTP ${response.status}: ${text?.slice(0, 200) || 'Non-JSON error response'}`)
+        }
       }
 
-      const data = await response.json()
+      let data: any
+      if (contentType.includes('application/json')) {
+        data = await response.json()
+      } else {
+        const text = await response.text()
+        throw new Error(`Invalid server response format: expected JSON, got text/html: ${text.slice(0, 120)}`)
+      }
 
       if (!data.success) {
         throw new Error(data.error || 'Failed to get response')
@@ -280,19 +293,32 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
     if (state.sessionToken) {
       try {
         const response = await fetch(`/api/chat?sessionToken=${state.sessionToken}`)
+        const contentType = response.headers.get('content-type') || ''
         if (response.ok) {
-          const data = await response.json()
-          if (data.success && data.data.messages) {
-            // Restore messages from server
-            const serverMessages: ChatMessage[] = data.data.messages.map((msg: any) => ({
-              id: generateMessageId(),
-              role: msg.role,
-              content: msg.content,
-              timestamp: new Date(msg.created_at),
-              confidence: msg.confidence_score
-            }))
-            
-            setState(prev => ({ ...prev, messages: serverMessages }))
+          if (contentType.includes('application/json')) {
+            const data = await response.json().catch(() => null)
+            if (data && data.success && data.data?.messages) {
+              const serverMessages: ChatMessage[] = data.data.messages.map((msg: any) => ({
+                id: generateMessageId(),
+                role: msg.role,
+                content: msg.content,
+                timestamp: new Date(msg.created_at),
+                confidence: msg.confidence_score
+              }))
+              setState(prev => ({ ...prev, messages: serverMessages }))
+            }
+          } else {
+            const text = await response.text().catch(() => '')
+            console.warn('Unexpected non-JSON response from /api/chat reconnect:', text.slice(0, 120))
+          }
+        } else {
+          // Not ok: try to parse json error, otherwise log text
+          if (contentType.includes('application/json')) {
+            const err = await response.json().catch(() => null)
+            console.warn('Reconnect failed:', err?.error || `HTTP ${response.status}`)
+          } else {
+            const text = await response.text().catch(() => '')
+            console.warn('Reconnect failed (non-JSON):', `HTTP ${response.status}: ${text.slice(0, 120)}`)
           }
         }
       } catch (error) {
