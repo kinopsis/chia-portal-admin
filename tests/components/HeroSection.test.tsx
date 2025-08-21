@@ -13,13 +13,6 @@ jest.mock('next/navigation', () => ({
   }),
 }))
 
-// Mock theme context
-jest.mock('@/contexts/ThemeContext', () => ({
-  useTheme: () => ({
-    isDark: false,
-    theme: 'light',
-  }),
-}))
 
 describe('HeroSection Component', () => {
   const defaultProps: HeroSectionProps = {
@@ -336,23 +329,6 @@ describe('HeroSection Component', () => {
     })
   })
 
-  describe('Dark Mode Support', () => {
-    it('applies dark mode classes', () => {
-      // Mock dark theme
-      jest.mocked(require('@/contexts/ThemeContext').useTheme).mockReturnValue({
-        isDark: true,
-        theme: 'dark',
-      })
-
-      render(<HeroSection {...defaultProps} />)
-      
-      const title = screen.getByRole('heading', { level: 1 })
-      expect(title).toHaveClass('dark:text-gray-100')
-      
-      const subtitle = screen.getByText('Test hero subtitle description')
-      expect(subtitle).toHaveClass('dark:text-gray-300')
-    })
-  })
 
   describe('Error Handling', () => {
     it('handles missing props gracefully', () => {

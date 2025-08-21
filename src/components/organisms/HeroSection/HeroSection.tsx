@@ -17,7 +17,6 @@ import { useRouter } from 'next/navigation'
 import { clsx } from 'clsx'
 import { ResponsiveContainer } from '@/components/atoms/ResponsiveContainer'
 import Button from '@/components/atoms/Button'
-import { useTheme } from '@/contexts/ThemeContext'
 
 export interface HeroSectionProps {
   /** Main heading text */
@@ -74,7 +73,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const router = useRouter()
-  const { isDark } = useTheme()
 
   // Handle search submission
   const handleSearch = (e: React.FormEvent) => {
@@ -100,17 +98,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       case 'gradient':
         return clsx(
           'bg-gradient-to-br',
-          'from-primary-yellow/10 via-primary-green/5 to-primary-green/10',
-          'dark:from-primary-yellow/5 dark:via-primary-green/5 dark:to-primary-green/10'
+          'from-primary-yellow/10 via-primary-green/5 to-primary-green/10'
         )
       case 'solid':
-        return 'bg-gray-50 dark:bg-gray-900'
+        return 'bg-gray-50'
       case 'image':
-        return backgroundImage 
-          ? `bg-cover bg-center bg-no-repeat` 
-          : 'bg-gray-50 dark:bg-gray-900'
+        return backgroundImage
+          ? `bg-cover bg-center bg-no-repeat`
+          : 'bg-gray-50'
       default:
-        return 'bg-gray-50 dark:bg-gray-900'
+        return 'bg-gray-50'
     }
   }
 
@@ -129,7 +126,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     >
       {/* Background overlay for image variant */}
       {backgroundVariant === 'image' && (
-        <div className="absolute inset-0 bg-black/40 dark:bg-black/60" />
+        <div className="absolute inset-0 bg-black/40" />
       )}
 
       {/* Content */}
@@ -149,7 +146,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className={clsx(
               'font-bold leading-tight',
               'text-3xl sm:text-4xl lg:text-5xl xl:text-6xl',
-              'text-gray-900 dark:text-gray-100',
+              'text-gray-900',
               backgroundVariant === 'image' && 'text-white',
               'max-w-4xl mx-auto'
             )}
@@ -161,7 +158,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <p className={clsx(
             'text-lg sm:text-xl lg:text-2xl',
             'leading-relaxed',
-            'text-gray-600 dark:text-gray-300',
+            'text-gray-600',
             backgroundVariant === 'image' && 'text-gray-100',
             'max-w-3xl mx-auto'
           )}>
@@ -175,15 +172,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <form onSubmit={handleSearch} className="relative">
               <div className={clsx(
                 'relative flex items-center',
-                'bg-white dark:bg-background-tertiary',
-                'border-2 border-gray-200 dark:border-border-light',
-                'rounded-xl shadow-lg dark:shadow-xl',
+                'bg-white',
+                'border-2 border-gray-200',
+                'rounded-xl shadow-lg',
                 'transition-all duration-200',
-                isSearchFocused && 'border-primary-green dark:border-brand-green ring-2 ring-primary-green/20 dark:ring-brand-green/20'
+                isSearchFocused && 'border-primary-green ring-2 ring-primary-green/20'
               )}>
                 {/* Search Icon */}
                 <div className="absolute left-4 flex items-center pointer-events-none">
-                  <SearchIcon className="h-5 w-5 text-gray-400 dark:text-text-muted" />
+                  <SearchIcon className="h-5 w-5 text-gray-400" />
                 </div>
 
                 {/* Search Input */}
@@ -198,8 +195,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     'w-full pl-12 pr-4 py-4 lg:py-5',
                     'text-base lg:text-lg',
                     'bg-transparent',
-                    'text-gray-900 dark:text-text-primary',
-                    'placeholder-gray-500 dark:placeholder-text-muted',
+                    'text-gray-900',
+                    'placeholder-gray-500',
                     'border-none outline-none',
                     'rounded-xl'
                   )}
@@ -230,8 +227,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               {/* Search Suggestions/Help Text */}
               <div className="mt-3 text-center">
                 <p className={clsx(
-                  'text-sm text-gray-500 dark:text-text-muted',
-                  backgroundVariant === 'image' && 'text-gray-300 dark:text-text-secondary'
+                  'text-sm text-gray-500',
+                  backgroundVariant === 'image' && 'text-gray-300'
                 )}>
                   Prueba buscar: "certificado de residencia", "pagos", "citas" o "formularios"
                 </p>

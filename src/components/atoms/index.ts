@@ -55,8 +55,6 @@ export type { ErrorMessageProps } from './ErrorMessage'
 export { ProgressIndicator } from './ProgressIndicator'
 export type { ProgressIndicatorProps } from './ProgressIndicator'
 
-export { ThemeToggle } from './ThemeToggle'
-export type { ThemeToggleProps } from './ThemeToggle'
 
 export { LazyWrapper, useLazyLoad, withLazyLoading } from './LazyWrapper'
 export type { LazyWrapperProps } from './LazyWrapper'

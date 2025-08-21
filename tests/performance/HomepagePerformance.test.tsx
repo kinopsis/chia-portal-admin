@@ -18,7 +18,6 @@ import { HeroSection } from '@/components/organisms/HeroSection'
 import { WhyChooseSection } from '@/components/organisms/WhyChooseSection'
 import { DepartmentShowcase } from '@/components/organisms/DepartmentShowcase'
 import { FAQPreview } from '@/components/organisms/FAQPreview'
-import { ThemeProvider } from '@/contexts/ThemeContext'
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
@@ -148,15 +147,13 @@ describe('Homepage Performance Tests', () => {
 
       const renderTime = timer.measure('full-homepage-render', () => {
         render(
-          <ThemeProvider defaultTheme="light">
-            <div>
-              <HeroSection />
-              <MetricsGrid metrics={[]} />
-              <WhyChooseSection />
-              <DepartmentShowcase />
-              <FAQPreview />
-            </div>
-          </ThemeProvider>
+          <div>
+            <HeroSection />
+            <MetricsGrid metrics={[]} />
+            <WhyChooseSection />
+            <DepartmentShowcase />
+            <FAQPreview />
+          </div>
         )
       })
 
@@ -180,22 +177,20 @@ describe('Homepage Performance Tests', () => {
       
       const TestThemeComponent = () => {
         const [theme, setTheme] = React.useState<'light' | 'dark'>('light')
-        
+
         return (
-          <ThemeProvider defaultTheme={theme}>
-            <div>
-              <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-                Toggle Theme
-              </button>
-              <ServiceCard
-                icon="📋"
-                title="Test Service"
-                description="Test description"
-                href="/test"
-                colorScheme="service-yellow"
-              />
-            </div>
-          </ThemeProvider>
+          <div>
+            <button type="button" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+              Toggle Theme
+            </button>
+            <ServiceCard
+              icon="📋"
+              title="Test Service"
+              description="Test description"
+              href="/test"
+              colorScheme="service-yellow"
+            />
+          </div>
         )
       }
 
@@ -284,22 +279,20 @@ describe('Homepage Performance Tests', () => {
       
       const TestComponent = () => {
         const [theme, setTheme] = React.useState<'light' | 'dark'>('light')
-        
+
         return (
-          <ThemeProvider defaultTheme={theme}>
-            <div>
-              <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-                Toggle
-              </button>
-              <ServiceCard
-                icon="📋"
-                title="Test Service"
-                description="Test description"
-                href="/test"
-                colorScheme="service-green"
-              />
-            </div>
-          </ThemeProvider>
+          <div>
+            <button type="button" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+              Toggle
+            </button>
+            <ServiceCard
+              icon="📋"
+              title="Test Service"
+              description="Test description"
+              href="/test"
+              colorScheme="service-green"
+            />
+          </div>
         )
       }
 
@@ -434,13 +427,11 @@ describe('Homepage Performance Tests', () => {
       
       const renderTime = timer.measure('budget-test-render', () => {
         render(
-          <ThemeProvider defaultTheme="light">
-            <div>
-              <HeroSection />
-              <MetricsGrid metrics={[]} />
-              <WhyChooseSection />
-            </div>
-          </ThemeProvider>
+          <div>
+            <HeroSection />
+            <MetricsGrid metrics={[]} />
+            <WhyChooseSection />
+          </div>
         )
       })
 
@@ -454,15 +445,13 @@ describe('Homepage Performance Tests', () => {
       memoryMonitor.recordMeasurement()
 
       render(
-        <ThemeProvider defaultTheme="light">
-          <div>
-            <HeroSection />
-            <MetricsGrid metrics={[]} />
-            <WhyChooseSection />
-            <DepartmentShowcase />
-            <FAQPreview />
-          </div>
-        </ThemeProvider>
+        <div>
+          <HeroSection />
+          <MetricsGrid metrics={[]} />
+          <WhyChooseSection />
+          <DepartmentShowcase />
+          <FAQPreview />
+        </div>
       )
 
       memoryMonitor.recordMeasurement()

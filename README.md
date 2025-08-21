@@ -279,6 +279,23 @@ npm run test:coverage # Generar reporte de cobertura
 - Documentar componentes complejos
 - Seguir convenciones de Atomic Design
 
+## 🛡️ Manejo de Valores Null
+
+El proyecto implementa un patrón de protección defensiva para manejar valores `null` y `undefined` en funciones de búsqueda:
+
+### Patrón Recomendado
+```typescript
+// ✅ CORRECTO - Protegido con coalescencia nula
+const normalizedValue = normalizeSpanishText((field || '').toLowerCase())
+```
+
+### Documentación Completa
+- **Guía detallada**: [`docs/DEBUGGING-NULL-VALUES-GUIDE.md`](docs/DEBUGGING-NULL-VALUES-GUIDE.md)
+- **Tests**: `src/tests/debug-tramites-null-fix.test.ts`
+- **Archivos aplicados**: Todas las páginas de búsqueda y servicios
+
+Este patrón previene errores `TypeError: Cannot read properties of null` y garantiza búsquedas robustas con datos incompletos.
+
 ## 📄 Licencia
 
 Este proyecto es propiedad de la Alcaldía de Chía. Todos los derechos reservados.

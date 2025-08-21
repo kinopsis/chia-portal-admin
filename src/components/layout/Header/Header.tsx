@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { UserIcon, Bars3Icon } from '@heroicons/react/24/outline'
-import { Button, ThemeToggle, SkipLinks } from '@/components/atoms'
+import { Button, SkipLinks } from '@/components/atoms'
 import Navigation, { getMainNavigation } from '../Navigation'
 import MobileDrawer from '../MobileDrawer'
 import { useAuth } from '@/hooks'
@@ -98,13 +98,6 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Search functionality moved to internal pages where relevant */}
 
-            {/* Theme Toggle - Always visible for symmetry */}
-            <ThemeToggle
-              variant="compact"
-              size="sm"
-              showLabels={false}
-              className="flex-shrink-0"
-            />
 
             {/* Notifications (for authenticated users) */}
             {user && (

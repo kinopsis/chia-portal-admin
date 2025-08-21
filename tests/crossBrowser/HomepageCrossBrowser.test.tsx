@@ -20,7 +20,6 @@ import { HeroSection } from '@/components/organisms/HeroSection'
 import { WhyChooseSection } from '@/components/organisms/WhyChooseSection'
 import { DepartmentShowcase } from '@/components/organisms/DepartmentShowcase'
 import { FAQPreview } from '@/components/organisms/FAQPreview'
-import { ThemeProvider } from '@/contexts/ThemeContext'
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
@@ -288,22 +287,20 @@ describe('Homepage Cross-Browser Compatibility Tests', () => {
 
       const TestComponent = () => {
         const [theme, setTheme] = React.useState<'light' | 'dark'>('light')
-        
+
         return (
-          <ThemeProvider defaultTheme={theme}>
-            <div>
-              <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-                Toggle Theme
-              </button>
-              <ServiceCard
-                icon="📋"
-                title="Theme Test"
-                description="Testing theme switching"
-                href="/test"
-                colorScheme="service-blue"
-              />
-            </div>
-          </ThemeProvider>
+          <div>
+            <button type="button" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+              Toggle Theme
+            </button>
+            <ServiceCard
+              icon="📋"
+              title="Theme Test"
+              description="Testing theme switching"
+              href="/test"
+              colorScheme="service-blue"
+            />
+          </div>
         )
       }
 
@@ -330,15 +327,13 @@ describe('Homepage Cross-Browser Compatibility Tests', () => {
       })
 
       render(
-        <ThemeProvider defaultTheme="light">
-          <ServiceCard
-            icon="📋"
-            title="Persistence Test"
-            description="Testing theme persistence"
-            href="/test"
-            colorScheme="service-blue"
-          />
-        </ThemeProvider>
+        <ServiceCard
+          icon="📋"
+          title="Persistence Test"
+          description="Testing theme persistence"
+          href="/test"
+          colorScheme="service-blue"
+        />
       )
 
       expect(mockLocalStorage.getItem).toHaveBeenCalledWith('theme')
@@ -461,15 +456,13 @@ describe('Homepage Cross-Browser Compatibility Tests', () => {
     it('loads efficiently across browsers', async () => {
       const performance = await measurePerformance(async () => {
         render(
-          <ThemeProvider defaultTheme="light">
-            <div>
-              <HeroSection />
-              <MetricsGrid metrics={[]} />
-              <WhyChooseSection />
-              <DepartmentShowcase />
-              <FAQPreview />
-            </div>
-          </ThemeProvider>
+          <div>
+            <HeroSection />
+            <MetricsGrid metrics={[]} />
+            <WhyChooseSection />
+            <DepartmentShowcase />
+            <FAQPreview />
+          </div>
         )
 
         await waitFor(() => {
@@ -538,15 +531,13 @@ describe('Homepage Cross-Browser Compatibility Tests', () => {
       })
 
       render(
-        <ThemeProvider defaultTheme="light">
-          <ServiceCard
-            icon="📋"
-            title="API Fallback Test"
-            description="Testing API fallback"
-            href="/test"
-            colorScheme="service-blue"
-          />
-        </ThemeProvider>
+        <ServiceCard
+          icon="📋"
+          title="API Fallback Test"
+          description="Testing API fallback"
+          href="/test"
+          colorScheme="service-blue"
+        />
       )
 
       // Should still render without localStorage
