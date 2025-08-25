@@ -109,10 +109,10 @@ export function transformUnifiedServiceToServiceEnhanced(service: UnifiedService
     tiempo_respuesta: service.tiempo_respuesta,
     // Fix field name mismatch: requiere_pago -> tiene_pago
     tiene_pago: service.requiere_pago || false,
-    // Fix: Support both old and new URL field structure for backward compatibility
-    visualizacion_suit: service.url_suit || service.visualizacion_suit,
-    visualizacion_gov: service.url_gov || service.visualizacion_gov,
-    // Add new URL fields for proper card display
+    // Ensure flags remain boolean; URLs are provided via url_suit/url_gov
+    visualizacion_suit: Boolean(service.visualizacion_suit),
+    visualizacion_gov: Boolean(service.visualizacion_gov),
+    // Provide URL fields explicitly for card display
     url_suit: service.url_suit,
     url_gov: service.url_gov,
     requisitos: service.requisitos || [],

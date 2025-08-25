@@ -47,10 +47,10 @@ const validateTramiteData = (formData: Record<string, any>): { isValid: boolean;
 
   // URL validation
   const urlPattern = /^https?:\/\/.+/
-  if (formData.visualizacion_suit && !urlPattern.test(formData.visualizacion_suit)) {
+  if (formData.url_suit && !urlPattern.test(formData.url_suit)) {
     errors.push('La URL del portal SUIT debe ser válida (comenzar con http:// o https://)')
   }
-  if (formData.visualizacion_gov && !urlPattern.test(formData.visualizacion_gov)) {
+  if (formData.url_gov && !urlPattern.test(formData.url_gov)) {
     errors.push('La URL del portal GOV.CO debe ser válida (comenzar con http:// o https://)')
   }
 
@@ -383,7 +383,7 @@ export default function FuncionariosTramitesPage() {
 
     // SECTION 6: Government Portals
     {
-      name: 'visualizacion_suit',
+      name: 'url_suit',
       label: 'URL Portal SUIT',
       type: 'text',
       required: false,
@@ -392,12 +392,28 @@ export default function FuncionariosTramitesPage() {
       section: 'Portales Gubernamentales',
     },
     {
-      name: 'visualizacion_gov',
+      name: 'visualizacion_suit',
+      label: 'Mostrar enlace SUIT',
+      type: 'checkbox',
+      required: false,
+      helperText: 'Activa para mostrar el enlace SUIT cuando la URL sea válida',
+      section: 'Portales Gubernamentales',
+    },
+    {
+      name: 'url_gov',
       label: 'URL Portal GOV.CO',
       type: 'text',
       required: false,
       placeholder: 'https://www.gov.co/tramites-y-servicios/codigo-tramite',
       helperText: 'Enlace al trámite en el portal GOV.CO',
+      section: 'Portales Gubernamentales',
+    },
+    {
+      name: 'visualizacion_gov',
+      label: 'Mostrar enlace GOV.CO',
+      type: 'checkbox',
+      required: false,
+      helperText: 'Activa para mostrar el enlace GOV.CO cuando la URL sea válida',
       section: 'Portales Gubernamentales',
     },
 
@@ -489,8 +505,10 @@ export default function FuncionariosTramitesPage() {
         modalidad: formData.modalidad as 'virtual' | 'presencial' | 'mixto',
         categoria: (formData.categoria as string) || null,
         observaciones: (formData.observaciones as string) || null,
-        visualizacion_suit: (formData.visualizacion_suit as string) || null,
-        visualizacion_gov: (formData.visualizacion_gov as string) || null,
+        url_suit: (formData.url_suit as string) || null,
+        visualizacion_suit: Boolean(formData.visualizacion_suit) || false,
+        url_gov: (formData.url_gov as string) || null,
+        visualizacion_gov: Boolean(formData.visualizacion_gov) || false,
       }
 
       await tramitesService.create(tramiteData)
@@ -544,8 +562,10 @@ export default function FuncionariosTramitesPage() {
         modalidad: formData.modalidad as 'virtual' | 'presencial' | 'mixto',
         categoria: (formData.categoria as string) || null,
         observaciones: (formData.observaciones as string) || null,
-        visualizacion_suit: (formData.visualizacion_suit as string) || null,
-        visualizacion_gov: (formData.visualizacion_gov as string) || null,
+        url_suit: (formData.url_suit as string) || null,
+        visualizacion_suit: Boolean(formData.visualizacion_suit) || false,
+        url_gov: (formData.url_gov as string) || null,
+        visualizacion_gov: Boolean(formData.visualizacion_gov) || false,
       }
 
       await tramitesService.update(selectedTramite.id, updates)
@@ -777,8 +797,10 @@ export default function FuncionariosTramitesPage() {
                   : (selectedTramite.instructivo || ''),
 
                 // Government Portals
-                visualizacion_suit: selectedTramite.visualizacion_suit || '',
-                visualizacion_gov: selectedTramite.visualizacion_gov || '',
+                url_suit: selectedTramite.url_suit || '',
+                visualizacion_suit: Boolean(selectedTramite.visualizacion_suit),
+                url_gov: selectedTramite.url_gov || '',
+                visualizacion_gov: Boolean(selectedTramite.visualizacion_gov),
 
                 // Additional Information
                 observaciones: selectedTramite.observaciones || '',

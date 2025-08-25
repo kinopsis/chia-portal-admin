@@ -336,34 +336,30 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
           </div>
         )}
 
-          {/* Government Portal Links - Fix: Support both old and new URL field structure */}
-          {((tramite.url_suit && tramite.visualizacion_suit) ||
-            (tramite.url_gov && tramite.visualizacion_gov) ||
-            (typeof tramite.visualizacion_suit === 'string' && tramite.visualizacion_suit) ||
-            (typeof tramite.visualizacion_gov === 'string' && tramite.visualizacion_gov)) && (
+          {/* Government Portal Links - show only when URL is valid and flag is true */}
+          {(((tramite.url_suit && /^https?:\/\//.test(tramite.url_suit)) && tramite.visualizacion_suit === true) ||
+            ((tramite.url_gov && /^https?:\/\//.test(tramite.url_gov)) && tramite.visualizacion_gov === true)) && (
             <div className="mt-4 pt-4 border-t border-gray-200">
               <div className="flex items-center gap-4 text-sm">
                 <span className="text-gray-600 font-medium">Enlaces oficiales:</span>
-                {/* SUIT Link - Support both new (url_suit + visualizacion_suit boolean) and old (visualizacion_suit string) formats */}
-                {((tramite.url_suit && tramite.visualizacion_suit) ||
-                  (typeof tramite.visualizacion_suit === 'string' && tramite.visualizacion_suit)) && (
+                {tramite.url_suit && /^https?:\/\//.test(tramite.url_suit) && tramite.visualizacion_suit === true && (
                   <a
-                    href={tramite.url_suit || (typeof tramite.visualizacion_suit === 'string' ? tramite.visualizacion_suit : '')}
+                    href={tramite.url_suit}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-800 underline"
+                    aria-label="Abrir trámite en SUIT (se abre en nueva pestaña)"
                   >
                     SUIT
                   </a>
                 )}
-                {/* GOV.CO Link - Support both new (url_gov + visualizacion_gov boolean) and old (visualizacion_gov string) formats */}
-                {((tramite.url_gov && tramite.visualizacion_gov) ||
-                  (typeof tramite.visualizacion_gov === 'string' && tramite.visualizacion_gov)) && (
+                {tramite.url_gov && /^https?:\/\//.test(tramite.url_gov) && tramite.visualizacion_gov === true && (
                   <a
-                    href={tramite.url_gov || (typeof tramite.visualizacion_gov === 'string' ? tramite.visualizacion_gov : '')}
+                    href={tramite.url_gov}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-800 underline"
+                    aria-label="Abrir trámite en GOV.CO (se abre en nueva pestaña)"
                   >
                     GOV.CO
                   </a>
