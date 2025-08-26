@@ -237,18 +237,30 @@ const TramitesAdminPage: React.FC = () => {
       helperText: 'Un requisito por línea. Ejemplo:\nCédula de ciudadanía original y copia\nFormulario de solicitud diligenciado',
     },
     {
-      name: 'visualizacion_suit',
+      name: 'url_suit',
       label: 'URL Portal SUIT',
       type: 'text',
       placeholder: 'https://www.suit.gov.co/tramite/codigo-tramite',
       helperText: 'URL completa del trámite en el portal SUIT',
     },
     {
-      name: 'visualizacion_gov',
+      name: 'visualizacion_suit',
+      label: 'Mostrar enlace SUIT',
+      type: 'checkbox',
+      helperText: 'Activa para mostrar el enlace SUIT cuando la URL sea válida',
+    },
+    {
+      name: 'url_gov',
       label: 'URL Portal GOV.CO',
       type: 'text',
       placeholder: 'https://www.gov.co/tramites-y-servicios/codigo-tramite',
       helperText: 'URL completa del trámite en el portal GOV.CO',
+    },
+    {
+      name: 'visualizacion_gov',
+      label: 'Mostrar enlace GOV.CO',
+      type: 'checkbox',
+      helperText: 'Activa para mostrar el enlace GOV.CO cuando la URL sea válida',
     },
     {
       name: 'instructivo',

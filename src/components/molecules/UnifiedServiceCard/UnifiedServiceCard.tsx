@@ -303,34 +303,30 @@ export const UnifiedServiceCard: React.FC<UnifiedServiceCardProps> = ({
                     ))}
                   </ul>
                   
-                  {/* Government portal links - Fix: Support both old and new URL field structure */}
-                  {((service.originalData?.url_suit && service.originalData?.visualizacion_suit) ||
-                    (service.originalData?.url_gov && service.originalData?.visualizacion_gov) ||
-                    (typeof service.originalData?.visualizacion_suit === 'string' && service.originalData?.visualizacion_suit) ||
-                    (typeof service.originalData?.visualizacion_gov === 'string' && service.originalData?.visualizacion_gov)) && (
+                  {/* Government portal links - show only when URL is valid and flag is true */}
+                  {(((service.originalData?.url_suit && /^https?:\/\//.test(service.originalData.url_suit)) && service.originalData?.visualizacion_suit === true) ||
+                    ((service.originalData?.url_gov && /^https?:\/\//.test(service.originalData.url_gov)) && service.originalData?.visualizacion_gov === true)) && (
                     <div className="mt-3 pt-3 border-t border-amber-200">
                       <div className="flex items-center gap-2 text-xs text-gray-600">
                         <span>Enlaces oficiales:</span>
-                        {/* SUIT Link - Support both new and old formats */}
-                        {((service.originalData?.url_suit && service.originalData?.visualizacion_suit) ||
-                          (typeof service.originalData?.visualizacion_suit === 'string' && service.originalData?.visualizacion_suit)) && (
+                        {service.originalData?.url_suit && /^https?:\/\//.test(service.originalData.url_suit) && service.originalData?.visualizacion_suit === true && (
                           <a
-                            href={service.originalData.url_suit || (typeof service.originalData.visualizacion_suit === 'string' ? service.originalData.visualizacion_suit : '')}
+                            href={service.originalData.url_suit}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:text-blue-800"
+                            aria-label="Abrir trámite en SUIT (se abre en nueva pestaña)"
                           >
                             SUIT
                           </a>
                         )}
-                        {/* GOV.CO Link - Support both new and old formats */}
-                        {((service.originalData?.url_gov && service.originalData?.visualizacion_gov) ||
-                          (typeof service.originalData?.visualizacion_gov === 'string' && service.originalData?.visualizacion_gov)) && (
+                        {service.originalData?.url_gov && /^https?:\/\//.test(service.originalData.url_gov) && service.originalData?.visualizacion_gov === true && (
                           <a
-                            href={service.originalData.url_gov || (typeof service.originalData.visualizacion_gov === 'string' ? service.originalData.visualizacion_gov : '')}
+                            href={service.originalData.url_gov}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:text-blue-800"
+                            aria-label="Abrir trámite en GOV.CO (se abre en nueva pestaña)"
                           >
                             GOV.CO
                           </a>

@@ -419,8 +419,9 @@ export interface ServiceEnhanced {
   formulario?: string
   tiempo_respuesta?: string
   tiene_pago: boolean
-  visualizacion_suit?: string | boolean  // Support both URL string (old) and boolean (new)
-  visualizacion_gov?: string | boolean   // Support both URL string (old) and boolean (new)
+  // Visibility flags (always boolean in unified model)
+  visualizacion_suit?: boolean
+  visualizacion_gov?: boolean
   // New URL fields for proper database mapping
   url_suit?: string
   url_gov?: string
