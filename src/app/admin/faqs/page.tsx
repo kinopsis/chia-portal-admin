@@ -10,6 +10,8 @@ import { supabase } from '@/lib/supabase'
 import { FAQ, FormField, Dependencia, Subdependencia } from '@/types'
 import { formatDate } from '@/utils'
 import type { Column } from '@/components/organisms/DataTable'
+import { FAQExportModal } from '@/components/organisms/FAQExportModal'
+import { FAQImportModal } from '@/components/organisms/FAQImportModal'
 
 export default function FAQsAdminPage() {
   const [faqs, setFaqs] = useState<FAQ[]>([])
@@ -25,6 +27,8 @@ export default function FAQsAdminPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false)
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false)
   const [selectedFAQ, setSelectedFAQ] = useState<FAQ | null>(null)
 
   // Form states
@@ -303,6 +307,20 @@ export default function FAQsAdminPage() {
     setIsCreateModalOpen(true)
   }
 
+  const handleExport = () => {
+    setIsExportModalOpen(true)
+  }
+
+  const handleImport = () => {
+    setIsImportModalOpen(true)
+  }
+
+  const handleImportComplete = (importedFAQs: any[]) => {
+    // In a real implementation, you would process the imported FAQs here
+    // For now, we'll just reload the FAQ list
+    loadFaqs()
+  }
+
   const handleEdit = (faq: FAQ) => {
     setSelectedFAQ(faq)
 
@@ -451,10 +469,20 @@ export default function FAQsAdminPage() {
             <h1 className="text-2xl font-bold text-gray-900">Gestión de FAQs</h1>
             <p className="text-gray-600">Administrar Preguntas Frecuentes</p>
           </div>
-          <Button variant="primary" onClick={handleCreate} className="flex items-center space-x-2">
-            <span>➕</span>
-            <span>Nueva FAQ</span>
-          </Button>
+          <div className="flex space-x-2">
+            <Button variant="outline" onClick={handleImport} className="flex items-center space-x-2">
+              <span>📥</span>
+              <span>Importar</span>
+            </Button>
+            <Button variant="outline" onClick={handleExport} className="flex items-center space-x-2">
+              <span>📤</span>
+              <span>Exportar</span>
+            </Button>
+            <Button variant="primary" onClick={handleCreate} className="flex items-center space-x-2">
+              <span>➕</span>
+              <span>Nueva FAQ</span>
+            </Button>
+          </div>
         </div>
 
         {/* Data Table */}
@@ -583,6 +611,24 @@ export default function FAQsAdminPage() {
             </>
           )}
         </ConfirmDialog>
+
+        {/* Export Modal */}
+        <FAQExportModal
+          isOpen={isExportModalOpen}
+          onClose={() => setIsExportModalOpen(false)}
+          faqs={faqs}
+          onExportComplete={() => {
+            // Optionally show a success message
+          }}
+        />
+
+        {/* Import Modal */}
+        <FAQImportModal
+          isOpen={isImportModalOpen}
+          onClose={() => setIsImportModalOpen(false)}
+          onImportComplete={handleImportComplete}
+        />
+
       </div>
     </RoleGuard>
   )

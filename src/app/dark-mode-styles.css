@@ -1,0 +1,260 @@
+/* dark-mode-styles.css */
+/* Estilos adicionales para garantizar contraste adecuado en modo oscuro */
+
+/* Asegurar contraste adecuado para texto en modo oscuro */
+[data-theme="dark"] {
+  /* Ajustes para formularios */
+  .form-label {
+    color: var(--text-primary);
+  }
+  
+  .form-input,
+  .form-select,
+  .form-textarea {
+    background-color: var(--input);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+  }
+  
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus {
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+  }
+  
+  /* Ajustes para botones */
+  .btn-primary {
+    background-color: var(--brand-green);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--brand-green-hover);
+  }
+  
+  .btn-secondary {
+    background-color: var(--background-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--background-elevated);
+  }
+  
+  /* Ajustes para tarjetas */
+  .card {
+    background-color: var(--background-secondary);
+    border-color: var(--border);
+  }
+  
+  .card-header {
+    border-bottom-color: var(--border-light);
+  }
+  
+  .card-footer {
+    border-top-color: var(--border-light);
+  }
+  
+  /* Ajustes para tablas */
+  .table {
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+  }
+  
+  .table th {
+    background-color: var(--background-tertiary);
+    color: var(--text-primary);
+  }
+  
+  .table td {
+    border-color: var(--border-light);
+  }
+  
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--background-tertiary);
+  }
+  
+  /* Ajustes para alertas */
+  .alert {
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+  
+  .alert-success {
+    background-color: var(--color-success-light);
+    border-color: var(--color-success);
+  }
+  
+  .alert-warning {
+    background-color: var(--color-warning-light);
+    border-color: var(--color-warning);
+  }
+  
+  .alert-error {
+    background-color: var(--color-error-light);
+    border-color: var(--color-error);
+  }
+  
+  .alert-info {
+    background-color: var(--color-info-light);
+    border-color: var(--color-info);
+  }
+  
+  /* Ajustes para enlaces */
+  a {
+    color: var(--color-primary-green);
+  }
+  
+  a:hover {
+    color: var(--brand-green-hover);
+  }
+  
+  /* Ajustes para listas */
+  .list-group-item {
+    background-color: var(--background-secondary);
+    border-color: var(--border-light);
+    color: var(--text-primary);
+  }
+  
+  .list-group-item:hover {
+    background-color: var(--background-tertiary);
+  }
+  
+  /* Ajustes para breadcrumbs */
+  .breadcrumb-item a {
+    color: var(--color-primary-green);
+  }
+  
+  .breadcrumb-item.active {
+    color: var(--text-muted);
+  }
+  
+  /* Ajustes para paginación */
+  .pagination .page-link {
+    background-color: var(--background-secondary);
+    border-color: var(--border);
+    color: var(--text-primary);
+  }
+  
+  .pagination .page-link:hover {
+    background-color: var(--background-tertiary);
+    border-color: var(--border-medium);
+  }
+  
+  .pagination .page-item.active .page-link {
+    background-color: var(--color-primary-green);
+    border-color: var(--color-primary-green);
+    color: white;
+  }
+  
+  /* Ajustes para modales */
+  .modal-content {
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+  }
+  
+  .modal-header {
+    border-bottom-color: var(--border-light);
+  }
+  
+  .modal-footer {
+    border-top-color: var(--border-light);
+  }
+  
+  /* Ajustes para tooltips */
+  .tooltip-inner {
+    background-color: var(--background-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+  
+  /* Ajustes para popovers */
+  .popover {
+    background-color: var(--background-secondary);
+    border-color: var(--border);
+  }
+  
+  .popover-header {
+    background-color: var(--background-tertiary);
+    border-bottom-color: var(--border-light);
+    color: var(--text-primary);
+  }
+  
+  .popover-body {
+    color: var(--text-primary);
+  }
+  
+  /* Ajustes para dropdowns */
+  .dropdown-menu {
+    background-color: var(--background-secondary);
+    border-color: var(--border);
+    color: var(--text-primary);
+  }
+  
+  .dropdown-item {
+    color: var(--text-primary);
+  }
+  
+  .dropdown-item:hover {
+    background-color: var(--background-tertiary);
+  }
+  
+  /* Ajustes para navs */
+  .nav-tabs .nav-link {
+    color: var(--text-muted);
+    border-color: var(--border-light);
+  }
+  
+  .nav-tabs .nav-link:hover {
+    border-color: var(--border-light);
+    background-color: var(--background-tertiary);
+  }
+  
+  .nav-tabs .nav-link.active {
+    color: var(--text-primary);
+    background-color: var(--background-secondary);
+    border-color: var(--border-light) var(--border-light) var(--background-secondary);
+  }
+  
+  /* Ajustes para progress bars */
+  .progress {
+    background-color: var(--background-tertiary);
+  }
+  
+  /* Ajustes para badges */
+  .badge {
+    color: var(--text-primary);
+  }
+  
+  /* Ajustes para spinners */
+  .spinner-border {
+    border-color: currentColor;
+    border-right-color: transparent;
+  }
+  
+  /* Ajustes para código */
+  code {
+    background-color: var(--background-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
+  }
+  
+  pre {
+    background-color: var(--background-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
+  }
+  
+  /* Ajustes para imágenes */
+  .img-thumbnail {
+    background-color: var(--background-secondary);
+    border-color: var(--border-light);
+  }
+  
+  /* Ajustes para figuras */
+  .figure-caption {
+    color: var(--text-muted);
+  }
+}

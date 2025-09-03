@@ -47,5 +47,9 @@ export type { TramitesFiltersProps } from './TramitesFilters/TramitesFilters'
 
 export { HomepageServices } from './HomepageServices'
 
+// FAQ Export/Import Modals
+export { default as FAQExportModal } from './FAQExportModal'
+export { default as FAQImportModal } from './FAQImportModal'
+
 // Additional organisms to be implemented:
 // export { default as UserForm } from './UserForm'

@@ -8,6 +8,7 @@ import Navigation, { getMainNavigation } from '../Navigation'
 import MobileDrawer from '../MobileDrawer'
 import { useAuth } from '@/hooks'
 import { clsx } from 'clsx'
+import { ThemeToggle } from '@/components/providers/ThemeToggle'
 
 export interface HeaderProps {
   className?: string
@@ -98,6 +99,8 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Search functionality moved to internal pages where relevant */}
 
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             {/* Notifications (for authenticated users) */}
             {user && (

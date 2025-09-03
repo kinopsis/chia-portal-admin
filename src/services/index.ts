@@ -31,6 +31,9 @@ export { OPAsServerService, OPAsClientService, opasServerService, opasClientServ
 // FAQs services
 export { FAQsServerService, FAQsClientService, faqsServerService, faqsClientService } from './faqs'
 
+// FAQ Export/Import services
+export { FAQExportImportService, faqExportImportService } from './faqExportImportService'
+
 // Users services
 export { UsersService, usersService } from './users'
 

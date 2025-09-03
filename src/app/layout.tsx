@@ -8,10 +8,11 @@ import { ToastProvider } from '@/components/ui/toast'
 import { ConditionalLayout } from '@/components/layout'
 import { SkipLink } from '@/components/atoms'
 import ErrorBoundary from '@/components/ErrorBoundary'
-import { MobileOptimizationProvider, PerformanceProvider, PerformanceMonitor, AccessibilityProvider } from '@/components/providers'
+import { MobileOptimizationProvider, PerformanceProvider, PerformanceMonitor, AccessibilityProvider, ThemeProvider } from '@/components/providers'
 import { PrivacyConsent } from '@/components/molecules/PrivacyConsent/PrivacyConsent'
 import { initializeAccessibility } from '@/utils/accessibilityUtils'
 import './globals.css'
+import './dark-mode-styles.css'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -45,24 +46,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </SkipLink>
 
         <ErrorBoundary>
-          <AccessibilityProvider>
-            <PerformanceProvider enableMonitoring={true}>
-              <MobileOptimizationProvider>
-                <QueryProvider>
-                  <AuthProvider>
-                    <ServiceUpdateProvider>
-                      <ToastProvider>
-                        <ConditionalLayout>{children}</ConditionalLayout>
-                        <PerformanceMonitor />
-                        {/* UX-008: Privacy Consent Banner */}
-                        <PrivacyConsent showDetailedOptions={true} />
-                      </ToastProvider>
-                    </ServiceUpdateProvider>
-                  </AuthProvider>
-                </QueryProvider>
-              </MobileOptimizationProvider>
-            </PerformanceProvider>
-          </AccessibilityProvider>
+          <ThemeProvider>
+            <AccessibilityProvider>
+              <PerformanceProvider enableMonitoring={true}>
+                <MobileOptimizationProvider>
+                  <QueryProvider>
+                    <AuthProvider>
+                      <ServiceUpdateProvider>
+                        <ToastProvider>
+                          <ConditionalLayout>{children}</ConditionalLayout>
+                          <PerformanceMonitor />
+                          {/* UX-008: Privacy Consent Banner */}
+                          <PrivacyConsent showDetailedOptions={true} />
+                        </ToastProvider>
+                      </ServiceUpdateProvider>
+                    </AuthProvider>
+                  </QueryProvider>
+                </MobileOptimizationProvider>
+              </PerformanceProvider>
+            </AccessibilityProvider>
+          </ThemeProvider>
         </ErrorBoundary>
       </body>
     </html>
