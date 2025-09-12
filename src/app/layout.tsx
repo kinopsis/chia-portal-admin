@@ -1,3 +1,5 @@
+'use client'
+
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Header, Footer } from '@/components'
@@ -13,6 +15,7 @@ import { MobileOptimizationProvider, PerformanceProvider, PerformanceMonitor, Ac
 import { PrivacyConsent } from '@/components/molecules/PrivacyConsent/PrivacyConsent'
 import { initializeAccessibility } from '@/utils/accessibilityUtils'
 import './globals.css'
+import './dark-mode-styles.css'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -46,11 +49,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </SkipLink>
 
         <ErrorBoundary>
-          <AccessibilityProvider>
-            <PerformanceProvider enableMonitoring={true}>
-              <MobileOptimizationProvider>
-                <QueryProvider>
-                  <ThemeProvider>
+          <ThemeProvider>
+            <AccessibilityProvider>
+              <PerformanceProvider enableMonitoring={true}>
+                <MobileOptimizationProvider>
+                  <QueryProvider>
                     <AuthProvider>
                       <ServiceUpdateProvider>
                         <ToastProvider>
@@ -61,13 +64,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         </ToastProvider>
                       </ServiceUpdateProvider>
                     </AuthProvider>
-                  </ThemeProvider>
-                </QueryProvider>
-              </MobileOptimizationProvider>
-            </PerformanceProvider>
-          </AccessibilityProvider>
+                  </QueryProvider>
+                </MobileOptimizationProvider>
+              </PerformanceProvider>
+            </AccessibilityProvider>
+          </ThemeProvider>
         </ErrorBoundary>
       </body>
     </html>
   )
+}  )
 }
