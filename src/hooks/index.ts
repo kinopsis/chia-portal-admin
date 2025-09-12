@@ -39,6 +39,10 @@ export { default as useSmartSearch } from './useSmartSearch'
 export { useChat } from './useChat'
 export type { ChatMessage, UseChatReturn, UseChatOptions } from './useChat'
 
+// FAQ Export/Import hooks
+export { useFAQExportImport } from './useFAQExportImport'
+export type { ExportFormat as FAQExportFormat, ImportResult as FAQImportResult } from './useFAQExportImport'
+
 // Additional hooks can be added here as they are created
 // export { useLocalStorage } from './useLocalStorage'
 // export { useApi } from './useApi'

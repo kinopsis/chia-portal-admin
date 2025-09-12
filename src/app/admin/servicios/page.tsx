@@ -35,10 +35,19 @@ import { useToastNotifications } from '@/hooks/useToastNotifications'
 import { transformUnifiedServiceToServiceEnhanced } from '@/utils/serviceTransformers'
 import type { Dependencia, Subdependencia } from '@/types'
 
+// Add these imports for export/import functionality
+import ExportModal from '@/components/organisms/ExportModal'
+import ImportModal from '@/components/organisms/ImportModal'
+import type { ServiceEnhanced as ServiceEnhancedType } from '@/types'
+
 const AdminServiciosPage: React.FC = () => {
+  // Add state for export/import modals
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false)
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false)
+  
   // State management - handles both tramites and OPAs
-  const [services, setServices] = useState<ServiceEnhanced[]>([])
-  const [filteredServices, setFilteredServices] = useState<ServiceEnhanced[]>([])
+  const [services, setServices] = useState<ServiceEnhancedType[]>([])
+  const [filteredServices, setFilteredServices] = useState<ServiceEnhancedType[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -65,7 +74,7 @@ const AdminServiciosPage: React.FC = () => {
   // Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-  const [selectedService, setSelectedService] = useState<ServiceEnhanced | null>(null)
+  const [selectedService, setSelectedService] = useState<ServiceEnhancedType | null>(null)
   const [formLoading, setFormLoading] = useState(false)
 
   // Form dependencies
@@ -459,17 +468,37 @@ const AdminServiciosPage: React.FC = () => {
           breadcrumbs={breadcrumbs}
           variant="admin"
           actions={
-            <Button
-              variant="primary"
-              onClick={() => {
-                // TODO: Implement create service modal
-                console.log('Create new service')
-              }}
-              className="flex items-center space-x-2"
-            >
-              <span>+</span>
-              <span>Nuevo Servicio</span>
-            </Button>
+            <div className="flex space-x-2">
+              {/* Export Button */}
+              <Button
+                variant="secondary"
+                onClick={() => setIsExportModalOpen(true)}
+                className="flex items-center space-x-2"
+              >
+                <span>📥</span>
+                <span>Exportar</span>
+              </Button>
+              
+              {/* Import Button */}
+              <Button
+                variant="secondary"
+                onClick={() => setIsImportModalOpen(true)}
+                className="flex items-center space-x-2"
+              >
+                <span>📤</span>
+                <span>Importar</span>
+              </Button>
+              
+              {/* Create Button */}
+              <Button
+                variant="primary"
+                onClick={() => setIsCreateModalOpen(true)}
+                className="flex items-center space-x-2"
+              >
+                <span>➕</span>
+                <span>Nuevo Servicio</span>
+              </Button>
+            </div>
           }
         />
 
@@ -607,6 +636,28 @@ const AdminServiciosPage: React.FC = () => {
             loading={formLoading}
           />
         </Modal>
+
+        {/* Export Modal */}
+        <ExportModal
+          isOpen={isExportModalOpen}
+          onClose={() => setIsExportModalOpen(false)}
+          services={services}
+          onExportComplete={() => {
+            toast.showSuccess('Servicios exportados correctamente')
+          }}
+        />
+
+        {/* Import Modal */}
+        <ImportModal
+          isOpen={isImportModalOpen}
+          onClose={() => setIsImportModalOpen(false)}
+          onImportComplete={() => {
+            toast.showSuccess('Servicios importados correctamente')
+            // Refresh the services list
+            fetchServices()
+          }}
+        />
+
       </div>
     </RoleGuard>
   )
