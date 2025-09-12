@@ -117,7 +117,7 @@ export default function FuncionariosFAQsPage() {
       sortable: true,
       render: (value, record) => (
         <div className="space-y-1">
-          <div className="font-medium text-gray-900 line-clamp-2">{record?.pregunta || 'N/A'}</div>
+          <div className="font-medium text-text-primary line-clamp-2">{record?.pregunta || 'N/A'}</div>
         </div>
       ),
     },
@@ -127,10 +127,10 @@ export default function FuncionariosFAQsPage() {
       sortable: true,
       render: (value, record) => (
         <div className="space-y-1">
-          <div className="text-sm font-medium text-gray-900">
+          <div className="text-sm font-medium text-text-primary">
             {record?.dependencias?.nombre || 'Sin dependencia'}
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-text-secondary">
             {record?.subdependencias?.nombre || 'Sin subdependencia'}
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function FuncionariosFAQsPage() {
       title: 'Respuesta',
       sortable: false,
       render: (value, record) => (
-        <div className="text-sm text-gray-600 line-clamp-3 max-w-md">
+        <div className="text-sm text-text-secondary line-clamp-3 max-w-md">
           {record?.respuesta || 'N/A'}
         </div>
       ),
@@ -185,7 +185,7 @@ export default function FuncionariosFAQsPage() {
       sortable: true,
       width: '80px',
       render: (value, record) => (
-        <div className="text-sm text-gray-500 text-center">{record?.orden || 0}</div>
+        <div className="text-sm text-text-secondary text-center">{record?.orden || 0}</div>
       ),
     },
     {
@@ -193,7 +193,7 @@ export default function FuncionariosFAQsPage() {
       title: 'Actualizado',
       sortable: true,
       render: (value, record) => (
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-text-secondary">
           {record?.updated_at ? formatDate(record.updated_at) : 'N/A'}
         </div>
       ),
@@ -464,8 +464,8 @@ export default function FuncionariosFAQsPage() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Gestión de FAQs</h1>
-            <p className="text-gray-600">Administrar Preguntas Frecuentes</p>
+            <h1 className="text-2xl font-bold text-text-primary">Gestión de FAQs</h1>
+            <p className="text-text-secondary">Administrar Preguntas Frecuentes</p>
           </div>
           <Button variant="primary" onClick={handleCreate} className="flex items-center space-x-2">
             <span>➕</span>
@@ -591,9 +591,9 @@ export default function FuncionariosFAQsPage() {
         >
           {selectedFAQ && (
             <>
-              <p className="text-gray-600">
+              <p className="text-text-secondary">
                 ¿Estás seguro de que deseas eliminar la FAQ{' '}
-                <strong>&quot;{selectedFAQ.pregunta}&quot;</strong>?
+                <strong>"{selectedFAQ.pregunta}"</strong>?
               </p>
               <p className="text-sm text-red-600 mt-2">Esta acción no se puede deshacer.</p>
             </>

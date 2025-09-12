@@ -79,7 +79,7 @@ export function ChatHistory({
     <div className={cn('flex flex-col h-full', className)}>
       {/* Connection status */}
       {!isConnected && (
-        <div className="flex items-center justify-between p-3 bg-red-50 border-b border-red-200 text-red-800">
+        <div className="flex items-center justify-between p-3 bg-error/10 border-b border-error/20 text-error">
           <div className="flex items-center gap-2">
             <WifiOff className="h-4 w-4" aria-hidden="true" />
             <span className="text-sm font-medium">Sin conexión</span>
@@ -89,7 +89,7 @@ export function ChatHistory({
               variant="outline"
               size="sm"
               onClick={onReconnect}
-              className="h-7 px-2 text-xs border-red-300 hover:bg-red-100"
+              className="h-7 px-2 text-xs border-error/50 hover:bg-error/10"
             >
               <RefreshCw className="h-3 w-3 mr-1" aria-hidden="true" />
               Reconectar
@@ -108,13 +108,13 @@ export function ChatHistory({
           {/* Welcome message */}
           {messages.length === 0 && !isLoading && (
             <div className="text-center py-8">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Wifi className="h-8 w-8 text-[#009045]" aria-hidden="true" />
+              <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Wifi className="h-8 w-8 text-accent" aria-hidden="true" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-text-primary mb-2">
                 ¡Hola! Soy tu asistente virtual
               </h3>
-              <p className="text-gray-600 max-w-md mx-auto">
+              <p className="text-text-secondary max-w-md mx-auto">
                 Estoy aquí para ayudarte con información sobre trámites, servicios municipales,
                 horarios de atención y preguntas frecuentes del municipio de Chía.
               </p>
@@ -135,13 +135,13 @@ export function ChatHistory({
 
           {/* Error message */}
           {error && (
-            <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+            <div className="flex items-start gap-3 p-4 bg-error/10 border border-error/20 rounded-lg">
+              <AlertCircle className="h-5 w-5 text-error flex-shrink-0 mt-0.5" aria-hidden="true" />
               <div className="flex-1">
-                <p className="text-sm font-medium text-red-800 mb-1">
+                <p className="text-sm font-medium text-error mb-1">
                   Error en la conversación
                 </p>
-                <p className="text-sm text-red-700 mb-3">
+                <p className="text-sm text-error/80 mb-3">
                   {error}
                 </p>
                 {onRetry && (
@@ -149,7 +149,7 @@ export function ChatHistory({
                     variant="outline"
                     size="sm"
                     onClick={onRetry}
-                    className="h-7 px-3 text-xs border-red-300 hover:bg-red-100"
+                    className="h-7 px-3 text-xs border-error/50 hover:bg-error/10"
                   >
                     <RefreshCw className="h-3 w-3 mr-1" aria-hidden="true" />
                     Reintentar
@@ -162,7 +162,7 @@ export function ChatHistory({
           {/* Loading indicator */}
           {isLoading && !isTyping && (
             <div className="flex items-center justify-center py-4">
-              <div className="flex items-center gap-2 text-gray-500">
+              <div className="flex items-center gap-2 text-text-muted">
                 <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
                 <span className="text-sm">Procesando...</span>
               </div>
@@ -175,10 +175,10 @@ export function ChatHistory({
       </ScrollArea>
 
       {/* Footer info */}
-      <div className="px-4 py-2 border-t border-gray-200 bg-gray-50">
-        <p className="text-xs text-gray-500 text-center">
-          Asistente Virtual del Municipio de Chía • 
-          Para emergencias llama al 123 • 
+      <div className="px-4 py-2 border-t border-border bg-background-secondary">
+        <p className="text-xs text-text-muted text-center">
+          Asistente Virtual del Municipio de Chía •
+          Para emergencias llama al 123 •
           Atención presencial: Lunes a Viernes 8:00 AM - 5:00 PM
         </p>
       </div>

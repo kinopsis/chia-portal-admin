@@ -57,7 +57,7 @@ const Navigation: React.FC<NavigationProps> = ({
           'px-4 py-2 rounded-lg',
           isItemActive
             ? 'bg-primary-green text-white shadow-md'
-            : 'text-gray-700 hover:bg-gray-100 hover:text-primary-green'
+            : 'text-text-secondary hover:bg-background-secondary hover:text-primary-green'
         )
       case 'underline':
         return clsx(
@@ -65,13 +65,13 @@ const Navigation: React.FC<NavigationProps> = ({
           'px-3 py-2 border-b-2',
           isItemActive
             ? 'border-primary-green text-primary-green'
-            : 'border-transparent text-gray-700 hover:text-primary-green hover:border-gray-300'
+            : 'border-transparent text-text-secondary hover:text-primary-green hover:border-border-medium'
         )
       default:
         return clsx(
           baseClasses,
           'px-3 py-2',
-          isItemActive ? 'text-primary-green' : 'text-gray-700 hover:text-primary-green'
+          isItemActive ? 'text-primary-green' : 'text-text-secondary hover:text-primary-green'
         )
     }
   }
@@ -100,7 +100,7 @@ const Navigation: React.FC<NavigationProps> = ({
           rel={item.external ? 'noopener noreferrer' : undefined}
           {...(item.description && { title: item.description })}
           aria-label={item.description || item.label}
-          aria-current={isActive ? 'page' : undefined}
+          aria-current={isActive(item.href) ? 'page' : undefined}
         >
           {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
           <span className="truncate">{item.label}</span>

@@ -109,7 +109,7 @@ const DependenciasAdminPage: React.FC = () => {
         <div>
           <div className="font-medium">{record?.nombre || 'N/A'}</div>
           {record?.descripcion && (
-            <div className="text-sm text-gray-500 truncate max-w-xs">{record.descripcion}</div>
+            <div className="text-sm text-text-muted truncate max-w-xs">{record.descripcion}</div>
           )}
         </div>
       ),
@@ -120,7 +120,7 @@ const DependenciasAdminPage: React.FC = () => {
       sortable: false,
       width: '140px',
       render: (value, record) => (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-info/10 text-info">
           {record?.subdependencias_count || 0}
         </span>
       ),
@@ -133,7 +133,7 @@ const DependenciasAdminPage: React.FC = () => {
       render: (value, record) => (
         <span
           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            record?.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            record?.activo ? 'bg-success/10 text-success' : 'bg-error/10 text-error'
           }`}
         >
           {record?.activo ? 'Activa' : 'Inactiva'}
@@ -145,7 +145,7 @@ const DependenciasAdminPage: React.FC = () => {
       title: 'Actualizado',
       sortable: true,
       render: (value, record) => (
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-text-muted">
           {record?.updated_at ? formatDate(record.updated_at) : 'N/A'}
         </span>
       ),
@@ -161,7 +161,7 @@ const DependenciasAdminPage: React.FC = () => {
         codigo: formData.codigo,
         nombre: formData.nombre,
         descripcion: formData.descripcion || null,
-        activa: formData.activa ?? true,
+        activo: formData.activo ?? true,
       })
 
       setIsCreateModalOpen(false)
@@ -185,7 +185,7 @@ const DependenciasAdminPage: React.FC = () => {
         codigo: formData.codigo,
         nombre: formData.nombre,
         descripcion: formData.descripcion || null,
-        activa: formData.activa ?? true,
+        activo: formData.activo ?? true,
       })
 
       setIsEditModalOpen(false)
@@ -235,10 +235,10 @@ const DependenciasAdminPage: React.FC = () => {
     return (
       <div className="p-6">
         <Card>
-          <div className="text-center py-8">
-            <div className="text-red-600 mb-2">❌</div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Error</h3>
-            <p className="text-gray-600">{error}</p>
+        <div className="text-center py-8">
+            <div className="text-error mb-2">❌</div>
+            <h3 className="text-lg font-semibold text-text-primary mb-2">Error</h3>
+            <p className="text-text-secondary">{error}</p>
             <Button onClick={loadDependencias} className="mt-4">
               Reintentar
             </Button>
@@ -254,8 +254,8 @@ const DependenciasAdminPage: React.FC = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Gestión de Dependencias</h1>
-            <p className="text-gray-600">Administra las dependencias municipales</p>
+            <h1 className="text-2xl font-bold text-text-primary">Gestión de Dependencias</h1>
+            <p className="text-text-secondary">Administra las dependencias municipales</p>
           </div>
           <Button onClick={() => setIsCreateModalOpen(true)} className="flex items-center gap-2">
             <span>➕</span>
@@ -349,11 +349,11 @@ const DependenciasAdminPage: React.FC = () => {
         >
           {selectedDependencia && (
             <>
-              <p className="text-gray-600">
+              <p className="text-text-secondary">
                 ¿Estás seguro de que deseas eliminar la dependencia{' '}
                 <strong>{selectedDependencia.nombre}</strong>?
               </p>
-              <p className="text-sm text-red-600 mt-2">Esta acción no se puede deshacer.</p>
+              <p className="text-sm text-error mt-2">Esta acción no se puede deshacer.</p>
             </>
           )}
         </ConfirmDialog>

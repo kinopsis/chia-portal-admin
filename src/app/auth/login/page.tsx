@@ -22,10 +22,10 @@ function LoginLoading() {
             <span className="text-white text-xl xs:text-2xl font-bold" aria-hidden="true">🏛️</span>
           </div>
           <div>
-            <h2 className="text-2xl xs:text-3xl font-bold text-gray-900">
+            <h2 className="text-2xl xs:text-3xl font-bold text-text-primary">
               Iniciar Sesión
             </h2>
-            <p className="mt-2 text-sm xs:text-base text-gray-600">
+            <p className="mt-2 text-sm xs:text-base text-text-secondary">
               Accede al Portal de Atención Ciudadana de Chía
             </p>
           </div>
@@ -33,10 +33,10 @@ function LoginLoading() {
 
         <Card className="mt-8">
           <div className="animate-pulse space-y-6">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-10 bg-gray-200 rounded"></div>
-            <div className="h-10 bg-gray-200 rounded"></div>
-            <div className="h-12 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-background-tertiary rounded w-3/4"></div>
+            <div className="h-10 bg-background-tertiary rounded"></div>
+            <div className="h-10 bg-background-tertiary rounded"></div>
+            <div className="h-12 bg-background-tertiary rounded"></div>
           </div>
         </Card>
       </ResponsiveContainer>
@@ -150,10 +150,10 @@ function LoginContent() {
             <span className="text-white text-xl xs:text-2xl font-bold" aria-hidden="true">🏛️</span>
           </div>
           <div>
-            <h2 id="login-title" className="text-2xl xs:text-3xl font-bold text-gray-900">
+            <h2 id="login-title" className="text-2xl xs:text-3xl font-bold text-text-primary">
               Iniciar Sesión
             </h2>
-            <p className="mt-2 text-sm xs:text-base text-gray-600">
+            <p className="mt-2 text-sm xs:text-base text-text-secondary">
               Accede al Portal de Atención Ciudadana de Chía
             </p>
           </div>
@@ -186,7 +186,7 @@ function LoginContent() {
 
             {redirecting && (
               <div
-                className="bg-green-50 border border-green-200 rounded-lg p-mobile-sm xs:p-mobile-md"
+                className="bg-success-light border border-success-dark rounded-lg p-mobile-sm xs:p-mobile-md"
                 role="status"
                 aria-live="polite"
               >
@@ -198,20 +198,20 @@ function LoginContent() {
                       color="success"
                       indeterminate={true}
                     />
-                    <p className="text-sm xs:text-base text-green-600 font-medium">
+                    <p className="text-sm xs:text-base text-success-dark font-medium">
                       ¡Inicio de sesión exitoso! Redirigiendo...
                     </p>
                   </div>
                   {userProfile && (
                     <Button
-                      variant="outline"
+                      variant="primary"
                       size="sm"
                       onClick={() => {
                         const redirectPath = userProfile.rol === 'admin' ? '/admin' :
                                            userProfile.rol === 'funcionario' ? '/funcionarios' : '/dashboard'
                         router.push(redirectPath)
                       }}
-                      className="ml-4 text-green-600 border-green-600 hover:bg-green-600 hover:text-white"
+                      className="ml-4"
                     >
                       {userProfile.rol === 'admin' ? 'Ir a Admin' :
                        userProfile.rol === 'funcionario' ? 'Ir a Dashboard Funcionario' : 'Ir a Dashboard'}
@@ -266,17 +266,17 @@ function LoginContent() {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
+                  className="h-4 w-4 text-primary-green focus:ring-primary-green border-background-tertiary rounded"
                   disabled={isSubmitting || redirecting}
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-text-primary">
                   Recordarme
                 </label>
               </div>
 
               <Link
                 href="/auth/forgot-password"
-                className={`text-sm text-primary-green hover:text-primary-green-dark ${
+                className={`text-sm text-primary hover:text-primary-green ${
                   isSubmitting || redirecting ? 'pointer-events-none opacity-50' : ''
                 }`}
               >
@@ -304,10 +304,10 @@ function LoginContent() {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
+                <div className="w-full border-t border-border light:border-background-tertiary" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">¿No tienes cuenta?</span>
+                <span className="px-2 bg-card text-text-muted">¿No tienes cuenta?</span>
               </div>
             </div>
 
@@ -327,13 +327,13 @@ function LoginContent() {
         </Card>
 
         <div className="text-center">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-text-muted">
             Al iniciar sesión, aceptas nuestros{' '}
-            <Link href="/terminos" className="text-primary-green hover:text-primary-green-dark">
+            <Link href="/terminos" className="text-primary hover:text-primary-green">
               Términos de Servicio
             </Link>{' '}
             y{' '}
-            <Link href="/privacidad" className="text-primary-green hover:text-primary-green-dark">
+            <Link href="/privacidad" className="text-primary hover:text-primary-green">
               Política de Privacidad
             </Link>
           </p>

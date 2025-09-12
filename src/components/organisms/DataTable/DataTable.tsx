@@ -45,6 +45,7 @@ export interface Column<T = any> {
   width?: string | number
   sortable?: boolean
   filterable?: boolean
+  searchable?: boolean
   render?: (value: any, record: T, index: number) => React.ReactNode
   align?: 'left' | 'center' | 'right'
   fixed?: 'left' | 'right'
@@ -254,7 +255,7 @@ const DataTable = <T extends Record<string, any>>({
   swipeActions,
   touchOptimized = true,
 }: DataTableProps<T>) => {
-  const { width, isMobile } = useBreakpoint({ md: mobileBreakpoint })
+  const { width, isMobile } = useBreakpoint()
   const [internalSortConfig, setInternalSortConfig] = useState<SortConfig<T>[]>(
     defaultSort ? [{ ...defaultSort, priority: 0 }] : []
   )
@@ -293,7 +294,7 @@ const DataTable = <T extends Record<string, any>>({
 
   // Handle sorting with multi-column support
   const handleSort = useCallback(
-    (key: keyof T | string, event?: React.MouseEvent) => {
+    (key: keyof T | string, event?: React.MouseEvent | React.KeyboardEvent) => {
       if (!sortable) return
 
       const isMultiSort = multiSort && event?.shiftKey
@@ -531,7 +532,7 @@ const DataTable = <T extends Record<string, any>>({
           <span
             className={clsx(
               'text-xs leading-none transition-colors',
-              isActive && direction === 'asc' ? 'text-primary-green' : 'text-gray-400'
+              isActive && direction === 'asc' ? 'text-primary-green' : 'text-text-secondary'
             )}
           >
             ▲
@@ -539,14 +540,14 @@ const DataTable = <T extends Record<string, any>>({
           <span
             className={clsx(
               'text-xs leading-none transition-colors',
-              isActive && direction === 'desc' ? 'text-primary-green' : 'text-gray-400'
+              isActive && direction === 'desc' ? 'text-primary-green' : 'text-text-secondary'
             )}
           >
             ▼
           </span>
         </span>
         {/* Show priority number for multi-sort */}
-        {multiSort && isActive && currentSortConfig.length > 1 && (
+        {multiSort && isActive && currentSortConfig.length > 1 && priority !== undefined && (
           <span className="text-xs bg-primary-green text-white rounded-full w-4 h-4 flex items-center justify-center font-medium">
             {priority + 1}
           </span>
@@ -576,14 +577,14 @@ const DataTable = <T extends Record<string, any>>({
         <div className="flex items-center justify-center">
           <div className="text-center">
             <Spinner size="lg" />
-            <p className="mt-4 text-gray-600">{loadingMessage}</p>
+            <p className="mt-4 text-text-secondary">{loadingMessage}</p>
             {showProgress && typeof progress === 'number' && (
-              <div className="mt-4 w-64 bg-gray-200 rounded-full h-2">
+              <div className="mt-4 w-64 bg-background-tertiary rounded-full h-2">
                 <div
                   className="bg-primary-green h-2 rounded-full transition-all duration-300"
                   style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
                 />
-                <div className="text-xs text-gray-600 mt-1">{Math.round(progress)}%</div>
+                <div className="text-xs text-text-secondary mt-1">{Math.round(progress)}%</div>
               </div>
             )}
           </div>
@@ -644,7 +645,7 @@ const DataTable = <T extends Record<string, any>>({
   if (!data || data.length === 0) {
     const defaultEmptyIcon = (
       <svg
-        className="w-16 h-16 text-gray-400"
+        className="w-16 h-16 text-text-muted"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -706,7 +707,7 @@ const DataTable = <T extends Record<string, any>>({
       <Card className={clsx('overflow-hidden', className)}>
         {/* Search and Filters */}
         {shouldShowSearch && (
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-border">
             <SearchAndFilters
               searchValue={currentSearchValue}
               onSearchChange={handleSearchChange}
@@ -732,7 +733,7 @@ const DataTable = <T extends Record<string, any>>({
 
         {/* Top Pagination */}
         {pagination && (pagination.position === 'top' || pagination.position === 'both') && (
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-border">
             <Pagination
               current={pagination.current}
               pageSize={pagination.pageSize}
@@ -756,7 +757,7 @@ const DataTable = <T extends Record<string, any>>({
         {bulkActions.length > 0 &&
           selectedRowKeys.length > 0 &&
           (bulkActionsConfig.position === 'top' || bulkActionsConfig.position === 'floating') && (
-            <div className="p-4 border-b border-gray-200">
+            <div className="p-4 border-b border-border">
               <BulkActions
                 selectedRecords={displayData.filter((record) =>
                   selectedRowKeys.includes(record[rowKey])
@@ -822,15 +823,15 @@ const DataTable = <T extends Record<string, any>>({
               aria-label="Tabla de datos con información"
             >
               {/* Table Header */}
-              <thead className="bg-gray-50" role="rowgroup">
+              <thead className="bg-background-secondary" role="rowgroup">
                 <tr role="row">
                   {/* Selection column */}
                   {selectable && (
                     <th
                       className={clsx(
-                        'text-left font-medium text-gray-900',
+                        'text-left font-medium text-text-primary',
                         cellPaddingClasses[size],
-                        bordered && 'border border-gray-200'
+                        bordered && 'border border-border'
                       )}
                     >
                       <input
@@ -840,7 +841,7 @@ const DataTable = <T extends Record<string, any>>({
                           if (input) input.indeterminate = isIndeterminate
                         }}
                         onChange={(e) => handleSelectAll(e.target.checked)}
-                        className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
+                        className="h-4 w-4 text-primary-green focus:ring-primary-green border-border rounded"
                         aria-label={isAllSelected ? "Deseleccionar todas las filas" : "Seleccionar todas las filas"}
                         title={isAllSelected ? "Deseleccionar todas las filas" : "Seleccionar todas las filas"}
                       />
@@ -852,14 +853,14 @@ const DataTable = <T extends Record<string, any>>({
                     <th
                       key={String(column.key) + index}
                       className={clsx(
-                        'font-medium text-gray-900',
+                        'font-medium text-text-primary',
                         cellPaddingClasses[size],
-                        bordered && 'border border-gray-200',
+                        bordered && 'border border-border',
                         column.align === 'center' && 'text-center',
                         column.align === 'right' && 'text-right',
                         column.align === 'left' && 'text-left',
                         !column.align && 'text-left',
-                        column.sortable !== false && sortable && 'cursor-pointer hover:bg-gray-100',
+                        column.sortable !== false && sortable && 'cursor-pointer hover:bg-background-secondary',
                         column.className
                       )}
                       style={{ width: column.width }}
@@ -908,9 +909,9 @@ const DataTable = <T extends Record<string, any>>({
                   {actions && (
                     <th
                       className={clsx(
-                        'text-center font-medium text-gray-900',
+                        'text-center font-medium text-text-primary',
                         cellPaddingClasses[size],
-                        bordered && 'border border-gray-200'
+                        bordered && 'border border-border'
                       )}
                       style={{ width: actions.width }}
                     >
@@ -922,9 +923,9 @@ const DataTable = <T extends Record<string, any>>({
                   {rowActions.length > 0 && (
                     <th
                       className={clsx(
-                        'text-center font-medium text-gray-900',
+                        'text-center font-medium text-text-primary',
                         cellPaddingClasses[size],
-                        bordered && 'border border-gray-200'
+                        bordered && 'border border-border'
                       )}
                       style={{ width: rowActionsConfig.width || '120px' }}
                     >
@@ -945,9 +946,9 @@ const DataTable = <T extends Record<string, any>>({
                       key={String(key)}
                       className={clsx(
                         'transition-colors',
-                        striped && index % 2 === 0 && 'bg-white',
-                        striped && index % 2 === 1 && 'bg-gray-50',
-                        hover && 'hover:bg-gray-100',
+                        striped && index % 2 === 0 && 'bg-background-primary',
+                        striped && index % 2 === 1 && 'bg-background-secondary',
+                        hover && 'hover:bg-background-secondary',
                         isSelected && 'bg-primary-green/10',
                         onRowClick && 'cursor-pointer'
                       )}
@@ -956,18 +957,18 @@ const DataTable = <T extends Record<string, any>>({
                     >
                       {/* Selection cell */}
                       {selectable && (
-                        <td
-                          className={clsx(
-                            cellPaddingClasses[size],
-                            bordered && 'border border-gray-200'
-                          )}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={(e) => handleSelectRow(record, index, e.target.checked)}
-                            className="h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded"
-                            aria-label={`${isSelected ? 'Deseleccionar' : 'Seleccionar'} fila ${index + 1}`}
+                      <td
+                        className={clsx(
+                          cellPaddingClasses[size],
+                          bordered && 'border border-border'
+                        )}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                        onChange={(e) => handleSelectRow(record, index, e.target.checked)}
+                        className="h-4 w-4 text-primary-green focus:ring-primary-green border-border rounded"
+                        aria-label={`${isSelected ? 'Deseleccionar' : 'Seleccionar'} fila ${index + 1}`}
                             title={`${isSelected ? 'Deseleccionar' : 'Seleccionar'} fila ${index + 1}`}
                           />
                         </td>
@@ -979,7 +980,7 @@ const DataTable = <T extends Record<string, any>>({
                           key={String(column.key) + colIndex}
                           className={clsx(
                             cellPaddingClasses[size],
-                            bordered && 'border border-gray-200',
+                            bordered && 'border border-border',
                             column.align === 'center' && 'text-center',
                             column.align === 'right' && 'text-right',
                             column.align === 'left' && 'text-left',
@@ -999,7 +1000,7 @@ const DataTable = <T extends Record<string, any>>({
                           className={clsx(
                             'text-center',
                             cellPaddingClasses[size],
-                            bordered && 'border border-gray-200'
+                            bordered && 'border border-border'
                           )}
                         >
                           {actions.render(record, index)}
@@ -1012,7 +1013,7 @@ const DataTable = <T extends Record<string, any>>({
                           className={clsx(
                             'text-center',
                             cellPaddingClasses[size],
-                            bordered && 'border border-gray-200'
+                            bordered && 'border border-border'
                           )}
                         >
                           <RowActions
@@ -1047,7 +1048,7 @@ const DataTable = <T extends Record<string, any>>({
           (pagination.position === 'bottom' ||
             pagination.position === 'both' ||
             !pagination.position) && (
-            <div className="p-4 border-t border-gray-200">
+            <div className="p-4 border-t border-border">
               <Pagination
                 current={pagination.current}
                 pageSize={pagination.pageSize}
@@ -1071,7 +1072,7 @@ const DataTable = <T extends Record<string, any>>({
         {bulkActions.length > 0 &&
           selectedRowKeys.length > 0 &&
           bulkActionsConfig.position === 'bottom' && (
-            <div className="p-4 border-t border-gray-200">
+            <div className="p-4 border-t border-border">
               <BulkActions
                 selectedRecords={displayData.filter((record) =>
                   selectedRowKeys.includes(record[rowKey])

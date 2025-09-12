@@ -240,8 +240,8 @@ export default function ConfiguracionAdminPage() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Configuración</h1>
-            <p className="text-gray-600">Administrar configuraciones del sistema</p>
+            <h1 className="text-2xl font-bold text-text-primary">Configuración</h1>
+            <p className="text-text-secondary">Administrar configuraciones del sistema</p>
           </div>
         </div>
 
@@ -249,7 +249,7 @@ export default function ConfiguracionAdminPage() {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <Card className="p-4">
-              <h3 className="text-sm font-medium text-gray-900 mb-4">Secciones</h3>
+              <h3 className="text-sm font-medium text-text-primary mb-4">Secciones</h3>
               <nav className="space-y-2">
                 {configSections.map((section) => (
                   <button
@@ -258,8 +258,8 @@ export default function ConfiguracionAdminPage() {
                     onClick={() => setActiveSection(section.id)}
                     className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                       activeSection === section.id
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        ? 'bg-info/10 text-info'
+                        : 'text-text-secondary hover:text-text-primary hover:bg-background-secondary'
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -281,11 +281,11 @@ export default function ConfiguracionAdminPage() {
               <Card className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h2 className="text-xl font-semibold text-gray-900 flex items-center space-x-2">
+                    <h2 className="text-xl font-semibold text-text-primary flex items-center space-x-2">
                       <span>{activeConfig.icon}</span>
                       <span>{activeConfig.title}</span>
                     </h2>
-                    <p className="text-gray-600 mt-1">{activeConfig.description}</p>
+                    <p className="text-text-secondary mt-1">{activeConfig.description}</p>
                   </div>
                   {getStatusBadge(activeConfig.status)}
                 </div>
@@ -293,10 +293,10 @@ export default function ConfiguracionAdminPage() {
                 {activeConfig.status === 'maintenance' ? (
                   <div className="text-center py-12">
                     <div className="text-6xl mb-4">🚧</div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    <h3 className="text-lg font-medium text-text-primary mb-2">
                       Sección en Mantenimiento
                     </h3>
-                    <p className="text-gray-600">
+                    <p className="text-text-secondary">
                       Esta sección está temporalmente deshabilitada para mantenimiento.
                     </p>
                   </div>
@@ -331,21 +331,21 @@ export default function ConfiguracionAdminPage() {
 
         {/* System Info */}
         <Card className="p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Información del Sistema</h3>
+          <h3 className="text-lg font-medium text-text-primary mb-4">Información del Sistema</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <p className="text-sm font-medium text-gray-500">Versión</p>
-              <p className="text-lg font-semibold text-gray-900">1.0.0</p>
+              <p className="text-sm font-medium text-text-secondary">Versión</p>
+              <p className="text-lg font-semibold text-text-primary">1.0.0</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500">Última Actualización</p>
-              <p className="text-lg font-semibold text-gray-900">15 Ene 2024</p>
+              <p className="text-sm font-medium text-text-secondary">Última Actualización</p>
+              <p className="text-lg font-semibold text-text-primary">15 Ene 2024</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500">Estado del Sistema</p>
+              <p className="text-sm font-medium text-text-secondary">Estado del Sistema</p>
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                <span className="text-lg font-semibold text-gray-900">Operativo</span>
+                <div className="w-2 h-2 bg-success rounded-full"></div>
+                <span className="text-lg font-semibold text-text-primary">Operativo</span>
               </div>
             </div>
           </div>

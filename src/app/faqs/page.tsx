@@ -68,13 +68,13 @@ export default function FAQsPage() {
           includeDependencias: true,
           includeSubdependencias: true,
           page: currentPage,
-          limit: itemsPerPage
+          limit: itemsPerPage,
         }
 
         // Add hierarchical filters
         if (selectedDependencia) {
           // Find dependencia by name and use its ID
-          const dependencia = dependencias.find(dep => dep.nombre === selectedDependencia)
+          const dependencia = dependencias.find((dep) => dep.nombre === selectedDependencia)
           if (dependencia) {
             filters.dependencia_id = dependencia.id
           }
@@ -101,22 +101,24 @@ export default function FAQsPage() {
         // Generate categories from FAQ data (for backward compatibility)
         const categoryMap = new Map<string, { count: number; dependencia: string }>()
 
-        result.data.forEach(faq => {
+        result.data.forEach((faq) => {
           const categoria = faq.tema || faq.categoria || 'general'
           const existing = categoryMap.get(categoria) || { count: 0, dependencia: '' }
           categoryMap.set(categoria, {
             count: existing.count + 1,
-            dependencia: faq.dependencias?.nombre || 'Sin dependencia'
+            dependencia: faq.dependencias?.nombre || 'Sin dependencia',
           })
         })
 
-        const generatedCategories: FAQCategory[] = Array.from(categoryMap.entries()).map(([categoria, data]) => ({
-          id: categoria,
-          nombre: categoria.charAt(0).toUpperCase() + categoria.slice(1),
-          descripcion: `Preguntas sobre ${categoria}`,
-          icon: getCategoryIcon(categoria),
-          count: data.count
-        }))
+        const generatedCategories: FAQCategory[] = Array.from(categoryMap.entries()).map(
+          ([categoria, data]) => ({
+            id: categoria,
+            nombre: categoria.charAt(0).toUpperCase() + categoria.slice(1),
+            descripcion: `Preguntas sobre ${categoria}`,
+            icon: getCategoryIcon(categoria),
+            count: data.count,
+          })
+        )
 
         setCategories(generatedCategories)
 
@@ -124,22 +126,25 @@ export default function FAQsPage() {
         const subdependenciasSet = new Set<string>()
         const temasSet = new Set<string>()
 
-        result.data.forEach(faq => {
+        result.data.forEach((faq) => {
           // Only include subdependencias from the selected dependencia
-          if (faq.subdependencias?.nombre &&
-              (!selectedDependencia || faq.dependencias?.nombre === selectedDependencia)) {
+          if (
+            faq.subdependencias?.nombre &&
+            (!selectedDependencia || faq.dependencias?.nombre === selectedDependencia)
+          ) {
             subdependenciasSet.add(faq.subdependencias.nombre)
           }
           // Only include temas from the selected subdependencia
-          if (faq.tema &&
-              (!selectedSubdependencia || faq.subdependencias?.nombre === selectedSubdependencia)) {
+          if (
+            faq.tema &&
+            (!selectedSubdependencia || faq.subdependencias?.nombre === selectedSubdependencia)
+          ) {
             temasSet.add(faq.tema)
           }
         })
 
         setAvailableSubdependencias(Array.from(subdependenciasSet).sort())
         setAvailableTemas(Array.from(temasSet).sort())
-
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Error al cargar FAQs'
         setError(errorMessage)
@@ -150,7 +155,14 @@ export default function FAQsPage() {
     }
 
     fetchFAQs()
-  }, [searchQuery, selectedDependencia, selectedSubdependencia, selectedTema, currentPage, dependencias])
+  }, [
+    searchQuery,
+    selectedDependencia,
+    selectedSubdependencia,
+    selectedTema,
+    currentPage,
+    dependencias,
+  ])
 
   // Load dependencias on component mount
   useEffect(() => {
@@ -178,13 +190,13 @@ export default function FAQsPage() {
           activo: true,
           includeDependencias: true,
           includeSubdependencias: true,
-          limit: 1000 // Get all FAQs to extract all options
+          limit: 1000, // Get all FAQs to extract all options
         })
 
         const allSubdependencias = new Set<string>()
         const allTemas = new Set<string>()
 
-        result.data.forEach(faq => {
+        result.data.forEach((faq) => {
           if (faq.subdependencias?.nombre) {
             allSubdependencias.add(faq.subdependencias.nombre)
           }
@@ -206,8 +218,6 @@ export default function FAQsPage() {
     fetchAllOptions()
   }, [])
 
-
-
   // Helper function to get category icons
   const getCategoryIcon = (categoria: string): string => {
     const iconMap: Record<string, string> = {
@@ -220,15 +230,15 @@ export default function FAQsPage() {
       general: '❓',
       impuestos: '💳',
       licencias: '📄',
-      servicios: '🔧'
+      servicios: '🔧',
     }
     return iconMap[categoria.toLowerCase()] || '❓'
   }
 
   // Client-side filtering for legacy category support
-  const filteredFAQs = faqs.filter(faq => {
-    const matchesCategory = !selectedCategory ||
-      (faq.tema === selectedCategory || faq.categoria === selectedCategory)
+  const filteredFAQs = faqs.filter((faq) => {
+    const matchesCategory =
+      !selectedCategory || faq.tema === selectedCategory || faq.categoria === selectedCategory
     return matchesCategory
   })
 
@@ -257,29 +267,29 @@ export default function FAQsPage() {
   // Prepare options for dropdowns
   const dependenciasOptions = [
     { value: '', label: 'Todas las dependencias' },
-    ...dependencias.map(dep => ({ value: dep.nombre, label: dep.nombre }))
+    ...dependencias.map((dep) => ({ value: dep.nombre, label: dep.nombre })),
   ]
 
   const subdependenciasOptions = [
     { value: '', label: 'Todas las subdependencias' },
-    ...availableSubdependencias.map(sub => ({ value: sub, label: sub }))
+    ...availableSubdependencias.map((sub) => ({ value: sub, label: sub })),
   ]
 
   const temasOptions = [
     { value: '', label: 'Todos los temas' },
-    ...availableTemas.map(tema => ({ value: tema, label: tema }))
+    ...availableTemas.map((tema) => ({ value: tema, label: tema })),
   ]
 
   const totalFAQs = totalResults || faqs.length
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background-secondary">
       <PageHeader
         title="Centro de Ayuda - FAQ"
         description="Encuentra respuestas a tus preguntas frecuentes"
         breadcrumbs={breadcrumbs}
       />
-      
+
       <div className="container-custom py-8">
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Statistics */}
@@ -309,7 +319,7 @@ export default function FAQsPage() {
 
           {/* Search and Hierarchical Filters */}
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <h3 className="text-lg font-semibold text-text-primary mb-4">
               Buscar en Preguntas Frecuentes
             </h3>
 
@@ -324,19 +334,21 @@ export default function FAQsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <Select
                 value={selectedDependencia}
-                onChange={(e) => {
-                  setSelectedDependencia(e.target.value)
+                onChange={(value) => {
+                  setSelectedDependencia(value)
                   setSelectedSubdependencia('')
                   setSelectedTema('')
                 }}
                 options={dependenciasOptions}
-                placeholder={dependenciasLoading ? "Cargando dependencias..." : "Filtrar por dependencia"}
+                placeholder={
+                  dependenciasLoading ? 'Cargando dependencias...' : 'Filtrar por dependencia'
+                }
                 disabled={dependenciasLoading}
               />
               <Select
                 value={selectedSubdependencia}
-                onChange={(e) => {
-                  setSelectedSubdependencia(e.target.value)
+                onChange={(value) => {
+                  setSelectedSubdependencia(value)
                   setSelectedTema('')
                 }}
                 options={subdependenciasOptions}
@@ -345,7 +357,7 @@ export default function FAQsPage() {
               />
               <Select
                 value={selectedTema}
-                onChange={(e) => setSelectedTema(e.target.value)}
+                onChange={(value) => setSelectedTema(value)}
                 options={temasOptions}
                 placeholder="Filtrar por tema"
                 disabled={!selectedSubdependencia}
@@ -354,24 +366,24 @@ export default function FAQsPage() {
 
             {/* Action Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <Button
-                variant="outline"
-                onClick={clearFilters}
-                className="w-full"
-              >
+              <Button variant="outline" onClick={clearFilters} className="w-full">
                 🔄 Limpiar Filtros
               </Button>
-              <div className="text-sm text-gray-600 flex items-center">
-                {loading ? 'Cargando...' : `${totalResults} resultado${totalResults !== 1 ? 's' : ''} encontrados`}
+              <div className="text-sm text-text-muted flex items-center">
+                {loading
+                  ? 'Cargando...'
+                  : `${totalResults} resultado${totalResults !== 1 ? 's' : ''} encontrados`}
               </div>
             </div>
 
             {/* Active Filters Summary */}
             {(selectedDependencia || selectedSubdependencia || selectedTema) && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <div className="bg-background-tertiary border border-border-light rounded-lg p-3 mb-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium text-blue-800">🔍 Filtros activos:</span>
+                    <span className="text-sm font-medium text-text-primary">
+                      🔍 Filtros activos:
+                    </span>
                     <div className="flex items-center space-x-2">
                       {selectedDependencia && (
                         <Badge variant="secondary" size="sm">
@@ -379,12 +391,12 @@ export default function FAQsPage() {
                         </Badge>
                       )}
                       {selectedSubdependencia && (
-                        <Badge variant="outline" size="sm">
+                        <Badge variant="secondary" size="sm">
                           📋 {selectedSubdependencia}
                         </Badge>
                       )}
                       {selectedTema && (
-                        <Badge variant="primary" size="sm">
+                        <Badge variant="info" size="sm">
                           🏷️ {selectedTema}
                         </Badge>
                       )}
@@ -399,7 +411,7 @@ export default function FAQsPage() {
 
             {/* Category Filter Buttons (Legacy) */}
             <div className="flex flex-wrap gap-2">
-              <span className="text-sm text-gray-600">Filtros rápidos:</span>
+              <span className="text-sm text-text-muted">Filtros rápidos:</span>
               <Button
                 variant={selectedCategory === '' ? 'primary' : 'outline'}
                 size="sm"
@@ -407,7 +419,7 @@ export default function FAQsPage() {
               >
                 Todas
               </Button>
-              {categories.map(category => (
+              {categories.map((category) => (
                 <Button
                   key={category.id}
                   variant={selectedCategory === category.id ? 'primary' : 'outline'}
@@ -422,28 +434,20 @@ export default function FAQsPage() {
 
           {/* Categories Grid */}
           <div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">
-              Categorías Principales
-            </h3>
+            <h3 className="text-xl font-semibold text-text-primary mb-6">Categorías Principales</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {categories.map(category => (
+              {categories.map((category) => (
                 <Card
                   key={category.id}
-                  className="cursor-pointer hover:shadow-lg transition-shadow duration-200"
+                  className="cursor-pointer hover:shadow-lg transition-shadow duration-200 bg-background"
                   onClick={() => handleCategoryFilter(category.id)}
                 >
                   <div className="flex items-start space-x-4">
                     <div className="text-3xl">{category.icon}</div>
                     <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900 mb-1">
-                        {category.nombre}
-                      </h4>
-                      <p className="text-sm text-gray-600 mb-2">
-                        {category.descripcion}
-                      </p>
-                      <Badge variant="secondary">
-                        {category.count} preguntas
-                      </Badge>
+                      <h4 className="font-semibold text-text-primary mb-1">{category.nombre}</h4>
+                      <p className="text-sm text-text-muted mb-2">{category.descripcion}</p>
+                      <Badge variant="secondary">{category.count} preguntas</Badge>
                     </div>
                   </div>
                 </Card>
@@ -454,14 +458,15 @@ export default function FAQsPage() {
           {/* FAQs List */}
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-semibold text-gray-900">
+              <h3 className="text-xl font-semibold text-text-primary">
                 {selectedCategory
-                  ? `${categories.find(c => c.id === selectedCategory)?.nombre} - Preguntas Frecuentes`
-                  : 'Preguntas Más Populares'
-                }
+                  ? `${categories.find((c) => c.id === selectedCategory)?.nombre} - Preguntas Frecuentes`
+                  : 'Preguntas Más Populares'}
               </h3>
-              <span className="text-sm text-gray-600">
-                {loading ? 'Cargando...' : `${filteredFAQs.length} de ${totalResults} resultado${totalResults !== 1 ? 's' : ''}`}
+              <span className="text-sm text-text-muted">
+                {loading
+                  ? 'Cargando...'
+                  : `${filteredFAQs.length} de ${totalResults} resultado${totalResults !== 1 ? 's' : ''}`}
               </span>
             </div>
 
@@ -472,10 +477,10 @@ export default function FAQsPage() {
                     <div className="p-6">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
-                          <div className="h-6 w-3/4 bg-gray-200 rounded mb-2"></div>
+                          <div className="h-6 w-3/4 bg-background-secondary rounded mb-2"></div>
                           <div className="flex space-x-4 mb-2">
-                            <div className="h-4 w-24 bg-gray-200 rounded"></div>
-                            <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                            <div className="h-4 w-24 bg-background-secondary rounded"></div>
+                            <div className="h-4 w-20 bg-background-secondary rounded"></div>
                           </div>
                         </div>
                       </div>
@@ -486,143 +491,141 @@ export default function FAQsPage() {
             ) : error ? (
               <Card className="text-center py-12">
                 <div className="text-6xl mb-4">⚠️</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-text-primary mb-2">
                   Error al cargar FAQs
                 </h3>
-                <p className="text-gray-600 mb-4">
-                  {error}
-                </p>
-                <Button
-                  variant="primary"
-                  onClick={() => window.location.reload()}
-                >
+                <p className="text-text-muted mb-4">{error}</p>
+                <Button variant="primary" onClick={() => window.location.reload()}>
                   Reintentar
                 </Button>
               </Card>
             ) : (
               <div className="space-y-4">
-                {filteredFAQs.map(faq => (
-                <Card key={faq.id} className="overflow-hidden">
-                  <div
-                    className="cursor-pointer"
-                    onClick={() => toggleFAQ(faq.id)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        {/* Hierarchical Breadcrumb */}
-                        <div className="text-xs text-gray-500 mb-2 flex items-center">
-                          {faq.dependencias?.nombre && (
-                            <>
-                              <span className="font-medium">{faq.dependencias.nombre}</span>
-                              {faq.subdependencias?.nombre && (
-                                <>
-                                  <span className="mx-2">→</span>
-                                  <span className="font-medium">{faq.subdependencias.nombre}</span>
-                                  {faq.tema && (
-                                    <>
-                                      <span className="mx-2">→</span>
-                                      <span className="font-medium text-blue-600">{faq.tema}</span>
-                                    </>
-                                  )}
-                                </>
-                              )}
-                            </>
-                          )}
-                        </div>
+                {filteredFAQs.map((faq) => (
+                  <Card key={faq.id} className="overflow-hidden">
+                    <div className="cursor-pointer" onClick={() => toggleFAQ(faq.id)}>
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          {/* Hierarchical Breadcrumb */}
+                          <div className="text-xs text-text-muted mb-2 flex items-center">
+                            {faq.dependencias?.nombre && (
+                              <>
+                                <span className="font-medium">{faq.dependencias.nombre}</span>
+                                {faq.subdependencias?.nombre && (
+                                  <>
+                                    <span className="mx-2">→</span>
+                                    <span className="font-medium">
+                                      {faq.subdependencias.nombre}
+                                    </span>
+                                    {faq.tema && (
+                                      <>
+                                        <span className="mx-2">→</span>
+                                        <span className="font-medium text-accent">{faq.tema}</span>
+                                      </>
+                                    )}
+                                  </>
+                                )}
+                              </>
+                            )}
+                          </div>
 
-                        <h4 className="font-semibold text-gray-900 mb-3">
-                          {expandedFAQ === faq.id ? '▼' : '▶'} {faq.pregunta}
-                        </h4>
+                          <h4 className="font-semibold text-text-primary mb-3">
+                            {expandedFAQ === faq.id ? '▼' : '▶'} {faq.pregunta}
+                          </h4>
 
-                        {/* Enhanced Hierarchical Structure Display */}
-                        <div className="flex flex-wrap gap-2 mb-2">
-                          {faq.dependencias && (
-                            <Badge variant="secondary" size="sm">
-                              🏛️ {faq.dependencias.nombre}
-                            </Badge>
-                          )}
-                          {faq.subdependencias && (
-                            <Badge variant="outline" size="sm">
-                              📋 {faq.subdependencias.nombre}
-                            </Badge>
-                          )}
-                          {faq.tema && (
-                            <Badge variant="primary" size="sm">
-                              🏷️ {faq.tema}
-                            </Badge>
-                          )}
-                        </div>
-
-                        {/* Keywords */}
-                        {faq.palabras_clave && faq.palabras_clave.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            <span className="text-xs text-gray-500 mr-2">Palabras clave:</span>
-                            {faq.palabras_clave.slice(0, 5).map(tag => (
-                              <Badge key={tag} variant="outline" size="sm" className="text-xs">
-                                {tag}
+                          {/* Enhanced Hierarchical Structure Display */}
+                          <div className="flex flex-wrap gap-2 mb-2">
+                            {faq.dependencias && (
+                              <Badge variant="secondary" size="sm">
+                                🏛️ {faq.dependencias.nombre}
                               </Badge>
-                            ))}
-                            {faq.palabras_clave.length > 5 && (
-                              <Badge variant="outline" size="sm" className="text-xs">
-                                +{faq.palabras_clave.length - 5} más
+                            )}
+                            {faq.subdependencias && (
+                              <Badge variant="neutral" size="sm">
+                                📋 {faq.subdependencias.nombre}
+                              </Badge>
+                            )}
+                            {faq.tema && (
+                              <Badge variant="info" size="sm">
+                                🏷️ {faq.tema}
                               </Badge>
                             )}
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {expandedFAQ === faq.id && (
-                    <div className="mt-4 pt-4 border-t border-gray-200">
-                      {/* FAQ Answer */}
-                      <div className="prose prose-sm max-w-none mb-4">
-                        <p className="text-gray-700 whitespace-pre-line">
-                          {faq.respuesta}
-                        </p>
-                      </div>
 
-                      {/* Additional Hierarchical Information */}
-                      <div className="bg-gray-50 rounded-lg p-3 mb-4">
-                        <h5 className="text-sm font-semibold text-gray-700 mb-2">📍 Información de ubicación:</h5>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
-                          <div>
-                            <span className="font-medium text-gray-600">Dependencia:</span>
-                            <p className="text-gray-800">{faq.dependencias?.nombre || 'No especificada'}</p>
-                          </div>
-                          <div>
-                            <span className="font-medium text-gray-600">Subdependencia:</span>
-                            <p className="text-gray-800">{faq.subdependencias?.nombre || 'No especificada'}</p>
-                          </div>
-                          <div>
-                            <span className="font-medium text-gray-600">Tema:</span>
-                            <p className="text-gray-800">{faq.tema || 'General'}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex space-x-2">
-                          <Button size="sm" variant="outline">
-                            👍 ¿Te ayudó esta respuesta?
-                          </Button>
-                          <Button size="sm" variant="outline">
-                            👎
-                          </Button>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Button size="sm" variant="outline">
-                            📋 Ver trámites relacionados
-                          </Button>
-                          <Button size="sm" variant="primary">
-                            📞 Contactar dependencia
-                          </Button>
+                          {/* Keywords */}
+                          {faq.palabras_clave && faq.palabras_clave.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              <span className="text-xs text-text-muted mr-2">Palabras clave:</span>
+                              {faq.palabras_clave.slice(0, 5).map((tag) => (
+                                <Badge key={tag} variant="neutral" size="sm" className="text-xs">
+                                  {tag}
+                                </Badge>
+                              ))}
+                              {faq.palabras_clave.length > 5 && (
+                                <Badge variant="neutral" size="sm" className="text-xs">
+                                  +{faq.palabras_clave.length - 5} más
+                                </Badge>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
-                  )}
-                </Card>
+
+                    {expandedFAQ === faq.id && (
+                      <div className="mt-4 pt-4 border-t border-border-light">
+                        {/* FAQ Answer */}
+                        <div className="prose prose-sm max-w-none mb-4">
+                          <p className="text-text-secondary whitespace-pre-line">{faq.respuesta}</p>
+                        </div>
+
+                        {/* Additional Hierarchical Information */}
+                        <div className="bg-background-tertiary rounded-lg p-3 mb-4">
+                          <h5 className="text-sm font-semibold text-text-primary mb-2">
+                            📍 Información de ubicación:
+                          </h5>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
+                            <div>
+                              <span className="font-medium text-text-muted">Dependencia:</span>
+                              <p className="text-text-secondary">
+                                {faq.dependencias?.nombre || 'No especificada'}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="font-medium text-text-muted">Subdependencia:</span>
+                              <p className="text-text-secondary">
+                                {faq.subdependencias?.nombre || 'No especificada'}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="font-medium text-text-muted">Tema:</span>
+                              <p className="text-text-secondary">{faq.tema || 'General'}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex space-x-2">
+                            <Button size="sm" variant="outline">
+                              👍 ¿Te ayudó esta respuesta?
+                            </Button>
+                            <Button size="sm" variant="outline">
+                              👎
+                            </Button>
+                          </div>
+                          <div className="flex space-x-2">
+                            <Button size="sm" variant="outline">
+                              📋 Ver trámites relacionados
+                            </Button>
+                            <Button size="sm" variant="primary">
+                              📞 Contactar dependencia
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </Card>
                 ))}
               </div>
             )}
@@ -630,16 +633,13 @@ export default function FAQsPage() {
             {!loading && !error && filteredFAQs.length === 0 && (
               <Card className="text-center py-12">
                 <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-text-primary mb-2">
                   No se encontraron resultados
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-text-muted mb-4">
                   No hay preguntas frecuentes que coincidan con tu búsqueda.
                 </p>
-                <Button
-                  variant="primary"
-                  onClick={clearFilters}
-                >
+                <Button variant="primary" onClick={clearFilters}>
                   Limpiar filtros
                 </Button>
               </Card>
@@ -650,7 +650,7 @@ export default function FAQsPage() {
               <div className="flex justify-center items-center space-x-4 mt-8">
                 <Button
                   variant="outline"
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
                 >
                   ◀ Anterior
@@ -675,13 +675,13 @@ export default function FAQsPage() {
 
                 <Button
                   variant="outline"
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
                 >
                   Siguiente ▶
                 </Button>
 
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-text-muted">
                   Página {currentPage} de {totalPages} ({totalResults} resultados)
                 </span>
               </div>
@@ -691,33 +691,29 @@ export default function FAQsPage() {
           {/* Help Section */}
           <Card className="bg-gradient-to-r from-primary-yellow/10 to-primary-green/10">
             <div className="text-center">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-xl font-semibold text-text-primary mb-4">
                 ¿No encontraste tu respuesta?
               </h3>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <div className="text-4xl mb-2">🤖</div>
-                  <h4 className="font-semibold text-gray-900 mb-2">
+                  <h4 className="font-semibold text-text-primary mb-2">
                     Pregunta al Asistente Virtual
                   </h4>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-text-muted mb-4">
                     Nuestro asistente con IA puede ayudarte con consultas específicas
                   </p>
-                  <Button variant="primary">
-                    Hacer una pregunta →
-                  </Button>
+                  <Button variant="primary">Hacer una pregunta →</Button>
                 </div>
                 <div>
                   <div className="text-4xl mb-2">📞</div>
-                  <h4 className="font-semibold text-gray-900 mb-2">
+                  <h4 className="font-semibold text-text-primary mb-2">
                     Contacta con un funcionario
                   </h4>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-text-muted mb-4">
                     Habla directamente con nuestro equipo de atención
                   </p>
-                  <Button variant="outline">
-                    Ver opciones de contacto →
-                  </Button>
+                  <Button variant="outline">Ver opciones de contacto →</Button>
                 </div>
               </div>
             </div>

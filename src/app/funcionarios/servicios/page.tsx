@@ -497,7 +497,7 @@ const FuncionariosServiciosPage: React.FC = () => {
 
   return (
     <RoleGuard allowedRoles={['admin', 'funcionario']}>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background-default">
         {/* Header with funcionario-specific title and breadcrumbs */}
         <PageHeader
           title="Gestión de Servicios - Funcionarios"
@@ -581,9 +581,9 @@ const FuncionariosServiciosPage: React.FC = () => {
             <div className="flex items-center space-x-2">
               <span className="text-xl">✏️</span>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Editar Servicio</h3>
+                <h3 className="text-lg font-semibold text-text-primary">Editar Servicio</h3>
                 {selectedService && (
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-text-secondary mt-1">
                     {selectedService.codigo} - {selectedService.nombre}
                   </p>
                 )}
@@ -650,8 +650,8 @@ const FuncionariosServiciosPage: React.FC = () => {
             <div className="flex items-center space-x-2">
               <span className="text-xl">➕</span>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Crear Nuevo Servicio</h3>
-                <p className="text-sm text-gray-500 mt-1">
+                <h3 className="text-lg font-semibold text-text-primary">Crear Nuevo Servicio</h3>
+                <p className="text-sm text-text-secondary mt-1">
                   Crea un nuevo trámite o servicio administrativo (OPA)
                 </p>
               </div>

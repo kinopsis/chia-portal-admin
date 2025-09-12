@@ -26,6 +26,7 @@ interface User {
   activo: boolean
   created_at: string
   updated_at: string
+  dependencia_id?: string
 }
 
 function UsuariosPage() {
@@ -261,10 +262,10 @@ function UsuariosPage() {
       },
       render: (value, record) => (
         <div>
-          <div className="font-medium text-gray-900">
+          <div className="font-medium text-text-primary">
             {record.nombre || 'Usuario'} {record.apellido || ''}
           </div>
-          <div className="text-sm text-gray-500">{record.email}</div>
+          <div className="text-sm text-text-muted">{record.email}</div>
         </div>
       ),
     },
@@ -275,9 +276,9 @@ function UsuariosPage() {
       align: 'center',
       render: (value) => {
         const roleColors = {
-          admin: 'bg-red-100 text-red-800',
-          funcionario: 'bg-blue-100 text-blue-800',
-          ciudadano: 'bg-green-100 text-green-800',
+          admin: 'bg-error/10 text-error',
+          funcionario: 'bg-info/10 text-info',
+          ciudadano: 'bg-success/10 text-success',
         }
 
         const roleLabels = {
@@ -288,9 +289,9 @@ function UsuariosPage() {
 
         return (
           <span
-            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${roleColors[value]}`}
+            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${roleColors[value as keyof typeof roleColors]}`}
           >
-            {roleLabels[value]}
+            {roleLabels[value as keyof typeof roleLabels]}
           </span>
         )
       },
@@ -303,7 +304,7 @@ function UsuariosPage() {
       render: (value) => (
         <span
           className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-            value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            value ? 'bg-success/10 text-success' : 'bg-error/10 text-error'
           }`}
         >
           {value ? 'Activo' : 'Inactivo'}
@@ -705,11 +706,11 @@ function UsuariosPage() {
         <div className="space-y-6">
           {/* Sorting Info */}
           {sortConfig.length > 0 && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="bg-info/5 border border-info/20 rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-sm font-medium text-blue-800">Ordenado por:</span>
-                  <span className="text-sm text-blue-700 ml-2">
+                  <span className="text-sm font-medium text-info">Ordenado por:</span>
+                  <span className="text-sm text-info/80 ml-2">
                     {sortConfig.map((sort, index) => (
                       <span key={sort.key}>
                         {String(sort.key)} ({sort.direction === 'asc' ? '↑' : '↓'})
@@ -718,7 +719,7 @@ function UsuariosPage() {
                     ))}
                   </span>
                 </div>
-                <div className="text-xs text-blue-600">
+                <div className="text-xs text-info/70">
                   💡 Tip: Mantén Shift + Click para ordenamiento múltiple
                 </div>
               </div>
@@ -727,9 +728,9 @@ function UsuariosPage() {
 
           {/* Selection Actions */}
           {selectedRowKeys.length > 0 && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="bg-info/5 border border-info/20 rounded-lg p-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-blue-800">
+                <span className="text-sm text-info">
                   {selectedRowKeys.length} usuario(s) seleccionado(s)
                 </span>
                 <div className="flex space-x-2">
@@ -903,61 +904,61 @@ function UsuariosPage() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-text-secondary mb-1">
                   Nombre Completo
                 </label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                <p className="text-sm text-text-primary bg-background-secondary p-2 rounded">
                   {viewingUser.nombre || 'Usuario'} {viewingUser.apellido || ''}
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-text-secondary mb-1">
                   Email
                 </label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                <p className="text-sm text-text-primary bg-background-secondary p-2 rounded">
                   {viewingUser.email}
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-text-secondary mb-1">
                   Rol
                 </label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                <p className="text-sm text-text-primary bg-background-secondary p-2 rounded">
                   {viewingUser.rol === 'admin' ? 'Administrador' :
                    viewingUser.rol === 'funcionario' ? 'Funcionario' : 'Ciudadano'}
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-text-secondary mb-1">
                   Estado
                 </label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                <p className="text-sm text-text-primary bg-background-secondary p-2 rounded">
                   {viewingUser.activo ? 'Activo' : 'Inactivo'}
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-text-secondary mb-1">
                   Fecha de Registro
                 </label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                <p className="text-sm text-text-primary bg-background-secondary p-2 rounded">
                   {new Date(viewingUser.created_at).toLocaleDateString('es-ES')}
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-text-secondary mb-1">
                   Última Actualización
                 </label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                <p className="text-sm text-text-primary bg-background-secondary p-2 rounded">
                   {new Date(viewingUser.updated_at).toLocaleDateString('es-ES')}
                 </p>
               </div>
             </div>
             {viewingUser.dependencia_id && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-text-secondary mb-1">
                   Dependencia
                 </label>
-                <p className="text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                <p className="text-sm text-text-primary bg-background-secondary p-2 rounded">
                   {viewingUser.dependencia_id}
                 </p>
               </div>

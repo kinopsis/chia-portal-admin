@@ -415,7 +415,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
               variant="ghost"
               size="sm"
               onClick={handleClear}
-              className="text-gray-400 no-touch:hover:text-gray-600 min-h-touch-sm min-w-touch-sm"
+              className="text-text-muted hover:text-text-primary min-h-touch-sm min-w-touch-sm"
               aria-label="Limpiar búsqueda"
             >
               ✕
@@ -439,7 +439,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         <div
           ref={suggestionsRef}
           id="search-suggestions"
-          className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto"
+          className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto"
           aria-label="Sugerencias de búsqueda"
         >
           {/* Loading State */}
@@ -460,9 +460,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
           {/* Error State */}
           {suggestionsError && (
-            <div className="p-mobile-sm xs:p-4 text-sm text-gray-500 text-center">
-              <span>No se pudieron cargar las sugerencias</span>
-            </div>
+          <div className="p-mobile-sm xs:p-4 text-sm text-text-secondary text-center">
+            <span>No se pudieron cargar las sugerencias</span>
+          </div>
           )}
 
           {/* Suggestions List */}
@@ -475,7 +475,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                   onClick={() => handleSuggestionSelect(suggestion)}
                   className={clsx(
                     'w-full px-mobile-sm xs:px-4 py-mobile-xs xs:py-2 text-left flex items-center gap-3',
-                    'no-touch:hover:bg-gray-50 focus:bg-gray-50 focus:outline-none',
+                    'no-touch:hover:bg-background-secondary focus:bg-background-secondary focus:outline-none',
                     'transition-colors duration-150 min-h-touch-sm',
                     selectedSuggestionIndex === index && 'bg-primary-green/10 border-l-2 border-primary-green',
                     index === 0 && 'rounded-t-lg',
@@ -490,11 +490,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
                   {/* Suggestion Text */}
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm xs:text-base font-medium text-gray-900 truncate">
+                    <div className="text-sm xs:text-base font-medium text-text-primary truncate">
                       {suggestion.text}
                     </div>
                     {suggestion.description && (
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-text-secondary">
                         {suggestion.description}
                       </div>
                     )}
@@ -505,9 +505,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
                     <span className={clsx(
                       'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium',
                       suggestion.type === 'autocomplete' && 'bg-primary-green/10 text-primary-green',
-                      suggestion.type === 'popular' && 'bg-orange-100 text-orange-700',
-                      suggestion.type === 'contextual' && 'bg-blue-100 text-blue-700',
-                      suggestion.type === 'recent' && 'bg-gray-100 text-gray-700'
+                      suggestion.type === 'popular' && 'bg-primary-yellow/10 text-primary-yellow-dark',
+                      suggestion.type === 'contextual' && 'bg-primary-blue/10 text-primary-blue',
+                      suggestion.type === 'recent' && 'bg-background-tertiary text-text-secondary'
                     )}>
                       {suggestion.type === 'autocomplete' && 'Sugerencia'}
                       {suggestion.type === 'popular' && 'Popular'}
@@ -522,7 +522,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
           {/* No Suggestions State */}
           {!suggestionsLoading && currentSuggestions.length === 0 && query.length >= 2 && (
-            <div className="p-mobile-sm xs:p-4 text-sm text-gray-500 text-center">
+            <div className="p-mobile-sm xs:p-4 text-sm text-text-secondary text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <MagnifyingGlassIcon className="w-4 h-4" />
                 <span>No se encontraron sugerencias</span>
@@ -536,7 +536,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           {/* Search Tips for Empty Query */}
           {query.length < 2 && showPopularSearches && currentSuggestions.length === 0 && (
             <div className="p-mobile-sm xs:p-4">
-              <div className="text-xs font-medium text-gray-700 mb-2">
+              <div className="text-xs font-medium text-text-primary mb-2">
                 Búsquedas populares:
               </div>
               <div className="flex flex-wrap gap-2">
@@ -550,7 +550,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                       type: 'popular',
                       icon: '🔥'
                     })}
-                    className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-full no-touch:hover:bg-gray-200 transition-colors"
+                    className="px-2 py-1 text-xs bg-background-tertiary text-text-secondary rounded-full hover:bg-background-secondary transition-colors"
                   >
                     {term}
                   </button>

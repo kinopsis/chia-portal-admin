@@ -169,7 +169,7 @@ const Form = <T extends Record<string, any>>({
       case 'textarea':
         return (
           <div key={field.name} className="mb-4">
-            <label htmlFor={field.name} className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={field.name} className="block text-sm font-medium text-text-primary mb-2">
               {componentProps.label}
               {field.required && <span className="text-red-500 ml-1">*</span>}
             </label>
@@ -177,18 +177,18 @@ const Form = <T extends Record<string, any>>({
               {...domProps}
               rows={field.rows || 4}
               className={clsx(
-                'w-full px-4 py-3 border rounded-lg transition-colors duration-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-0',
+                'w-full px-4 py-3 border rounded-lg transition-colors duration-200 placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-offset-0 bg-background text-text-primary',
                 componentProps.error
                   ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 focus:border-primary-green focus:ring-primary-green',
-                isFieldDisabled && 'bg-gray-50 cursor-not-allowed'
+                  : 'border-border focus:border-primary-green focus:ring-primary-green',
+                isFieldDisabled && 'bg-input-disabled cursor-not-allowed opacity-50'
               )}
             />
             {componentProps.error && (
               <p className="mt-1 text-sm text-red-600">{componentProps.error}</p>
             )}
             {componentProps.helperText && !componentProps.error && (
-              <p className="mt-1 text-sm text-gray-500">{componentProps.helperText}</p>
+              <p className="mt-1 text-sm text-text-secondary">{componentProps.helperText}</p>
             )}
           </div>
         )
@@ -196,20 +196,20 @@ const Form = <T extends Record<string, any>>({
       case 'select':
         return (
           <div key={field.name} className="mb-4">
-            <label htmlFor={field.name} className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={field.name} className="block text-sm font-medium text-text-primary mb-2">
               {componentProps.label}
               {field.required && <span className="text-red-500 ml-1">*</span>}
             </label>
             <div className="relative">
-              <select
-                {...domProps}
-                className={clsx(
-                  'w-full px-4 py-3 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 bg-white appearance-none pr-10',
-                  componentProps.error
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                    : 'border-gray-300 focus:border-primary-green focus:ring-primary-green',
-                  isFieldDisabled && 'bg-gray-50 cursor-not-allowed'
-                )}
+            <select
+              {...domProps}
+              className={clsx(
+                'w-full px-4 py-3 border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 bg-background text-text-primary appearance-none pr-10',
+                componentProps.error
+                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
+                  : 'border-border focus:border-primary-green focus:ring-primary-green',
+                isFieldDisabled && 'bg-input-disabled cursor-not-allowed opacity-50'
+              )}
               >
                 {field.placeholder && (
                   <option value="" disabled>
@@ -224,7 +224,7 @@ const Form = <T extends Record<string, any>>({
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <svg
-                  className="w-5 h-5 text-gray-400"
+                  className="w-5 h-5 text-text-muted"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -242,7 +242,7 @@ const Form = <T extends Record<string, any>>({
               <p className="mt-1 text-sm text-red-600">{componentProps.error}</p>
             )}
             {componentProps.helperText && !componentProps.error && (
-              <p className="mt-1 text-sm text-gray-500">{componentProps.helperText}</p>
+              <p className="mt-1 text-sm text-text-secondary">{componentProps.helperText}</p>
             )}
           </div>
         )
@@ -256,11 +256,11 @@ const Form = <T extends Record<string, any>>({
                 {...domProps}
                 checked={fieldValue}
                 className={clsx(
-                  'h-4 w-4 text-primary-green focus:ring-primary-green border-gray-300 rounded',
+                  'h-4 w-4 text-primary-green focus:ring-primary-green border-border rounded',
                   isFieldDisabled && 'cursor-not-allowed'
                 )}
               />
-              <label htmlFor={field.name} className="ml-2 block text-sm text-gray-700">
+              <label htmlFor={field.name} className="ml-2 block text-sm text-text-primary">
                 {componentProps.label}
                 {field.required && <span className="text-red-500 ml-1">*</span>}
               </label>
@@ -269,7 +269,7 @@ const Form = <T extends Record<string, any>>({
               <p className="mt-1 text-sm text-red-600">{componentProps.error}</p>
             )}
             {componentProps.helperText && !componentProps.error && (
-              <p className="mt-1 text-sm text-gray-500">{componentProps.helperText}</p>
+              <p className="mt-1 text-sm text-text-secondary">{componentProps.helperText}</p>
             )}
           </div>
         )
@@ -277,7 +277,7 @@ const Form = <T extends Record<string, any>>({
       default:
         return (
           <div key={field.name} className="mb-4">
-            <label htmlFor={field.name} className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor={field.name} className="block text-sm font-medium text-text-primary mb-2">
               {componentProps.label}
               {field.required && <span className="text-red-500 ml-1">*</span>}
             </label>
@@ -285,18 +285,18 @@ const Form = <T extends Record<string, any>>({
               type={field.type}
               {...domProps}
               className={clsx(
-                'w-full px-4 py-3 border rounded-lg transition-colors duration-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-0',
+                'w-full px-4 py-3 border rounded-lg transition-colors duration-200 placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-offset-0 bg-background text-text-primary',
                 componentProps.error
                   ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 focus:border-primary-green focus:ring-primary-green',
-                isFieldDisabled && 'bg-gray-50 cursor-not-allowed'
+                  : 'border-border focus:border-primary-green focus:ring-primary-green',
+                isFieldDisabled && 'bg-input-disabled cursor-not-allowed opacity-50'
               )}
             />
             {componentProps.error && (
               <p className="mt-1 text-sm text-red-600">{componentProps.error}</p>
             )}
             {componentProps.helperText && !componentProps.error && (
-              <p className="mt-1 text-sm text-gray-500">{componentProps.helperText}</p>
+              <p className="mt-1 text-sm text-text-secondary">{componentProps.helperText}</p>
             )}
           </div>
         )
@@ -309,13 +309,13 @@ const Form = <T extends Record<string, any>>({
   return (
     <form onSubmit={handleSubmit} className={clsx('space-y-4', className)}>
       {showErrorSummary && hasErrors && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-          <h3 className="text-sm font-medium text-red-800 mb-2">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+          <h3 className="text-sm font-medium text-red-800 dark:text-red-200 mb-2">
             {errorCount === 1
               ? 'Hay 1 error en el formulario:'
               : `Hay ${errorCount} errores en el formulario:`}
           </h3>
-          <ul className="text-sm text-red-700 space-y-1">
+          <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
             {Object.entries(errors).map(([field, error]) => (
               <li key={field}>• {error}</li>
             ))}

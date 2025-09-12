@@ -109,13 +109,13 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
   const getIcon = () => {
     switch (severity) {
       case 'error':
-        return <XCircleIcon className="w-5 h-5 xs:w-6 xs:h-6 text-red-500 flex-shrink-0" aria-hidden="true" />
+        return <XCircleIcon className="w-5 h-5 xs:w-6 xs:h-6 text-error flex-shrink-0" aria-hidden="true" />
       case 'warning':
-        return <ExclamationTriangleIcon className="w-5 h-5 xs:w-6 xs:h-6 text-yellow-500 flex-shrink-0" aria-hidden="true" />
+        return <ExclamationTriangleIcon className="w-5 h-5 xs:w-6 xs:h-6 text-warning flex-shrink-0" aria-hidden="true" />
       case 'info':
-        return <InformationCircleIcon className="w-5 h-5 xs:w-6 xs:h-6 text-blue-500 flex-shrink-0" aria-hidden="true" />
+        return <InformationCircleIcon className="w-5 h-5 xs:w-6 xs:h-6 text-info flex-shrink-0" aria-hidden="true" />
       default:
-        return <XCircleIcon className="w-5 h-5 xs:w-6 xs:h-6 text-red-500 flex-shrink-0" aria-hidden="true" />
+        return <XCircleIcon className="w-5 h-5 xs:w-6 xs:h-6 text-error flex-shrink-0" aria-hidden="true" />
     }
   }
 
@@ -141,13 +141,13 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
   const getBackgroundColor = () => {
     switch (severity) {
       case 'error':
-        return 'bg-red-50 border-red-200'
+        return 'bg-error/10 border-error/20 dark:bg-error/15 dark:border-error/30'
       case 'warning':
-        return 'bg-yellow-50 border-yellow-200'
+        return 'bg-warning/10 border-warning/20 dark:bg-warning/15 dark:border-warning/30'
       case 'info':
-        return 'bg-blue-50 border-blue-200'
+        return 'bg-info/10 border-info/20 dark:bg-info/15 dark:border-info/30'
       default:
-        return 'bg-red-50 border-red-200'
+        return 'bg-error/10 border-error/20 dark:bg-error/15 dark:border-error/30'
     }
   }
 
@@ -155,13 +155,13 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
   const getTextColor = () => {
     switch (severity) {
       case 'error':
-        return 'text-red-800'
+        return 'text-error dark:text-error'
       case 'warning':
-        return 'text-yellow-800'
+        return 'text-warning dark:text-warning'
       case 'info':
-        return 'text-blue-800'
+        return 'text-info dark:text-info'
       default:
-        return 'text-red-800'
+        return 'text-error dark:text-error'
     }
   }
 
@@ -223,7 +223,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
               {actions.map((action, index) => (
                 <Button
                   key={index}
-                  variant={action.variant === 'primary' ? 'default' : 'outline'}
+                  variant={action.variant === 'primary' ? 'primary' : 'outline'}
                   size="sm"
                   onClick={action.action}
                   className="min-h-touch-sm text-xs xs:text-sm"

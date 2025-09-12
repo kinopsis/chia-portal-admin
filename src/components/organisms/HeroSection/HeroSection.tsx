@@ -2,7 +2,7 @@
 
 /**
  * HeroSection Component
- * 
+ *
  * Main hero section for the homepage with:
  * - Gradient background using CSS custom properties
  * - Responsive typography with semantic font sizes
@@ -61,9 +61,9 @@ const SearchIcon: React.FC<{ className?: string }> = ({ className }) => (
  * HeroSection component
  */
 export const HeroSection: React.FC<HeroSectionProps> = ({
-  title = "Servicios municipales al alcance de todos",
-  subtitle = "Accede a trámites, información y servicios de manera fácil, rápida y segura. El asistente virtual te guía paso a paso en tus consultas.",
-  searchPlaceholder = "Buscar trámite, servicio, información...",
+  title = 'Servicios municipales al alcance de todos',
+  subtitle = 'Accede a trámites, información y servicios de manera fácil, rápida y segura. El asistente virtual te guía paso a paso en tus consultas.',
+  searchPlaceholder = 'Buscar trámite, servicio, información...',
   backgroundVariant = 'gradient',
   enableSearch = true,
   onSearch,
@@ -101,33 +101,33 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           'from-primary-yellow/10 via-primary-green/5 to-primary-green/10'
         )
       case 'solid':
-        return 'bg-gray-50'
+        return 'bg-background-secondary'
       case 'image':
-        return backgroundImage
-          ? `bg-cover bg-center bg-no-repeat`
-          : 'bg-gray-50'
+        return backgroundImage ? `bg-cover bg-center bg-no-repeat` : 'bg-background-secondary'
       default:
-        return 'bg-gray-50'
+        return 'bg-background-secondary'
     }
   }
 
   return (
-    <section 
+    <section
       className={clsx(
         'relative py-12 sm:py-16 lg:py-20 xl:py-24',
         'overflow-hidden',
         getBackgroundClasses(),
         className
       )}
-      style={backgroundVariant === 'image' && backgroundImage ? {
-        backgroundImage: `url(${backgroundImage})`
-      } : undefined}
+      style={
+        backgroundVariant === 'image' && backgroundImage
+          ? {
+              backgroundImage: `url(${backgroundImage})`,
+            }
+          : undefined
+      }
       aria-labelledby="hero-title"
     >
       {/* Background overlay for image variant */}
-      {backgroundVariant === 'image' && (
-        <div className="absolute inset-0 bg-black/40" />
-      )}
+      {backgroundVariant === 'image' && <div className="absolute inset-0 bg-black/40" />}
 
       {/* Content */}
       <ResponsiveContainer
@@ -141,12 +141,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Text Content */}
         <div className="text-center space-y-6 lg:space-y-8">
           {/* Main Title */}
-          <h1 
+          <h1
             id="hero-title"
             className={clsx(
               'font-bold leading-tight',
               'text-3xl sm:text-4xl lg:text-5xl xl:text-6xl',
-              'text-gray-900',
+              'text-text-primary',
               backgroundVariant === 'image' && 'text-white',
               'max-w-4xl mx-auto'
             )}
@@ -155,13 +155,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </h1>
 
           {/* Subtitle */}
-          <p className={clsx(
-            'text-lg sm:text-xl lg:text-2xl',
-            'leading-relaxed',
-            'text-gray-600',
-            backgroundVariant === 'image' && 'text-gray-100',
-            'max-w-3xl mx-auto'
-          )}>
+          <p
+            className={clsx(
+              'text-lg sm:text-xl lg:text-2xl',
+              'leading-relaxed',
+              'text-text-secondary',
+              backgroundVariant === 'image' && 'text-text-muted',
+              'max-w-3xl mx-auto'
+            )}
+          >
             {subtitle}
           </p>
         </div>
@@ -170,17 +172,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {enableSearch && (
           <div className="w-full max-w-2xl mx-auto">
             <form onSubmit={handleSearch} className="relative">
-              <div className={clsx(
-                'relative flex items-center',
-                'bg-white',
-                'border-2 border-gray-200',
-                'rounded-xl shadow-lg',
-                'transition-all duration-200',
-                isSearchFocused && 'border-primary-green ring-2 ring-primary-green/20'
-              )}>
+              <div
+                className={clsx(
+                  'relative flex items-center',
+                  'bg-background',
+                  'border-2 border-border-medium',
+                  'rounded-xl shadow-lg',
+                  'transition-all duration-200',
+                  isSearchFocused && 'border-primary-green ring-2 ring-primary-green/20'
+                )}
+              >
                 {/* Search Icon */}
                 <div className="absolute left-4 flex items-center pointer-events-none">
-                  <SearchIcon className="h-5 w-5 text-gray-400" />
+                  <SearchIcon className="h-5 w-5 text-text-muted" />
                 </div>
 
                 {/* Search Input */}
@@ -195,8 +199,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     'w-full pl-12 pr-4 py-4 lg:py-5',
                     'text-base lg:text-lg',
                     'bg-transparent',
-                    'text-gray-900',
-                    'placeholder-gray-500',
+                    'text-text-primary',
+                    'placeholder-text-muted',
                     'border-none outline-none',
                     'rounded-xl'
                   )}
@@ -226,10 +230,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
               {/* Search Suggestions/Help Text */}
               <div className="mt-3 text-center">
-                <p className={clsx(
-                  'text-sm text-gray-500',
-                  backgroundVariant === 'image' && 'text-gray-300'
-                )}>
+                <p
+                  className={clsx(
+                    'text-sm text-text-muted',
+                    backgroundVariant === 'image' && 'text-text-secondary'
+                  )}
+                >
                   Prueba buscar: "certificado de residencia", "pagos", "citas" o "formularios"
                 </p>
               </div>
@@ -269,13 +275,13 @@ export const HeroSectionPresets = {
     backgroundVariant: 'gradient' as const,
     enableSearch: true,
   },
-  
+
   landing: {
     backgroundVariant: 'image' as const,
     enableSearch: true,
     backgroundImage: '/images/hero-bg.jpg',
   },
-  
+
   simple: {
     backgroundVariant: 'solid' as const,
     enableSearch: false,

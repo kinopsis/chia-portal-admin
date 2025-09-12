@@ -101,7 +101,7 @@ export default function OPAsAdminPage() {
       sortable: true,
       render: (value, record) => (
         <div className="space-y-1">
-          <div className="font-medium text-gray-900 line-clamp-2">{record?.nombre || 'N/A'}</div>
+          <div className="font-medium text-text-primary line-clamp-2">{record?.nombre || 'N/A'}</div>
         </div>
       ),
     },
@@ -111,10 +111,10 @@ export default function OPAsAdminPage() {
       sortable: true,
       render: (value, record) => (
         <div className="space-y-1">
-          <div className="text-sm font-medium text-gray-900">
+          <div className="text-sm font-medium text-text-primary">
             {record?.subdependencias?.dependencias?.nombre || 'Sin dependencia'}
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-text-secondary">
             {record?.subdependencias?.nombre || 'Sin subdependencia'}
           </div>
         </div>
@@ -136,7 +136,7 @@ export default function OPAsAdminPage() {
       title: 'Actualizado',
       sortable: true,
       render: (value, record) => (
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-text-secondary">
           {record?.updated_at ? formatDate(record.updated_at) : 'N/A'}
         </div>
       ),
@@ -422,8 +422,8 @@ export default function OPAsAdminPage() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Gestión de OPAs</h1>
-            <p className="text-gray-600">Administrar Órdenes de Pago y Autorización</p>
+            <h1 className="text-2xl font-bold text-text-primary">Gestión de OPAs</h1>
+            <p className="text-text-secondary">Administrar Órdenes de Pago y Autorización</p>
           </div>
           <Button variant="primary" onClick={handleCreate} className="flex items-center space-x-2">
             <span>➕</span>
@@ -554,10 +554,10 @@ export default function OPAsAdminPage() {
         >
           {selectedOPA && (
             <>
-              <p className="text-gray-600">
+              <p className="text-text-secondary">
                 ¿Estás seguro de que deseas eliminar la OPA <strong>{selectedOPA.nombre}</strong>?
               </p>
-              <p className="text-sm text-red-600 mt-2">Esta acción no se puede deshacer.</p>
+              <p className="text-sm text-error mt-2">Esta acción no se puede deshacer.</p>
             </>
           )}
         </ConfirmDialog>

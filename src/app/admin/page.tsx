@@ -34,11 +34,11 @@ function AdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card hover>
               <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <span className="text-blue-600 text-xl">👥</span>
+                <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <span className="text-accent text-xl">👥</span>
                 </div>
                 <h3 className="text-lg font-semibold mb-2">Usuarios</h3>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-text-secondary text-sm mb-4">
                   Gestionar usuarios del sistema y sus roles
                 </p>
                 <Button variant="outline" size="sm" fullWidth>
@@ -49,11 +49,11 @@ function AdminDashboard() {
 
             <Card hover>
               <div className="text-center">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <span className="text-green-600 text-xl">🏛️</span>
+                <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <span className="text-success text-xl">🏛️</span>
                 </div>
                 <h3 className="text-lg font-semibold mb-2">Dependencias</h3>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-text-secondary text-sm mb-4">
                   Administrar dependencias y subdependencias
                 </p>
                 <Button variant="outline" size="sm" fullWidth>
@@ -64,11 +64,11 @@ function AdminDashboard() {
 
             <Card hover>
               <div className="text-center">
-                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <span className="text-yellow-600 text-xl">📋</span>
+                <div className="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <span className="text-warning text-xl">📋</span>
                 </div>
                 <h3 className="text-lg font-semibold mb-2">Trámites</h3>
-                <p className="text-gray-600 text-sm mb-4">Configurar trámites y procedimientos</p>
+                <p className="text-text-secondary text-sm mb-4">Configurar trámites y procedimientos</p>
                 <Button variant="outline" size="sm" fullWidth>
                   Gestionar
                 </Button>
@@ -77,11 +77,11 @@ function AdminDashboard() {
 
             <Card hover>
               <div className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <span className="text-purple-600 text-xl">⚡</span>
+                <div className="w-12 h-12 bg-info/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <span className="text-info text-xl">⚡</span>
                 </div>
                 <h3 className="text-lg font-semibold mb-2">OPAs</h3>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-text-secondary text-sm mb-4">
                   Administrar Órdenes de Pago y Autorización
                 </p>
                 <Button variant="outline" size="sm" fullWidth>
@@ -92,11 +92,11 @@ function AdminDashboard() {
 
             <Card hover>
               <div className="text-center">
-                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <span className="text-red-600 text-xl">❓</span>
+                <div className="w-12 h-12 bg-error/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <span className="text-error text-xl">❓</span>
                 </div>
                 <h3 className="text-lg font-semibold mb-2">FAQs</h3>
-                <p className="text-gray-600 text-sm mb-4">Gestionar preguntas frecuentes</p>
+                <p className="text-text-secondary text-sm mb-4">Gestionar preguntas frecuentes</p>
                 <Button variant="outline" size="sm" fullWidth>
                   Gestionar
                 </Button>
@@ -105,11 +105,11 @@ function AdminDashboard() {
 
             <Card hover>
               <div className="text-center">
-                <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <span className="text-indigo-600 text-xl">⚙️</span>
+                <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <span className="text-accent text-xl">⚙️</span>
                 </div>
                 <h3 className="text-lg font-semibold mb-2">Sistema</h3>
-                <p className="text-gray-600 text-sm mb-4">Configuración general del sistema</p>
+                <p className="text-text-secondary text-sm mb-4">Configuración general del sistema</p>
                 <Button variant="outline" size="sm" fullWidth>
                   Configurar
                 </Button>
@@ -125,19 +125,19 @@ function AdminDashboard() {
               <h3 className="text-lg font-semibold mb-4">Estadísticas del Sistema</h3>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Total Usuarios:</span>
+                  <span className="text-text-secondary">Total Usuarios:</span>
                   <span className="font-semibold">1,234</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Trámites Activos:</span>
+                  <span className="text-text-secondary">Trámites Activos:</span>
                   <span className="font-semibold">156</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">OPAs Gestionadas:</span>
+                  <span className="text-text-secondary">OPAs Gestionadas:</span>
                   <span className="font-semibold">89</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">FAQs Publicadas:</span>
+                  <span className="text-text-secondary">FAQs Publicadas:</span>
                   <span className="font-semibold">234</span>
                 </div>
               </div>
@@ -147,21 +147,21 @@ function AdminDashboard() {
               <h3 className="text-lg font-semibold mb-4">Información del Administrador</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Nombre:</span>
+                  <span className="text-text-secondary">Nombre:</span>
                   <span className="font-medium">
                     {userProfile?.nombre} {userProfile?.apellido}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Email:</span>
+                  <span className="text-text-secondary">Email:</span>
                   <span className="font-medium">{userProfile?.email}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Rol:</span>
+                  <span className="text-text-secondary">Rol:</span>
                   <span className="font-medium capitalize">{userProfile?.rol}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Último acceso:</span>
+                  <span className="text-text-secondary">Último acceso:</span>
                   <span className="font-medium">Ahora</span>
                 </div>
               </div>

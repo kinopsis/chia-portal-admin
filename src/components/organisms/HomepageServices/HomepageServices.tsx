@@ -122,10 +122,10 @@ export const HomepageServices: React.FC<HomepageServicesProps> = ({
           centered={true}
         >
           <div className="text-center space-y-4">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary">
               Servicios más solicitados
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
               Accede rápidamente a los servicios más utilizados por los ciudadanos
             </p>
           </div>
@@ -140,7 +140,7 @@ export const HomepageServices: React.FC<HomepageServicesProps> = ({
             {Array.from({ length: maxServices }).map((_, index) => (
               <div
                 key={index}
-                className="bg-gray-200 animate-pulse rounded-xl h-64"
+                className="bg-background-tertiary animate-pulse rounded-xl h-64"
               />
             ))}
           </ResponsiveContainer>
@@ -160,15 +160,15 @@ export const HomepageServices: React.FC<HomepageServicesProps> = ({
           centered={true}
         >
           <div className="text-center space-y-4">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary">
               Servicios más solicitados
             </h2>
-            <p className="text-lg text-red-600 max-w-3xl mx-auto">
+            <p className="text-lg text-error max-w-3xl mx-auto">
               Error al cargar los servicios: {error}
             </p>
             <button
               onClick={fetchPopularServices}
-              className="px-4 py-2 bg-primary-green text-white rounded-lg hover:bg-primary-green/90 transition-colors"
+              className="px-4 py-2 bg-primary text-text-primary rounded-lg hover:bg-primary-hover transition-colors"
             >
               Reintentar
             </button>
@@ -188,10 +188,10 @@ export const HomepageServices: React.FC<HomepageServicesProps> = ({
         centered={true}
       >
         <div className="text-center space-y-4">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary">
             Servicios más solicitados
           </h2>
-          <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
             Accede rápidamente a los servicios más utilizados por los ciudadanos
           </p>
         </div>
@@ -221,7 +221,7 @@ export const HomepageServices: React.FC<HomepageServicesProps> = ({
 
         {services.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-text-muted">
               No hay servicios disponibles en este momento.
             </p>
           </div>

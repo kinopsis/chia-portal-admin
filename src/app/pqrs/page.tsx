@@ -72,7 +72,7 @@ export default function PQRSPage() {
   }, [])
 
   const handleInputChange = (field: keyof PQRSForm, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,7 +82,13 @@ export default function PQRSPage() {
 
     try {
       // Validate form data
-      if (!formData.nombre || !formData.email || !formData.dependencia_id || !formData.asunto || !formData.descripcion) {
+      if (
+        !formData.nombre ||
+        !formData.email ||
+        !formData.dependencia_id ||
+        !formData.asunto ||
+        !formData.descripcion
+      ) {
         throw new Error('Todos los campos obligatorios deben ser completados')
       }
 
@@ -112,7 +118,6 @@ export default function PQRSPage() {
         asunto: '',
         descripcion: '',
       })
-
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error al enviar PQRS'
       setError(errorMessage)
@@ -134,7 +139,9 @@ export default function PQRSPage() {
 
       if (pqrsByRadicado) {
         // Found by radicado - show result
-        alert(`PQRS encontrada: ${pqrsByRadicado.asunto}\nEstado: ${pqrsByRadicado.estado}\nFecha: ${new Date(pqrsByRadicado.created_at).toLocaleDateString()}`)
+        alert(
+          `PQRS encontrada: ${pqrsByRadicado.asunto}\nEstado: ${pqrsByRadicado.estado}\nFecha: ${new Date(pqrsByRadicado.created_at).toLocaleDateString()}`
+        )
       } else {
         // Search by general query
         const searchResults = await pqrsClientService.search({ query: query.trim(), limit: 10 })
@@ -156,26 +163,26 @@ export default function PQRSPage() {
 
   if (showSuccess) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background-secondary">
         <PageHeader
           title="PQRS - Peticiones, Quejas, Reclamos y Sugerencias"
           description="Sistema de atención ciudadana de la Alcaldía de Chía"
           breadcrumbs={breadcrumbs}
         />
-        
+
         <div className="container-custom py-8">
           <div className="max-w-2xl mx-auto">
             <Card className="text-center p-8">
               <div className="text-6xl mb-4">✅</div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              <h2 className="text-2xl font-bold text-text-primary mb-4">
                 ¡PQRS Enviada Exitosamente!
               </h2>
-              <p className="text-gray-600 mb-6">
-                Su solicitud ha sido recibida y será procesada en un plazo máximo de 15 días hábiles.
-                Recibirá una notificación por correo electrónico con el número de radicado.
+              <p className="text-text-muted mb-6">
+                Su solicitud ha sido recibida y será procesada en un plazo máximo de 15 días
+                hábiles. Recibirá una notificación por correo electrónico con el número de radicado.
               </p>
               <div className="space-y-4">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-text-secondary">
                   <strong>Número de radicado:</strong> {createdPQRS?.numero_radicado || 'N/A'}
                 </p>
                 <Button
@@ -194,18 +201,18 @@ export default function PQRSPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background-secondary">
       <PageHeader
         title="PQRS - Peticiones, Quejas, Reclamos y Sugerencias"
         description="Sistema de atención ciudadana de la Alcaldía de Chía"
         breadcrumbs={breadcrumbs}
       />
-      
+
       <div className="container-custom py-8">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Search Section */}
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <h3 className="text-lg font-semibold text-text-primary mb-4">
               Consultar Estado de PQRS
             </h3>
             <SearchBar
@@ -213,7 +220,7 @@ export default function PQRSPage() {
               onSearch={handleSearch}
               className="mb-4"
             />
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-text-muted">
               Ingrese el número de radicado para consultar el estado de su PQRS
             </p>
           </Card>
@@ -221,41 +228,45 @@ export default function PQRSPage() {
           {/* Information Cards */}
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                ¿Qué es PQRS?
-              </h3>
-              <div className="space-y-3 text-sm text-gray-600">
+              <h3 className="text-lg font-semibold text-text-primary mb-4">¿Qué es PQRS?</h3>
+              <div className="space-y-3 text-sm text-text-secondary">
                 <div>
-                  <strong className="text-primary-green">Petición:</strong> Solicitud de información o actuación administrativa
+                  <strong className="text-accent">Petición:</strong> Solicitud de información o
+                  actuación administrativa
                 </div>
                 <div>
-                  <strong className="text-primary-green">Queja:</strong> Manifestación de inconformidad por un servicio
+                  <strong className="text-accent">Queja:</strong> Manifestación de inconformidad por
+                  un servicio
                 </div>
                 <div>
-                  <strong className="text-primary-green">Reclamo:</strong> Solicitud de corrección de una situación irregular
+                  <strong className="text-accent">Reclamo:</strong> Solicitud de corrección de una
+                  situación irregular
                 </div>
                 <div>
-                  <strong className="text-primary-green">Sugerencia:</strong> Propuesta para mejorar los servicios
+                  <strong className="text-accent">Sugerencia:</strong> Propuesta para mejorar los
+                  servicios
                 </div>
               </div>
             </Card>
 
             <Card>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Tiempos de Respuesta
-              </h3>
-              <div className="space-y-3 text-sm text-gray-600">
+              <h3 className="text-lg font-semibold text-text-primary mb-4">Tiempos de Respuesta</h3>
+              <div className="space-y-3 text-sm text-text-secondary">
                 <div>
-                  <strong>Peticiones:</strong> 15 días hábiles
+                  <strong className="font-medium text-text-primary">Peticiones:</strong> 15 días
+                  hábiles
                 </div>
                 <div>
-                  <strong>Quejas y Reclamos:</strong> 15 días hábiles
+                  <strong className="font-medium text-text-primary">Quejas y Reclamos:</strong> 15
+                  días hábiles
                 </div>
                 <div>
-                  <strong>Sugerencias:</strong> 30 días hábiles
+                  <strong className="font-medium text-text-primary">Sugerencias:</strong> 30 días
+                  hábiles
                 </div>
-                <div className="mt-4 p-3 bg-primary-yellow/10 rounded-lg">
-                  <strong className="text-primary-green">Nota:</strong> Recibirá confirmación por correo electrónico
+                <div className="mt-4 p-3 bg-background-tertiary rounded-lg border border-border-light">
+                  <strong className="text-accent">Nota:</strong> Recibirá confirmación por correo
+                  electrónico
                 </div>
               </div>
             </Card>
@@ -263,19 +274,17 @@ export default function PQRSPage() {
 
           {/* PQRS Form */}
           <Card>
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">
-              Enviar Nueva PQRS
-            </h3>
-            
+            <h3 className="text-xl font-semibold text-text-primary mb-6">Enviar Nueva PQRS</h3>
+
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Error Display */}
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="bg-error/10 border border-error/20 rounded-lg p-4">
                   <div className="flex">
-                    <div className="text-red-400 text-xl mr-3">⚠️</div>
+                    <div className="text-error text-xl mr-3">⚠️</div>
                     <div>
-                      <h3 className="text-sm font-medium text-red-800">Error</h3>
-                      <p className="text-sm text-red-700 mt-1">{error}</p>
+                      <h3 className="text-sm font-medium text-text-primary">Error</h3>
+                      <p className="text-sm text-text-secondary mt-1">{error}</p>
                     </div>
                   </div>
                 </div>
@@ -283,7 +292,7 @@ export default function PQRSPage() {
 
               {/* Tipo de PQRS */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-text-primary mb-2">
                   Tipo de PQRS *
                 </label>
                 <Select
@@ -298,7 +307,7 @@ export default function PQRSPage() {
               {/* Información Personal */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-text-primary mb-2">
                     Nombre Completo *
                   </label>
                   <Input
@@ -310,7 +319,7 @@ export default function PQRSPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-text-primary mb-2">
                     Correo Electrónico *
                   </label>
                   <Input
@@ -325,7 +334,7 @@ export default function PQRSPage() {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-text-primary mb-2">
                     Teléfono
                   </label>
                   <Input
@@ -336,34 +345,32 @@ export default function PQRSPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-text-primary mb-2">
                     Dependencia *
                   </label>
                   <Select
                     value={formData.dependencia_id}
-                    onChange={(value) => handleInputChange('dependencia_id', value)}
+                    onChange={(value) => handleInputChange('dependencia_id', value || '')}
                     options={[
                       { value: '', label: 'Seleccione la dependencia' },
-                      ...dependencias.map(dep => ({
+                      ...dependencias.map((dep) => ({
                         value: dep.id,
-                        label: dep.nombre
-                      }))
+                        label: dep.nombre,
+                      })),
                     ]}
                     placeholder="Seleccione la dependencia"
                     required
                     disabled={loading}
                   />
                   {loading && (
-                    <p className="text-xs text-gray-500 mt-1">Cargando dependencias...</p>
+                    <p className="text-xs text-text-muted mt-1">Cargando dependencias...</p>
                   )}
                 </div>
               </div>
 
               {/* Asunto */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Asunto *
-                </label>
+                <label className="block text-sm font-medium text-text-primary mb-2">Asunto *</label>
                 <Input
                   type="text"
                   value={formData.asunto}
@@ -375,7 +382,7 @@ export default function PQRSPage() {
 
               {/* Descripción */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-text-primary mb-2">
                   Descripción *
                 </label>
                 <Textarea
@@ -392,15 +399,17 @@ export default function PQRSPage() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setFormData({
-                    tipo: 'peticion',
-                    nombre: '',
-                    email: '',
-                    telefono: '',
-                    dependencia: '',
-                    asunto: '',
-                    descripcion: '',
-                  })}
+                  onClick={() =>
+                    setFormData({
+                      tipo: 'peticion',
+                      nombre: '',
+                      email: '',
+                      telefono: '',
+                      dependencia_id: '',
+                      asunto: '',
+                      descripcion: '',
+                    })
+                  }
                 >
                   Limpiar
                 </Button>

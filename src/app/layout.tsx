@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { Header, Footer } from '@/components'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { ServiceUpdateProvider } from '@/contexts/ServiceUpdateContext'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 import { QueryProvider } from '@/providers/QueryProvider'
 import { ToastProvider } from '@/components/ui/toast'
 import { ConditionalLayout } from '@/components/layout'
@@ -49,16 +50,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <PerformanceProvider enableMonitoring={true}>
               <MobileOptimizationProvider>
                 <QueryProvider>
-                  <AuthProvider>
-                    <ServiceUpdateProvider>
-                      <ToastProvider>
-                        <ConditionalLayout>{children}</ConditionalLayout>
-                        <PerformanceMonitor />
-                        {/* UX-008: Privacy Consent Banner */}
-                        <PrivacyConsent showDetailedOptions={true} />
-                      </ToastProvider>
-                    </ServiceUpdateProvider>
-                  </AuthProvider>
+                  <ThemeProvider>
+                    <AuthProvider>
+                      <ServiceUpdateProvider>
+                        <ToastProvider>
+                          <ConditionalLayout>{children}</ConditionalLayout>
+                          <PerformanceMonitor />
+                          {/* UX-008: Privacy Consent Banner */}
+                          <PrivacyConsent showDetailedOptions={true} />
+                        </ToastProvider>
+                      </ServiceUpdateProvider>
+                    </AuthProvider>
+                  </ThemeProvider>
                 </QueryProvider>
               </MobileOptimizationProvider>
             </PerformanceProvider>

@@ -116,11 +116,11 @@ export function ChatInputImproved({
   const canSend = message.trim().length > 0 && !isOverLimit && !disabled
 
   return (
-    <div className={cn('border-t border-gray-200 bg-white', className)}>
+    <div className={cn('border-t border-border bg-background', className)}>
       {/* Quick Suggestions */}
       {showSuggestions && message.length === 0 && !isFocused && (
         <div className="px-4 pt-3 pb-2">
-          <p className="text-xs font-medium text-gray-600 mb-2">Preguntas frecuentes:</p>
+          <p className="text-xs font-medium text-text-secondary mb-2">Preguntas frecuentes:</p>
           <div className="flex flex-wrap gap-2">
             {quickSuggestions.map((suggestion, index) => (
               <button
@@ -128,9 +128,9 @@ export function ChatInputImproved({
                 onClick={() => handleSuggestionClick(suggestion)}
                 className={cn(
                   'px-3 py-1.5 text-xs rounded-full border transition-all duration-200',
-                  'bg-gray-50 border-gray-200 text-gray-700',
-                  'hover:bg-[#009045] hover:text-white hover:border-[#009045]',
-                  'focus:outline-none focus:ring-2 focus:ring-[#009045] focus:ring-offset-1',
+                  'bg-background-secondary border-border text-text-primary',
+                  'hover:bg-accent hover:text-white hover:border-accent',
+                  'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1',
                   'active:scale-95'
                 )}
                 disabled={disabled}
@@ -147,15 +147,15 @@ export function ChatInputImproved({
           {/* Main Input Container */}
           <div className={cn(
             'relative rounded-lg border-2 transition-all duration-200',
-            'bg-white shadow-sm',
+            'bg-background shadow-sm',
             // Enhanced focus states with better contrast
-            isFocused && !isOverLimit && 'ring-2 ring-[#009045]/20 border-[#009045] shadow-md',
+            isFocused && !isOverLimit && 'ring-2 ring-accent/20 border-accent shadow-md',
             // Improved default state with better visibility
-            !isFocused && !isOverLimit && 'border-gray-300 hover:border-gray-400 hover:shadow-sm',
+            !isFocused && !isOverLimit && 'border-border hover:border-accent hover:shadow-sm',
             // Clear error states
-            isOverLimit && 'border-red-500 ring-2 ring-red-500/20 shadow-red-100',
+            isOverLimit && 'border-error ring-2 ring-error/20 shadow-red-100',
             // Enhanced disabled state
-            disabled && 'opacity-60 cursor-not-allowed bg-gray-50 border-gray-200'
+            disabled && 'opacity-60 cursor-not-allowed bg-background-secondary border-border'
           )}>
             
             {/* Textarea */}
@@ -170,15 +170,15 @@ export function ChatInputImproved({
               onCompositionEnd={() => setIsComposing(false)}
               placeholder={placeholder}
               disabled={disabled}
-              className={cn(
-                'min-h-[44px] max-h-[120px] resize-none border-0 pr-16 pl-4 py-3',
-                'bg-transparent text-gray-900 placeholder:text-gray-500',
-                'focus:outline-none focus:ring-0 shadow-none',
-                // Improved placeholder contrast (WCAG AA compliant)
-                'placeholder:text-gray-500',
-                // Better text sizing for readability
-                'text-sm leading-relaxed'
-              )}
+            className={cn(
+              'min-h-[44px] max-h-[120px] resize-none border-0 pr-16 pl-4 py-3',
+              'bg-transparent text-text-primary placeholder:text-text-muted',
+              'focus:outline-none focus:ring-0 shadow-none',
+              // Improved placeholder contrast (WCAG AA compliant)
+              'placeholder:text-text-muted',
+              // Better text sizing for readability
+              'text-sm leading-relaxed'
+            )}
               aria-label="Mensaje para el asistente virtual"
               aria-describedby={cn(
                 showCharacterCount && "char-count",
@@ -195,7 +195,7 @@ export function ChatInputImproved({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 p-0 text-gray-400 hover:text-[#009045] hover:bg-[#009045]/10"
+                  className="h-8 w-8 p-0 text-text-muted hover:text-accent hover:bg-accent/10"
                   aria-label="Grabar mensaje de voz"
                   disabled={disabled}
                 >
@@ -209,7 +209,7 @@ export function ChatInputImproved({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 p-0 text-gray-400 hover:text-[#009045] hover:bg-[#009045]/10"
+                  className="h-8 w-8 p-0 text-text-muted hover:text-accent hover:bg-accent/10"
                   aria-label="Adjuntar archivo"
                   disabled={disabled}
                 >
@@ -225,11 +225,11 @@ export function ChatInputImproved({
                 className={cn(
                   'h-8 w-8 p-0 rounded-md transition-all duration-200',
                   // Enhanced enabled state with better contrast
-                  canSend && 'bg-[#009045] hover:bg-[#007A3A] text-white shadow-sm hover:shadow-md',
-                  canSend && 'focus:outline-none focus:ring-2 focus:ring-[#009045] focus:ring-offset-2',
+                  canSend && 'bg-accent hover:bg-accent/80 text-white shadow-sm hover:shadow-md',
+                  canSend && 'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2',
                   canSend && 'active:scale-95',
                   // Improved disabled state
-                  !canSend && 'bg-gray-200 text-gray-400 cursor-not-allowed',
+                  !canSend && 'bg-background-secondary text-text-muted cursor-not-allowed',
                   // Loading state
                   disabled && 'opacity-60'
                 )}
@@ -246,13 +246,13 @@ export function ChatInputImproved({
               <div className="flex items-center gap-2">
                 {/* Status Indicator */}
                 {isOverLimit && (
-                  <div className="flex items-center gap-1 text-red-600">
+                  <div className="flex items-center gap-1 text-error">
                     <AlertCircle className="h-3 w-3" />
                     <span className="text-xs">Mensaje muy largo</span>
                   </div>
                 )}
                 {isNearLimit && !isOverLimit && (
-                  <div className="flex items-center gap-1 text-amber-600">
+                  <div className="flex items-center gap-1 text-warning">
                     <AlertCircle className="h-3 w-3" />
                     <span className="text-xs">Cerca del límite</span>
                   </div>
@@ -264,9 +264,9 @@ export function ChatInputImproved({
                 id="char-count"
                 className={cn(
                   'text-xs transition-colors duration-200',
-                  isOverLimit && 'text-red-600 font-medium',
-                  isNearLimit && !isOverLimit && 'text-amber-600',
-                  !isNearLimit && 'text-gray-400'
+                  isOverLimit && 'text-error font-medium',
+                  isNearLimit && !isOverLimit && 'text-warning',
+                  !isNearLimit && 'text-text-muted'
                 )}
                 aria-live="polite"
               >

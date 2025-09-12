@@ -222,7 +222,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             placeholder={filter.placeholder}
             {...(loading && { })}
             className={clsx(
-              'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
+              'border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
               classes.input,
               loading && 'opacity-50 cursor-not-allowed'
             )}
@@ -237,7 +237,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             onChange={(e) => handleFilterChange(filter.key, e.target.value)}
             {...(loading && { })}
             className={clsx(
-              'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
+              'border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
               classes.input,
               loading && 'opacity-50 cursor-not-allowed'
             )}
@@ -266,7 +266,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             step={filter.step}
             {...(loading && { })}
             className={clsx(
-              'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
+              'border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
               classes.input,
               loading && 'opacity-50 cursor-not-allowed'
             )}
@@ -282,7 +282,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             onChange={(e) => handleFilterChange(filter.key, e.target.value)}
             {...(loading && { })}
             className={clsx(
-              'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
+              'border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
               classes.input,
               loading && 'opacity-50 cursor-not-allowed'
             )}
@@ -302,13 +302,13 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
               }
               {...(loading && { })}
               className={clsx(
-                'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
+                'border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
                 classes.input,
                 loading && 'opacity-50 cursor-not-allowed'
               )}
               aria-label={`${filter.label} - Fecha inicio`}
             />
-            <span className="self-center text-gray-500">-</span>
+            <span className="self-center text-text-secondary">-</span>
             <input
               type="date"
               value={rangeValue.end || ''}
@@ -317,7 +317,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
               }
               {...(loading && { })}
               className={clsx(
-                'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
+                'border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
                 classes.input,
                 loading && 'opacity-50 cursor-not-allowed'
               )}
@@ -336,7 +336,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             }}
             {...(loading && { })}
             className={clsx(
-              'border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
+              'border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
               classes.input,
               loading && 'opacity-50 cursor-not-allowed'
             )}
@@ -356,10 +356,10 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   if (collapsible && isCollapsed) {
     return (
       <div
-        className={clsx('flex items-center justify-between p-4 bg-gray-50 rounded-lg', className)}
+        className={clsx('flex items-center justify-between p-4 bg-background-secondary rounded-lg', className)}
       >
         <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-600">Filtros</span>
+          <span className="text-sm text-text-secondary">Filtros</span>
           {showFilterCount && activeFilterCount > 0 && (
             <span className="bg-primary-green text-white text-xs px-2 py-1 rounded-full">
               {activeFilterCount}
@@ -379,11 +379,11 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   }
 
   return (
-    <div className={clsx('bg-white border border-gray-200 rounded-lg p-4', className)}>
+    <div className={clsx('bg-background-primary border border-border rounded-lg p-4', className)}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
-          <h3 className="text-sm font-medium text-gray-900">Búsqueda y Filtros</h3>
+          <h3 className="text-sm font-medium text-text-primary">Búsqueda y Filtros</h3>
           {showFilterCount && activeFilterCount > 0 && (
             <span className="bg-primary-green text-white text-xs px-2 py-1 rounded-full">
               {activeFilterCount} activos
@@ -416,14 +416,14 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
               placeholder={searchPlaceholder}
               {...(loading && { })}
               className={clsx(
-                'w-full pl-10 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
+                'w-full pl-10 border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent',
                 classes.input,
                 loading && 'opacity-50 cursor-not-allowed'
               )}
               aria-label="Buscar en la tabla"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span className="text-gray-400">🔍</span>
+              <span className="text-text-muted">🔍</span>
             </div>
           </div>
         </div>
@@ -432,7 +432,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
       {/* Presets */}
       {presets.length > 0 && (
         <div className="mb-4">
-          <label className="block text-xs font-medium text-gray-700 mb-2">
+          <label className="block text-xs font-medium text-text-primary mb-2">
             Filtros Predefinidos:
           </label>
           <div className="flex flex-wrap gap-2">
@@ -464,7 +464,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
         >
           {filters.map((filter) => (
             <div key={filter.key} className="space-y-1">
-              <label className="block text-xs font-medium text-gray-700">{filter.label}:</label>
+              <label className="block text-xs font-medium text-text-primary">{filter.label}:</label>
               {renderFilterInput(filter)}
             </div>
           ))}
@@ -472,7 +472,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
       )}
 
       {/* Actions */}
-      <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+      <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
         <div className="flex items-center space-x-2">
           {showClearAll && activeFilterCount > 0 && (
             <Button variant="outline" size="sm" onClick={handleClearAll} disabled={loading}>
@@ -504,7 +504,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
         </div>
 
         {loading && (
-          <div className="flex items-center space-x-2 text-sm text-gray-500">
+          <div className="flex items-center space-x-2 text-sm text-text-secondary">
             <span className="animate-spin">⟳</span>
             <span>Filtrando...</span>
           </div>
@@ -513,14 +513,14 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
       {/* Save Preset */}
       {showSavePreset && (
-        <div className="mt-4 p-3 bg-gray-50 rounded border">
+        <div className="mt-4 p-3 bg-background-secondary rounded border border-border">
           <div className="flex items-center space-x-2">
             <input
               type="text"
               value={savePresetName}
               onChange={(e) => setSavePresetName(e.target.value)}
               placeholder="Nombre del filtro"
-              className={clsx('flex-1', classes.input, 'border border-gray-300 rounded')}
+              className={clsx('flex-1', classes.input, 'border border-border rounded')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   handleSavePreset()
@@ -544,7 +544,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
       {/* Advanced Filter Builder */}
       {showAdvancedFilters && showAdvancedBuilder && advancedFilterFields.length > 0 && (
-        <div className="mt-6 border-t border-gray-200 pt-6">
+        <div className="mt-6 border-t border-border pt-6">
           <AdvancedFilterBuilder
             fields={advancedFilterFields}
             filterGroup={advancedFilterGroup}

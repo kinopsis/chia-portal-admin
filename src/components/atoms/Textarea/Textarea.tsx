@@ -37,15 +37,15 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     const currentLength = typeof value === 'string' ? value.length : 0
 
     const baseClasses =
-      'px-4 py-3 border rounded-lg transition-colors duration-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-0'
+      'px-4 py-3 border rounded-lg transition-colors duration-200 placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-offset-0 bg-background text-text-primary'
 
     const variantClasses = {
       default: error
-        ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-        : 'border-gray-300 focus:border-primary-green focus:ring-primary-green',
+        ? 'border-error focus:border-error focus:ring-error'
+        : 'border-border focus:border-primary-green focus:ring-primary-green',
       outlined: error
-        ? 'border-2 border-red-300 focus:border-red-500 focus:ring-red-500'
-        : 'border-2 border-gray-300 focus:border-primary-green focus:ring-primary-green',
+        ? 'border-2 border-error focus:border-error focus:ring-error'
+        : 'border-2 border-border focus:border-primary-green focus:ring-primary-green',
     }
 
     const resizeClasses = {
@@ -60,7 +60,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className={clsx('flex flex-col', fullWidth && 'w-full')}>
         {label && (
-          <label htmlFor={textareaId} className="mb-2 text-sm font-medium text-gray-700">
+          <label htmlFor={textareaId} className="mb-2 text-sm font-medium text-text-primary">
             {label}
           </label>
         )}
@@ -86,9 +86,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         <div className="mt-1 flex justify-between items-center">
           <div className="flex-1">
             {error ? (
-              <p className="text-sm text-red-600">{error}</p>
+              <p className="text-sm text-error">{error}</p>
             ) : helperText ? (
-              <p className="text-sm text-gray-500">{helperText}</p>
+              <p className="text-sm text-text-muted">{helperText}</p>
             ) : null}
           </div>
 
@@ -97,8 +97,8 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
               <span
                 className={clsx(
                   'text-xs',
-                  currentLength > maxLength * 0.9 ? 'text-orange-600' : 'text-gray-500',
-                  currentLength >= maxLength ? 'text-red-600' : ''
+                  currentLength > maxLength * 0.9 ? 'text-accent' : 'text-text-muted',
+                  currentLength >= maxLength ? 'text-error font-medium' : ''
                 )}
               >
                 {currentLength}/{maxLength}

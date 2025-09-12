@@ -38,10 +38,10 @@ export function ChatMessage({ message, onFeedback, className }: ChatMessageProps
 
   // Get confidence color based on score
   const getConfidenceColor = (confidence?: number) => {
-    if (!confidence) return 'bg-gray-500'
-    if (confidence >= 0.8) return 'bg-green-500'
-    if (confidence >= 0.6) return 'bg-yellow-500'
-    return 'bg-red-500'
+    if (!confidence) return 'bg-neutral'
+    if (confidence >= 0.8) return 'bg-success'
+    if (confidence >= 0.6) return 'bg-warning'
+    return 'bg-error'
   }
 
   // Get confidence text
@@ -57,7 +57,7 @@ export function ChatMessage({ message, onFeedback, className }: ChatMessageProps
     // Simple link detection and replacement
     const linkRegex = /(https?:\/\/[^\s]+)/g
     const parts = content.split(linkRegex)
-    
+
     return parts.map((part, index) => {
       if (linkRegex.test(part)) {
         return (
@@ -66,7 +66,7 @@ export function ChatMessage({ message, onFeedback, className }: ChatMessageProps
             href={part}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 underline inline-flex items-center gap-1"
+            className="text-accent hover:text-accent/80 underline inline-flex items-center gap-1"
             aria-label={`Enlace externo: ${part}`}
           >
             {part}
@@ -82,9 +82,9 @@ export function ChatMessage({ message, onFeedback, className }: ChatMessageProps
     <div
       className={cn(
         'flex gap-3 p-4 rounded-lg transition-colors',
-        isUser && 'bg-blue-50 ml-8',
-        isAssistant && 'bg-gray-50 mr-8',
-        isSystem && 'bg-yellow-50 mx-4 border border-yellow-200',
+        isUser && 'bg-accent/5 ml-8',
+        isAssistant && 'bg-background-secondary mr-8',
+        isSystem && 'bg-warning/5 mx-4 border border-warning/20',
         className
       )}
       role="article"
@@ -94,9 +94,9 @@ export function ChatMessage({ message, onFeedback, className }: ChatMessageProps
       <div
         className={cn(
           'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center',
-          isUser && 'bg-blue-600 text-white',
-          isAssistant && 'bg-green-600 text-white',
-          isSystem && 'bg-yellow-600 text-white'
+          isUser && 'bg-accent text-white',
+          isAssistant && 'bg-success text-white',
+          isSystem && 'bg-warning text-white'
         )}
         aria-hidden="true"
       >
@@ -109,14 +109,14 @@ export function ChatMessage({ message, onFeedback, className }: ChatMessageProps
       <div className="flex-1 min-w-0">
         {/* Header */}
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-sm font-medium text-gray-900">
+          <span className="text-sm font-medium text-text-primary">
             {isUser && 'Tú'}
             {isAssistant && 'Asistente Virtual'}
             {isSystem && 'Sistema'}
           </span>
-          
-          <time 
-            className="text-xs text-gray-500"
+
+          <time
+            className="text-xs text-text-muted"
             dateTime={message.timestamp.toISOString()}
           >
             {formatTime(message.timestamp)}
@@ -157,14 +157,14 @@ export function ChatMessage({ message, onFeedback, className }: ChatMessageProps
         </div>
 
         {/* Message text */}
-        <div className="text-sm text-gray-800 whitespace-pre-wrap break-words">
+        <div className="text-sm text-text-primary whitespace-pre-wrap break-words">
           {renderContent(message.content)}
         </div>
 
         {/* Sources */}
         {isAssistant && message.sources && message.sources.length > 0 && (
-          <div className="mt-3 pt-2 border-t border-gray-200">
-            <p className="text-xs text-gray-600 mb-1">Fuentes consultadas:</p>
+          <div className="mt-3 pt-2 border-t border-border">
+            <p className="text-xs text-text-secondary mb-1">Fuentes consultadas:</p>
             <div className="flex flex-wrap gap-1">
               {message.sources.map((source, index) => (
                 <Badge key={index} variant="secondary" className="text-xs">
@@ -177,8 +177,8 @@ export function ChatMessage({ message, onFeedback, className }: ChatMessageProps
 
         {/* Feedback buttons for assistant messages */}
         {isAssistant && onFeedback && (
-          <div className="mt-3 pt-2 border-t border-gray-200">
-            <p className="text-xs text-gray-600 mb-2">¿Te fue útil esta respuesta?</p>
+          <div className="mt-3 pt-2 border-t border-border">
+            <p className="text-xs text-text-secondary mb-2">¿Te fue útil esta respuesta?</p>
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -199,14 +199,14 @@ export function ChatMessage({ message, onFeedback, className }: ChatMessageProps
                 }}
                 className={cn(
                   "text-xs h-7 px-2 transition-all duration-200",
-                  feedbackState.helpful === 'success' && "bg-green-50 border-green-300 text-green-700",
-                  feedbackState.helpful === 'error' && "bg-red-50 border-red-300 text-red-700"
+                  feedbackState.helpful === 'success' && "bg-success/10 border-success/50 text-success",
+                  feedbackState.helpful === 'error' && "bg-error/10 border-error/50 text-error"
                 )}
                 aria-label="Marcar respuesta como útil"
               >
                 {feedbackState.helpful === 'loading' ? (
                   <span className="flex items-center gap-1">
-                    <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-3 h-3 border border-text-muted border-t-transparent rounded-full animate-spin" />
                     Enviando...
                   </span>
                 ) : feedbackState.helpful === 'success' ? (
@@ -236,14 +236,14 @@ export function ChatMessage({ message, onFeedback, className }: ChatMessageProps
                 }}
                 className={cn(
                   "text-xs h-7 px-2 transition-all duration-200",
-                  feedbackState.not_helpful === 'success' && "bg-green-50 border-green-300 text-green-700",
-                  feedbackState.not_helpful === 'error' && "bg-red-50 border-red-300 text-red-700"
+                  feedbackState.not_helpful === 'success' && "bg-success/10 border-success/50 text-success",
+                  feedbackState.not_helpful === 'error' && "bg-error/10 border-error/50 text-error"
                 )}
                 aria-label="Marcar respuesta como no útil"
               >
                 {feedbackState.not_helpful === 'loading' ? (
                   <span className="flex items-center gap-1">
-                    <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-3 h-3 border border-text-muted border-t-transparent rounded-full animate-spin" />
                     Enviando...
                   </span>
                 ) : feedbackState.not_helpful === 'success' ? (
@@ -256,7 +256,7 @@ export function ChatMessage({ message, onFeedback, className }: ChatMessageProps
               </Button>
             </div>
             {(feedbackState.helpful === 'error' || feedbackState.not_helpful === 'error') && (
-              <p className="text-xs text-red-600 mt-1">
+              <p className="text-xs text-error mt-1">
                 No se pudo enviar el feedback, pero tu opinión es importante para nosotros.
               </p>
             )}
@@ -265,9 +265,9 @@ export function ChatMessage({ message, onFeedback, className }: ChatMessageProps
 
         {/* Low confidence warning */}
         {isAssistant && message.confidence !== undefined && message.confidence < 0.7 && (
-          <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
+          <div className="mt-3 p-2 bg-warning/10 border border-warning/20 rounded text-xs text-warning">
             <AlertTriangle className="h-3 w-3 inline mr-1" aria-hidden="true" />
-            Esta respuesta tiene baja confianza. Para información más precisa, 
+            Esta respuesta tiene baja confianza. Para información más precisa,
             contacta directamente con la dependencia correspondiente al (601) 123-4567.
           </div>
         )}

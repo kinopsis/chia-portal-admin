@@ -220,7 +220,7 @@ const TramitesPage: React.FC = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background-secondary">
       {/* Header with SEO optimization */}
       <PageHeader
         title="Trámites y OPAs - Portal Ciudadano"

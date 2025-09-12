@@ -140,15 +140,15 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
             'flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200 group',
             level > 0 ? 'ml-6 text-sm' : '',
             itemIsActive
-              ? 'bg-primary-green text-white shadow-md'
-              : 'text-gray-700 hover:bg-gray-100 hover:text-primary-green'
+              ? 'bg-accent text-white shadow-md'
+              : 'text-text-primary hover:bg-background-secondary hover:text-accent'
           )}
         >
           <Link href={item.href} className="flex items-center space-x-3 flex-1 min-w-0">
             <span
               className={clsx(
                 'flex-shrink-0',
-                itemIsActive ? 'text-white' : 'text-gray-500 group-hover:text-primary-green'
+                itemIsActive ? 'text-white' : 'text-text-muted group-hover:text-accent'
               )}
             >
               {item.icon}
@@ -162,7 +162,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
               onClick={() => toggleExpanded(item.label)}
               className={clsx(
                 'p-1 rounded transition-transform duration-200',
-                itemIsActive ? 'text-white' : 'text-gray-400 hover:text-primary-green',
+                itemIsActive ? 'text-white' : 'text-text-muted hover:text-accent',
                 isExpanded ? 'rotate-90' : ''
               )}
               title={isExpanded ? `Contraer ${item.label}` : `Expandir ${item.label}`}
@@ -185,35 +185,35 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   return (
     <aside
       className={clsx(
-        'bg-white border-r border-gray-200 transition-all duration-300 flex flex-col',
+        'bg-background border-r border-border transition-all duration-300 flex flex-col',
         isCollapsed ? 'w-16' : 'w-64',
         className
       )}
     >
       {/* Sidebar Header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between">
           {!isCollapsed && (
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">🏛️</span>
               </div>
               <div>
-                <h2 className="text-sm font-semibold text-gray-900">Admin Panel</h2>
-                <p className="text-xs text-gray-500">Chía Portal</p>
+                <h2 className="text-sm font-semibold text-text-primary">Admin Panel</h2>
+                <p className="text-xs text-text-muted">Chía Portal</p>
               </div>
             </div>
           )}
           <button
             type="button"
             onClick={toggleCollapse}
-            className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-background-secondary transition-colors"
             title={isCollapsed ? 'Expandir sidebar' : 'Contraer sidebar'}
           >
             {isCollapsed ? (
-              <ChevronRightIcon className="w-4 h-4 text-gray-500" />
+              <ChevronRightIcon className="w-4 h-4 text-text-muted" />
             ) : (
-              <ChevronLeftIcon className="w-4 h-4 text-gray-500" />
+              <ChevronLeftIcon className="w-4 h-4 text-text-muted" />
             )}
           </button>
         </div>
@@ -226,19 +226,19 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
       {/* User Info */}
       {!isCollapsed && userProfile && (
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-border">
           <div className="flex items-center space-x-3 mb-3">
-            <div className="w-8 h-8 bg-primary-green rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-semibold">
                 {userProfile.nombre?.charAt(0) || 'U'}
                 {userProfile.apellido?.charAt(0) || ''}
               </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">
+              <p className="text-sm font-medium text-text-primary truncate">
                 {userProfile.nombre || 'Usuario'} {userProfile.apellido || ''}
               </p>
-              <p className="text-xs text-gray-500 capitalize">{userProfile.rol}</p>
+              <p className="text-xs text-text-muted capitalize">{userProfile.rol}</p>
             </div>
           </div>
 
@@ -252,7 +252,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                 console.error('Error signing out:', error)
               }
             }}
-            className="w-full flex items-center justify-center space-x-2 px-3 py-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors duration-200"
+            className="w-full flex items-center justify-center space-x-2 px-3 py-2 text-sm text-error hover:text-error hover:bg-error/10 rounded-md transition-colors duration-200"
             title="Cerrar Sesión"
           >
             <span>🚪</span>

@@ -159,7 +159,7 @@ const Modal: React.FC<ModalProps> = ({
       <div
         ref={contentRef}
         className={clsx(
-          'relative bg-white rounded-xl shadow-xl transform transition-all duration-300 w-full',
+          'relative bg-background rounded-xl shadow-xl transform transition-all duration-300 w-full',
           sizeClasses[size],
           size === 'full' ? 'h-full max-h-screen' : 'max-h-[90vh]',
           contentClassName
@@ -170,11 +170,11 @@ const Modal: React.FC<ModalProps> = ({
       >
         {/* Header */}
         {(title || header || showCloseButton) && (
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between p-6 border-b border-border-light">
             <div className="flex-1">
               {header ||
                 (title && (
-                  <h2 id="modal-title" className="text-xl font-semibold text-gray-900">
+                  <h2 id="modal-title" className="text-xl font-semibold text-text-primary">
                     {title}
                   </h2>
                 ))}
@@ -184,7 +184,7 @@ const Modal: React.FC<ModalProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
-                className="ml-4 text-gray-400 hover:text-gray-600"
+                className="ml-4 text-text-muted hover:text-text-secondary"
                 aria-label="Cerrar modal"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,7 +212,7 @@ const Modal: React.FC<ModalProps> = ({
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+          <div className="flex items-center justify-end space-x-3 p-6 border-t border-border-light bg-background-tertiary rounded-b-xl">
             {footer}
           </div>
         )}
