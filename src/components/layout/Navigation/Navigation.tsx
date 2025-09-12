@@ -1,5 +1,20 @@
 'use client'
 
+/**
+ * Navigation Component
+ *
+ * Renders horizontal or vertical navigation with role-based visibility.
+ * Supports variants: default, pills, underline.
+ *
+ * Dark Mode Fixes (Sprint 2.1 - Accessibility):
+ * - Pills variant: Added dark: prefixes for WCAG AA compliance (4.5:1 contrast minimum)
+ *   - Active: dark:bg-primary-green-light (brighter green #007A3A for visibility on dark bg)
+ *   - Inactive: dark:text-text-primary (light text) with dark:hover:bg-background-elevated
+ *   - Ensures menu doesn't blend into dark header background
+ *
+ * Usage: <Navigation items={items} orientation="horizontal" variant="pills" />
+ */
+
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -56,8 +71,8 @@ const Navigation: React.FC<NavigationProps> = ({
           baseClasses,
           'px-4 py-2 rounded-lg',
           isItemActive
-            ? 'bg-primary-green text-white shadow-md'
-            : 'text-text-secondary hover:bg-background-secondary hover:text-primary-green'
+            ? 'bg-primary-green text-white shadow-md dark:bg-primary-green-light dark:text-white dark:shadow-lg'
+            : 'text-text-secondary hover:bg-background-secondary hover:text-primary-green dark:text-text-primary dark:hover:bg-background-elevated dark:hover:text-primary-green-light'
         )
       case 'underline':
         return clsx(
