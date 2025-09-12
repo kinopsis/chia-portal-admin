@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/hooks'
 import { Header, Footer } from '@/components'
+import HeaderSkeleton from '@/components/layout/Header/HeaderSkeleton'
 import { ChatWidget } from '@/components/chat'
 import { ChatErrorBoundary, ChatWidgetFallback } from '@/components/chat/ChatErrorBoundary'
 import { FEATURE_FLAGS } from '@/lib/constants'
@@ -24,11 +25,11 @@ const ConditionalLayout: React.FC<ConditionalLayoutProps> = ({ children }) => {
     return <>{children}</>
   }
 
-  // Show loading state for non-admin routes
+  // Show loading state for non-admin routes - use skeleton to avoid context errors during hydration
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header />
+        <HeaderSkeleton />
         <main id="main-content" className="flex-1" role="main" tabIndex={-1}>
           {children}
         </main>

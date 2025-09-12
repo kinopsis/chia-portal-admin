@@ -1,17 +1,11 @@
-'use client'
-
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Header, Footer } from '@/components'
-import { AuthProvider } from '@/contexts/AuthContext'
-import { ServiceUpdateProvider } from '@/contexts/ServiceUpdateContext'
-import { ThemeProvider } from '@/contexts/ThemeContext'
-import { QueryProvider } from '@/providers/QueryProvider'
-import { ToastProvider } from '@/components/ui/toast'
+import { ClientProviders } from '@/components/providers/ClientProviders'
 import { ConditionalLayout } from '@/components/layout'
 import { SkipLink } from '@/components/atoms'
 import ErrorBoundary from '@/components/ErrorBoundary'
-import { MobileOptimizationProvider, PerformanceProvider, PerformanceMonitor, AccessibilityProvider, ThemeProvider } from '@/components/providers'
+import { PerformanceMonitor } from '@/components/providers'
 import { PrivacyConsent } from '@/components/molecules/PrivacyConsent/PrivacyConsent'
 import { initializeAccessibility } from '@/utils/accessibilityUtils'
 import './globals.css'
@@ -49,29 +43,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </SkipLink>
 
         <ErrorBoundary>
-          <ThemeProvider>
-            <AccessibilityProvider>
-              <PerformanceProvider enableMonitoring={true}>
-                <MobileOptimizationProvider>
-                  <QueryProvider>
-                    <AuthProvider>
-                      <ServiceUpdateProvider>
-                        <ToastProvider>
-                          <ConditionalLayout>{children}</ConditionalLayout>
-                          <PerformanceMonitor />
-                          {/* UX-008: Privacy Consent Banner */}
-                          <PrivacyConsent showDetailedOptions={true} />
-                        </ToastProvider>
-                      </ServiceUpdateProvider>
-                    </AuthProvider>
-                  </QueryProvider>
-                </MobileOptimizationProvider>
-              </PerformanceProvider>
-            </AccessibilityProvider>
-          </ThemeProvider>
+          <ClientProviders>
+            <ConditionalLayout>{children}</ConditionalLayout>
+            <PerformanceMonitor />
+            {/* UX-008: Privacy Consent Banner */}
+            <PrivacyConsent showDetailedOptions={true} />
+          </ClientProviders>
         </ErrorBoundary>
       </body>
     </html>
   )
-}  )
 }
