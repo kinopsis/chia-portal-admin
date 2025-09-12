@@ -11,7 +11,7 @@ import { ToastProvider } from '@/components/ui/toast'
 import { ConditionalLayout } from '@/components/layout'
 import { SkipLink } from '@/components/atoms'
 import ErrorBoundary from '@/components/ErrorBoundary'
-import { MobileOptimizationProvider, PerformanceProvider, PerformanceMonitor, AccessibilityProvider, ThemeProvider } from '@/components/providers'
+import { MobileOptimizationProvider, PerformanceProvider, PerformanceMonitor, AccessibilityProvider } from '@/components/providers'
 import { PrivacyConsent } from '@/components/molecules/PrivacyConsent/PrivacyConsent'
 import { initializeAccessibility } from '@/utils/accessibilityUtils'
 import './globals.css'
@@ -73,5 +73,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </body>
     </html>
   )
-}  )
 }
