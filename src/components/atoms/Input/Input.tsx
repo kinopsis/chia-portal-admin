@@ -33,14 +33,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const inputId = id || generatedId
 
     const baseClasses =
-      'px-4 py-3 border rounded-lg transition-colors duration-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-0'
+      'px-4 py-3 border rounded-lg transition-colors duration-200 placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-offset-0 text-text-primary'
 
     const variantClasses = {
       default: error
-        ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-        : 'border-gray-300 focus:border-primary-green focus:ring-primary-green',
-      search:
-        'border-gray-300 focus:border-primary-green focus:ring-primary-green bg-gray-50 focus:bg-white',
+        ? 'border-error focus:border-error focus:ring-error bg-background focus:bg-background'
+        : `border-border-medium focus:border-primary-green focus:ring-primary-green bg-background focus:bg-background`,
+      search: `border-border-medium focus:border-primary-green focus:ring-primary-green bg-background-secondary focus:bg-background`,
     }
 
     const widthClasses = fullWidth ? 'w-full' : 'w-auto'
@@ -48,16 +47,20 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={clsx('flex flex-col', fullWidth && 'w-full')}>
         {label && (
-          <label htmlFor={inputId} className="mb-2 text-sm font-medium text-gray-700">
+          <label htmlFor={inputId} className="mb-2 text-sm font-medium text-text-primary">
             {label}
-            {props.required && <span className="text-red-500 ml-1" aria-label="campo requerido">*</span>}
+            {props.required && (
+              <span className="text-error ml-1" aria-label="campo requerido">
+                *
+              </span>
+            )}
           </label>
         )}
 
         <div className="relative">
           {leftIcon && (
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span className="text-gray-400 w-5 h-5">
+              <span className="text-text-muted w-5 h-5">
                 {typeof leftIcon === 'function' ? leftIcon() : leftIcon}
               </span>
             </div>
@@ -75,8 +78,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               className
             )}
             aria-describedby={
-              error ? `${inputId}-error` :
-              helperText ? `${inputId}-helper` : undefined
+              error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined
             }
             aria-invalid={!!error}
             aria-required={!!props.required}
@@ -86,7 +88,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
           {rightIcon && (
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-              <span className="text-gray-400 w-5 h-5">
+              <span className="text-text-muted w-5 h-5">
                 {typeof rightIcon === 'function' ? rightIcon() : rightIcon}
               </span>
             </div>
@@ -94,13 +96,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {error && (
-          <p id={`${inputId}-error`} className="mt-1 text-sm text-red-600" role="alert">
+          <p id={`${inputId}-error`} className="mt-1 text-sm text-error" role="alert">
             {error}
           </p>
         )}
 
         {helperText && !error && (
-          <p id={`${inputId}-helper`} className="mt-1 text-sm text-gray-500">
+          <p id={`${inputId}-helper`} className="mt-1 text-sm text-text-muted">
             {helperText}
           </p>
         )}

@@ -2,7 +2,7 @@
 
 /**
  * AccordionSection Component
- * 
+ *
  * Reusable accordion component for expandable content sections
  * Used in TramiteCardEnhanced for requisitos and instrucciones
  */
@@ -14,48 +14,51 @@ import { ChevronDown, ChevronRight } from 'lucide-react'
 export interface AccordionSectionProps {
   /** Section title */
   title: string
-  
+
   /** Optional count to display next to title */
   count?: number
-  
+
   /** Icon to display (emoji or component) */
   icon?: string | React.ReactNode
-  
+
   /** Content to display when expanded */
   children: React.ReactNode
-  
+
   /** Whether section is expanded by default */
   defaultExpanded?: boolean
-  
+
   /** Visual variant for different content types */
   variant?: 'requisitos' | 'instrucciones' | 'default'
-  
+
   /** Additional CSS classes */
   className?: string
-  
+
   /** Test ID for testing */
   'data-testid'?: string
 }
 
 const variantStyles = {
   requisitos: {
-    button: 'bg-gray-50 border-gray-200 hover:bg-gray-100 border-l-4 border-l-amber-400',
-    content: 'bg-gray-50 border-gray-200',
-    text: 'text-gray-700',  // ✅ Unificado con sección "Descripción"
-    icon: 'text-amber-600'
+    button:
+      'bg-background-secondary border-border-medium hover:bg-background-tertiary border-l-4 border-l-amber-500 dark:border-l-amber-400',
+    content: 'bg-background-secondary border-border-medium',
+    text: 'text-text-primary', // ✅ Usando variable de tema
+    icon: 'text-amber-600 dark:text-amber-400',
   },
   instrucciones: {
-    button: 'bg-gray-50 border-gray-200 hover:bg-gray-100 border-l-4 border-l-blue-400',
-    content: 'bg-gray-50 border-gray-200',
-    text: 'text-gray-700',  // ✅ Unificado con sección "Descripción"
-    icon: 'text-blue-600'   // ✅ Mantenido como está
+    button:
+      'bg-background-secondary border-border-medium hover:bg-background-tertiary border-l-4 border-l-blue-500 dark:border-l-blue-400',
+    content: 'bg-background-secondary border-border-medium',
+    text: 'text-text-primary', // ✅ Usando variable de tema
+    icon: 'text-blue-600 dark:text-blue-400', // ✅ Mantenido como está
   },
   default: {
-    button: 'bg-gray-50 border-gray-200 hover:bg-gray-100 border-l-4 border-l-gray-400',
-    content: 'bg-gray-50 border-gray-200',
-    text: 'text-gray-700',
-    icon: 'text-gray-600'
-  }
+    button:
+      'bg-background-secondary border-border-medium hover:bg-background-tertiary border-l-4 border-l-border-strong dark:border-l-gray-400',
+    content: 'bg-background-secondary border-border-medium',
+    text: 'text-text-primary',
+    icon: 'text-text-muted dark:text-gray-400',
+  },
 }
 
 export const AccordionSection: React.FC<AccordionSectionProps> = ({
@@ -95,26 +98,20 @@ export const AccordionSection: React.FC<AccordionSectionProps> = ({
               {icon}
             </span>
           )}
-          
+
           {/* Title and Count */}
           <span className={cn('font-medium text-sm', styles.text)}>
             {title}
-            {count !== undefined && (
-              <span className="ml-1">({count})</span>
-            )}
+            {count !== undefined && <span className="ml-1">({count})</span>}
           </span>
         </div>
-        
+
         {/* Expand/Collapse Icon */}
         <span className={cn('transition-transform duration-200', styles.icon)}>
-          {isExpanded ? (
-            <ChevronDown className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
+          {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         </span>
       </button>
-      
+
       {/* Accordion Content */}
       {isExpanded && (
         <div

@@ -28,11 +28,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   const getVariantClasses = () => {
     switch (variant) {
       case 'admin':
-        return 'bg-white border-b border-gray-200'
+        return 'bg-background border-b border-border'
       case 'minimal':
         return 'bg-transparent'
       default:
-        return 'bg-gray-50 border-b border-gray-200'
+        return 'bg-background-secondary border-b border-border'
     }
   }
 
@@ -51,7 +51,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           <div className="flex-1 min-w-0">
             <h1
               className={clsx(
-                'font-bold text-gray-900 truncate',
+                'font-bold text-text-primary truncate',
                 variant === 'minimal' ? 'text-2xl' : 'text-3xl'
               )}
             >
@@ -60,7 +60,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
             {description && (
               <p
                 className={clsx(
-                  'text-gray-600 mt-2',
+                  'text-text-secondary mt-2',
                   variant === 'minimal' ? 'text-sm' : 'text-base'
                 )}
               >

@@ -322,7 +322,7 @@ const TramitesAdminPage: React.FC = () => {
       sortable: true,
       width: 120,
       render: (value, record) => (
-        <span className="font-mono text-sm text-gray-900">{value || 'N/A'}</span>
+        <span className="font-mono text-sm text-text-primary">{value || 'N/A'}</span>
       ),
     },
     {
@@ -331,8 +331,8 @@ const TramitesAdminPage: React.FC = () => {
       sortable: true,
       render: (value, record) => (
         <div>
-          <div className="font-medium text-gray-900">{value || 'N/A'}</div>
-          <div className="text-sm text-gray-500 truncate max-w-xs">
+          <div className="font-medium text-text-primary">{value || 'N/A'}</div>
+          <div className="text-sm text-text-muted truncate max-w-xs">
             {record.formulario || 'Sin información de formulario'}
           </div>
         </div>
@@ -343,10 +343,10 @@ const TramitesAdminPage: React.FC = () => {
       title: 'Jerarquía',
       render: (value, record) => (
         <div>
-          <div className="text-sm font-medium text-gray-900">
+          <div className="text-sm font-medium text-text-primary">
             {value?.dependencias?.nombre || 'N/A'}
           </div>
-          <div className="text-xs text-gray-500">{value?.nombre || 'N/A'}</div>
+          <div className="text-xs text-text-muted">{value?.nombre || 'N/A'}</div>
         </div>
       ),
     },
@@ -355,7 +355,7 @@ const TramitesAdminPage: React.FC = () => {
       title: 'Pago',
       align: 'center',
       render: (value, record) => (
-        <span className={value ? 'text-red-600 font-medium' : 'text-green-600 font-medium'}>
+        <span className={value ? 'text-error font-medium' : 'text-success font-medium'}>
           {value ? 'Con costo' : 'Gratuito'}
         </span>
       ),
@@ -364,7 +364,7 @@ const TramitesAdminPage: React.FC = () => {
       key: 'tiempo_respuesta',
       title: 'Tiempo Respuesta',
       render: (value, record) => (
-        <span className="text-sm text-gray-600">{value || 'No especificado'}</span>
+        <span className="text-sm text-text-secondary">{value || 'No especificado'}</span>
       ),
     },
     {
@@ -374,7 +374,7 @@ const TramitesAdminPage: React.FC = () => {
       render: (value, record) => (
         <span
           className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-            value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            value ? 'bg-success/10 text-success' : 'bg-error/10 text-error'
           }`}
         >
           {value ? 'Activo' : 'Inactivo'}
@@ -385,7 +385,7 @@ const TramitesAdminPage: React.FC = () => {
       key: 'updated_at',
       title: 'Actualizado',
       sortable: true,
-      render: (value, record) => <span className="text-sm text-gray-500">{formatDate(value)}</span>,
+      render: (value, record) => <span className="text-sm text-text-muted">{formatDate(value)}</span>,
     },
   ]
 
@@ -552,17 +552,17 @@ const TramitesAdminPage: React.FC = () => {
       <div className="space-y-6">
         {/* Error Alert */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="bg-error/5 border border-error/20 rounded-lg p-4">
             <div className="flex">
-              <div className="text-red-400">⚠️</div>
+              <div className="text-error">⚠️</div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Error</h3>
-                <p className="text-sm text-red-700 mt-1">{error}</p>
+                <h3 className="text-sm font-medium text-error">Error</h3>
+                <p className="text-sm text-error/80 mt-1">{error}</p>
               </div>
               <button
                 type="button"
                 onClick={() => setError(null)}
-                className="ml-auto text-red-400 hover:text-red-600"
+                className="ml-auto text-error hover:text-error/80"
               >
                 ✕
               </button>
@@ -683,11 +683,11 @@ const TramitesAdminPage: React.FC = () => {
           confirmVariant="danger"
           loading={formLoading}
         >
-          <p className="text-gray-600">
+          <p className="text-text-secondary">
             ¿Estás seguro de que deseas eliminar el trámite{' '}
             <strong>{selectedTramite?.nombre}</strong>?
           </p>
-          <p className="text-sm text-red-600 mt-2">Esta acción no se puede deshacer.</p>
+          <p className="text-sm text-error mt-2">Esta acción no se puede deshacer.</p>
         </ConfirmDialog>
       </div>
     </>

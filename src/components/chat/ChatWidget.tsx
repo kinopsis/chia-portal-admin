@@ -174,25 +174,25 @@ export function ChatWidget({
       return {
         icon: WifiOff,
         text: 'Desconectado',
-        color: 'text-red-200',
-        bgColor: 'bg-red-500/20'
+        color: 'text-error',
+        bgColor: 'bg-error/20'
       }
     }
-    
+
     if (isLoading || isTyping) {
       return {
         icon: Clock,
         text: 'Escribiendo...',
-        color: 'text-blue-200',
-        bgColor: 'bg-blue-500/20'
+        color: 'text-accent',
+        bgColor: 'bg-accent/20'
       }
     }
 
     return {
       icon: CheckCircle,
       text: 'En línea',
-      color: 'text-green-200',
-      bgColor: 'bg-green-500/20'
+      color: 'text-success',
+      bgColor: 'bg-success/20'
     }
   }
 
@@ -329,7 +329,7 @@ export function ChatWidget({
                   </div>
                   
                   {/* Municipality Branding */}
-                  <span className="text-xs text-green-100 truncate">
+                  <span className="text-xs opacity-80 truncate">
                     Municipio de Chía
                   </span>
                 </div>
@@ -384,7 +384,7 @@ export function ChatWidget({
                 onClick={() => setIsOpen(false)}
                 className={cn(
                   'h-11 w-11 p-0 text-white/80 hover:text-white',
-                  'hover:bg-red-500/20 focus:bg-red-500/20',
+                  'hover:bg-error/20 focus:bg-error/20',
                   'focus:outline-none focus:ring-2 focus:ring-white/50',
                   'transition-all duration-200'
                 )}
@@ -398,15 +398,15 @@ export function ChatWidget({
 
           {/* Settings Panel (if enabled) */}
           {showSettings && !isMinimized && (
-            <div className="bg-gray-50 border-b border-gray-200 p-3">
+            <div className="bg-background-secondary border-b border-border p-3">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-medium text-gray-900">Configuración</h3>
+                <h3 className="text-sm font-medium text-text-primary">Configuración</h3>
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowSettings(false)}
-                  className="h-11 w-11 p-0 text-gray-600 hover:text-gray-800"
+                  className="h-11 w-11 p-0 text-text-muted hover:text-text-primary"
                   aria-label="Cerrar configuración"
                 >
                   <X aria-hidden="true" className="h-4 w-4" />
@@ -429,7 +429,7 @@ export function ChatWidget({
                     variant="outline"
                     size="sm"
                     onClick={clearError}
-                    className="w-full text-xs text-red-600 border-red-200 hover:bg-red-50"
+                    className="w-full text-xs text-error border-error/50 hover:bg-error/10"
                   >
                     Limpiar errores
                   </Button>
@@ -441,7 +441,7 @@ export function ChatWidget({
           {/* Chat content */}
           {!isMinimized && (
             <div data-testid="chat-content" className={cn(
-              'flex flex-col bg-white/95 flex-1 min-h-0',
+              'flex flex-col bg-background flex-1 min-h-0',
               'overflow-hidden'
             )}>
               <p id="chat-widget-instructions" className="sr-only">Escribe tu mensaje y presiona Enter para enviar. Usa Tab para navegar por los controles y Escape para cerrar el chat.</p>
@@ -507,7 +507,7 @@ export function ChatWidget({
             <MessageCircle className="h-6 w-6" aria-hidden="true" />
             {/* New message indicator */}
             {hasNewMessage && (
-              <div className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border-2 border-white animate-ping" />
+              <div className="absolute -top-1 -right-1 h-3 w-3 bg-error rounded-full border-2 border-white animate-ping" />
             )}
           </div>
         </Button>

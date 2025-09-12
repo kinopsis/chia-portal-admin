@@ -12,11 +12,11 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
     const baseClasses = 'inline-flex items-center font-medium rounded-full'
 
     const variantClasses = {
-      success: 'bg-green-100 text-green-800',
-      warning: 'bg-yellow-100 text-yellow-800',
-      error: 'bg-red-100 text-red-800',
-      info: 'bg-blue-100 text-blue-800',
-      neutral: 'bg-gray-100 text-gray-800',
+      success: 'bg-success/10 text-success dark:bg-success/20 dark:text-success',
+      warning: 'bg-warning/10 text-warning dark:bg-warning/20 dark:text-warning',
+      error: 'bg-error/10 text-error dark:bg-error/20 dark:text-error',
+      info: 'bg-info/10 text-info dark:bg-info/20 dark:text-info',
+      neutral: 'bg-neutral/10 text-neutral dark:bg-neutral/20 dark:text-neutral',
       primary: 'bg-primary-green/10 text-primary-green',
       secondary: 'bg-primary-yellow/10 text-primary-yellow',
     }

@@ -62,7 +62,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
   }, [])
 
   // Filter options based on search query
-  const filteredOptions = options.filter(option =>
+  const filteredOptions = options.filter((option) =>
     option.label.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
@@ -76,15 +76,15 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
     }
 
     const newValues = selectedValues.includes(value)
-      ? selectedValues.filter(v => v !== value)
+      ? selectedValues.filter((v) => v !== value)
       : [...selectedValues, value]
-    
+
     onChange(newValues)
   }
 
   // Handle chip removal
   const handleChipRemove = (value: string) => {
-    onChange(selectedValues.filter(v => v !== value))
+    onChange(selectedValues.filter((v) => v !== value))
   }
 
   // Clear all selections
@@ -94,8 +94,8 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
 
   // Get selected option labels
   const getSelectedLabels = () => {
-    return selectedValues.map(value => {
-      const option = options.find(opt => opt.value === value)
+    return selectedValues.map((value) => {
+      const option = options.find((opt) => opt.value === value)
       return option ? option.label : value
     })
   }
@@ -106,10 +106,10 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
   return (
     <div className={cn('relative', className)} ref={dropdownRef} data-testid={testId}>
       {/* Label */}
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-sm font-medium text-text-primary mb-2">
         {label}
         {hasSelections && showCount && (
-          <span className="ml-2 text-xs text-gray-500">
+          <span className="ml-2 text-xs text-text-muted">
             ({selectedValues.length} seleccionado{selectedValues.length !== 1 ? 's' : ''})
           </span>
         )}
@@ -123,8 +123,8 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
               key={selectedValues[index]}
               className={cn(
                 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm',
-                'bg-green-100 text-green-800 border border-green-200',
-                'hover:bg-green-200 transition-colors duration-200',
+                'bg-success-light text-success-dark border border-success-dark/20',
+                'hover:bg-success-dark/10 transition-colors duration-200',
                 disabled && 'opacity-50 cursor-not-allowed'
               )}
               data-testid={`selected-chip-${selectedValues[index]}`}
@@ -137,7 +137,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
                     e.stopPropagation()
                     handleChipRemove(selectedValues[index])
                   }}
-                  className="ml-1 hover:text-green-900 focus:outline-none focus:text-green-900"
+                  className="ml-1 hover:text-success-dark focus:outline-none focus:text-success-dark"
                   aria-label={`Remover ${label}`}
                 >
                   <X className="h-3 w-3" />
@@ -145,18 +145,18 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
               )}
             </div>
           ))}
-          
+
           {selectedLabels.length > maxVisible && (
-            <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-600">
+            <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-background-secondary text-text-secondary">
               +{selectedLabels.length - maxVisible} más
             </div>
           )}
-          
+
           {hasSelections && !disabled && (
             <button
               type="button"
               onClick={handleClearAll}
-              className="inline-flex items-center px-2 py-1 text-xs text-gray-500 hover:text-gray-700 focus:outline-none"
+              className="inline-flex items-center px-2 py-1 text-xs text-text-muted hover:text-text-secondary focus:outline-none"
               data-testid="clear-all-button"
             >
               Limpiar todo
@@ -172,45 +172,52 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
         disabled={disabled || loading}
         className={cn(
           'w-full flex items-center justify-between px-4 py-3 text-left',
-          'border border-gray-300 rounded-lg bg-white',
-          'hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500',
+          'border border-border-medium rounded-lg bg-background',
+          'hover:border-border-strong focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-primary-green',
           'transition-colors duration-200',
-          disabled && 'opacity-50 cursor-not-allowed bg-gray-50',
+          disabled && 'opacity-50 cursor-not-allowed bg-background-secondary',
           loading && 'opacity-50 cursor-wait',
-          isOpen && 'border-green-500 ring-2 ring-green-500'
+          isOpen && 'border-primary-green ring-2 ring-primary-green'
         )}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         data-testid="filter-trigger"
       >
-        <span className={cn(
-          'block truncate',
-          !hasSelections && 'text-gray-500'
-        )}>
-          {loading ? 'Cargando...' : hasSelections ? `${selectedValues.length} seleccionado${selectedValues.length !== 1 ? 's' : ''}` : placeholder}
+        <span
+          className={cn('block truncate', 'text-text-primary', !hasSelections && 'text-text-muted')}
+        >
+          {loading
+            ? 'Cargando...'
+            : hasSelections
+              ? `${selectedValues.length} seleccionado${selectedValues.length !== 1 ? 's' : ''}`
+              : placeholder}
         </span>
-        <ChevronDown className={cn(
-          'h-5 w-5 text-gray-400 transition-transform duration-200',
-          isOpen && 'transform rotate-180'
-        )} />
+        <ChevronDown
+          className={cn(
+            'h-5 w-5 text-text-muted transition-transform duration-200',
+            isOpen && 'transform rotate-180'
+          )}
+        />
       </button>
 
       {/* Dropdown Menu */}
       {isOpen && !disabled && !loading && (
-        <div className={cn(
-          'absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg',
-          'max-h-60 overflow-hidden'
-        )}>
+        <div
+          className={cn(
+            'absolute z-50 w-full mt-1 bg-background border border-border-medium rounded-lg shadow-lg',
+            'max-h-60 overflow-hidden'
+          )}
+        >
           {/* Search Input */}
           {options.length > 5 && (
-            <div className="p-3 border-b border-gray-200">
+            <div className="p-3 border-b border-border-light">
               <input
                 ref={inputRef}
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar opciones..."
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className="w-full px-3 py-2 text-sm text-text-primary border border-border-medium rounded focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-primary-green placeholder-text-muted"
                 data-testid="search-input"
               />
             </div>
@@ -219,7 +226,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
           {/* Options List */}
           <div className="max-h-48 overflow-y-auto">
             {filteredOptions.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-gray-500 text-center">
+              <div className="px-4 py-3 text-sm text-text-muted text-center">
                 {searchQuery ? 'No se encontraron opciones' : 'No hay opciones disponibles'}
               </div>
             ) : (
@@ -233,28 +240,30 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
                     disabled={option.disabled}
                     className={cn(
                       'w-full flex items-center justify-between px-4 py-3 text-left text-sm',
-                      'hover:bg-gray-50 focus:outline-none focus:bg-gray-50',
-                      'transition-colors duration-150',
-                      isSelected && 'bg-green-50 text-green-900',
+                      'hover:bg-background-secondary focus:outline-none focus:bg-background-secondary',
+                      'transition-colors duration-150 text-text-primary',
+                      isSelected && 'bg-primary-green/10 text-primary-green-dark',
                       option.disabled && 'opacity-50 cursor-not-allowed'
                     )}
                     data-testid={`option-${option.value}`}
                   >
                     <div className="flex items-center gap-3">
                       {allowMultiple && (
-                        <div className={cn(
-                          'w-4 h-4 border-2 rounded flex items-center justify-center',
-                          isSelected ? 'border-green-500 bg-green-500' : 'border-gray-300'
-                        )}>
+                        <div
+                          className={cn(
+                            'w-4 h-4 border-2 rounded flex items-center justify-center',
+                            isSelected
+                              ? 'border-primary-green bg-primary-green'
+                              : 'border-border-medium'
+                          )}
+                        >
                           {isSelected && <Check className="h-3 w-3 text-white" />}
                         </div>
                       )}
                       <span className="truncate">{option.label}</span>
                     </div>
                     {showCount && option.count !== undefined && (
-                      <span className="text-xs text-gray-500 ml-2">
-                        ({option.count})
-                      </span>
+                      <span className="text-xs text-text-muted ml-2">({option.count})</span>
                     )}
                   </button>
                 )
@@ -264,15 +273,15 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
 
           {/* Footer with actions */}
           {allowMultiple && hasSelections && (
-            <div className="p-3 border-t border-gray-200 bg-gray-50">
+            <div className="p-3 border-t border-border-light bg-background-secondary">
               <div className="flex justify-between items-center text-sm">
-                <span className="text-gray-600">
+                <span className="text-text-secondary">
                   {selectedValues.length} de {options.length} seleccionados
                 </span>
                 <button
                   type="button"
                   onClick={handleClearAll}
-                  className="text-green-600 hover:text-green-700 focus:outline-none font-medium"
+                  className="text-primary-green hover:text-primary-green hover:text-primary-green-dark focus:outline-none font-medium"
                   data-testid="footer-clear-button"
                 >
                   Limpiar todo

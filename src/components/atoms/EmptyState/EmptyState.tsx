@@ -54,7 +54,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
 
   const defaultIcon = (
     <svg
-      className={clsx(classes.icon, 'text-gray-400')}
+      className={clsx(classes.icon, 'text-text-muted')}
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -82,11 +82,11 @@ const EmptyState: React.FC<EmptyStateProps> = ({
       <div className="mb-4">{icon || defaultIcon}</div>
 
       {/* Title */}
-      <h3 className={clsx('font-semibold text-gray-900 mb-2', classes.title)}>{title}</h3>
+      <h3 className={clsx('font-semibold text-text-primary mb-2', classes.title)}>{title}</h3>
 
       {/* Description */}
       {description && (
-        <p className={clsx('text-gray-600 mb-6 max-w-md', classes.description)}>{description}</p>
+        <p className={clsx('text-text-secondary mb-6 max-w-md', classes.description)}>{description}</p>
       )}
 
       {/* Actions */}

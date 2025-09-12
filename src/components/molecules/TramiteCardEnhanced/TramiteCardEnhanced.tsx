@@ -169,7 +169,7 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
           <button
             type="button"
             className={cn(
-              "w-full text-left hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset",
+              "w-full text-left hover:bg-background-tertiary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-green focus:ring-inset",
               shouldShowManagementActions ? "p-3" : "p-4" // Reduced padding for management pages
             )}
             onClick={toggleExpanded}
@@ -184,7 +184,7 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
               shouldShowManagementActions ? "mb-1" : "mb-2" // Reduced margin for management pages
             )}>
               <h3 className={cn(
-                "font-semibold text-gray-900 leading-tight",
+                "font-semibold text-text-primary leading-tight",
                 shouldShowManagementActions ? "text-sm" : "text-base" // Smaller text for management pages
               )}>
                 {tramite.nombre}
@@ -203,7 +203,7 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
               </span>
 
               {(tramite.dependencia || tramite.subdependencia) && (
-                <span className="text-gray-600">
+                <span className="text-text-secondary">
                   {tramite.dependencia}
                   {tramite.subdependencia && (
                     <>
@@ -219,9 +219,9 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
           {/* Expand/Collapse Icon */}
           <div className="ml-4 flex-shrink-0">
             {isExpanded ? (
-              <ChevronDown className="h-5 w-5 text-gray-400" />
+              <ChevronDown className="h-5 w-5 text-text-muted" />
             ) : (
-              <ChevronRight className="h-5 w-5 text-gray-400" />
+              <ChevronRight className="h-5 w-5 text-text-muted" />
             )}
           </div>
         </div>
@@ -241,12 +241,12 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
 
         {/* Sección Descripción - Siempre visible */}
         {hasDescripcion && (
-          <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+          <div className="p-3 bg-background-tertiary border border-border-medium rounded-lg">
             <div className="flex items-start gap-2">
-              <span className="text-gray-600 text-sm" aria-hidden="true">📝</span>
+              <span className="text-text-secondary text-sm" aria-hidden="true">📝</span>
               <div>
-                <h4 className="text-sm font-medium text-gray-800 mb-1">Descripción:</h4>
-                <p className="text-sm text-gray-700">
+                <h4 className="text-sm font-medium text-text-primary mb-1">Descripción:</h4>
+                <p className="text-sm text-text-secondary">
                   {tramite.descripcion || tramite.formulario ||
                     'No se ha especificado una descripción para este servicio. Consulte con la dependencia correspondiente.'}
                 </p>
@@ -267,14 +267,14 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
             {tramite.requisitos && tramite.requisitos.length > 0 ? (
               <ul className="space-y-2">
                 {tramite.requisitos.map((requisito, index) => (
-                  <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
+                  <li key={index} className="flex items-start gap-2 text-sm text-text-secondary">
                     <span className="text-amber-600 mt-1 flex-shrink-0" aria-hidden="true">•</span>
                     <span>{requisito}</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <div className="text-sm text-gray-600 italic">
+              <div className="text-sm text-text-muted italic">
                 No se han especificado requisitos para este trámite. Consulte con la dependencia correspondiente.
               </div>
             )}
@@ -294,8 +294,8 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
             {((tramite.instructivo || tramite.instrucciones) && (tramite.instructivo || tramite.instrucciones).length > 0) ? (
               <ol className="space-y-2">
                 {(tramite.instructivo || tramite.instrucciones).map((instruccion, index) => (
-                  <li key={index} className="flex items-start gap-3 text-sm text-gray-700">
-                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded-full flex-shrink-0 mt-0.5">
+                  <li key={index} className="flex items-start gap-3 text-sm text-text-secondary">
+                    <span className="bg-background-tertiary text-text-primary text-xs font-medium px-2 py-1 rounded-full flex-shrink-0 mt-0.5 border border-border-medium">
                       {index + 1}
                     </span>
                     <span>{instruccion}</span>
@@ -303,7 +303,7 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
                 ))}
               </ol>
             ) : (
-              <div className="text-sm text-gray-600 italic">
+              <div className="text-sm text-text-muted italic">
                 No se han especificado instrucciones para este servicio. Consulte con la dependencia correspondiente.
               </div>
             )}
@@ -321,12 +321,12 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
 
         {/* Observaciones - Siempre visible */}
         {hasObservaciones && (
-          <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div className="mt-4 p-3 bg-warning-light border border-warning-dark/20 rounded-lg">
             <div className="flex items-start gap-2">
-              <span className="text-yellow-600 text-sm" aria-hidden="true">💡</span>
+              <span className="text-warning-dark text-sm" aria-hidden="true">💡</span>
               <div>
-                <h4 className="text-sm font-medium text-yellow-800 mb-1">Observaciones:</h4>
-                <p className="text-sm text-yellow-700">
+                <h4 className="text-sm font-medium text-warning-dark mb-1">Observaciones:</h4>
+                <p className="text-sm text-warning-dark">
                   {(tramite.observaciones && tramite.observaciones.trim() !== '')
                     ? tramite.observaciones
                     : 'No se han especificado observaciones adicionales para este servicio.'}
@@ -339,15 +339,15 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
           {/* Government Portal Links - show only when URL is valid and flag is true */}
           {(((tramite.url_suit && /^https?:\/\//.test(tramite.url_suit)) && tramite.visualizacion_suit === true) ||
             ((tramite.url_gov && /^https?:\/\//.test(tramite.url_gov)) && tramite.visualizacion_gov === true)) && (
-            <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="mt-4 pt-4 border-t border-border">
               <div className="flex items-center gap-4 text-sm">
-                <span className="text-gray-600 font-medium">Enlaces oficiales:</span>
+                <span className="text-text-secondary font-medium">Enlaces oficiales:</span>
                 {tramite.url_suit && /^https?:\/\//.test(tramite.url_suit) && tramite.visualizacion_suit === true && (
                   <a
                     href={tramite.url_suit}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 underline"
+                    className="text-primary-green hover:text-primary-green-dark underline"
                     aria-label="Abrir trámite en SUIT (se abre en nueva pestaña)"
                   >
                     SUIT
@@ -358,7 +358,7 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
                     href={tramite.url_gov}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 underline"
+                    className="text-primary-green hover:text-primary-green-dark underline"
                     aria-label="Abrir trámite en GOV.CO (se abre en nueva pestaña)"
                   >
                     GOV.CO
@@ -373,11 +373,11 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
 
         {/* MANAGEMENT ACTIONS PANEL - Compact Version */}
         {shouldShowManagementActions && (
-          <div className="flex flex-col gap-1 p-2 min-w-0 border-l border-gray-200">
+          <div className="flex flex-col gap-1 p-2 min-w-0 border-l border-border">
             {/* Status Badge */}
             <div className="mb-1">
               <Badge
-                variant={tramite.activo ? "success" : "danger"}
+                variant={tramite.activo ? "success" : "error"}
                 className="text-xs font-medium"
               >
                 {tramite.activo ? "✅ Activo" : "❌ Inactivo"}
@@ -446,7 +446,7 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
                   size="sm"
                   onClick={handleDelete}
                   loading={loadingStates.delete}
-                  className="text-xs px-1.5 py-0.5 justify-start h-6 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  className="text-xs px-1.5 py-0.5 justify-start h-6 text-error hover:text-error-dark hover:bg-error-light"
                   data-testid={`delete-${tramite.id}`}
                 >
                   🗑️ Eliminar
@@ -456,7 +456,7 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
 
             {/* Last Updated Timestamp */}
             {tramite.updated_at && (
-              <div className="text-xs text-gray-500 mt-2 pt-2 border-t border-gray-100">
+              <div className="text-xs text-text-muted mt-2 pt-2 border-t border-border-light">
                 📅 Actualizado: {new Date(tramite.updated_at).toLocaleDateString('es-CO')}
               </div>
             )}
@@ -464,7 +464,7 @@ export const TramiteCardEnhanced: React.FC<TramiteCardEnhancedProps> = ({
             {/* Error Messages */}
             {Object.entries(errorStates).map(([action, error]) =>
               error ? (
-                <div key={action} className="text-xs text-red-600 bg-red-50 p-2 rounded mt-1">
+                <div key={action} className="text-xs text-error bg-error-light p-2 rounded mt-1">
                   {error}
                 </div>
               ) : null

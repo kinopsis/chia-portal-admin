@@ -212,8 +212,8 @@ export default function NotificacionesAdminPage() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Notificaciones</h1>
-            <p className="text-gray-600">Gestionar notificaciones del sistema</p>
+            <h1 className="text-2xl font-bold text-text-primary">Notificaciones</h1>
+            <p className="text-text-secondary">Gestionar notificaciones del sistema</p>
           </div>
           <Button variant="primary" onClick={handleCreate} className="flex items-center space-x-2">
             <span>➕</span>
@@ -226,13 +226,13 @@ export default function NotificacionesAdminPage() {
           <Card className="p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <span className="text-blue-600 text-lg">📧</span>
+                <div className="w-8 h-8 bg-info/10 rounded-lg flex items-center justify-center">
+                  <span className="text-info text-lg">📧</span>
                 </div>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Total</p>
-                <p className="text-2xl font-semibold text-gray-900">{notifications.length}</p>
+                <p className="text-sm font-medium text-text-secondary">Total</p>
+                <p className="text-2xl font-semibold text-text-primary">{notifications.length}</p>
               </div>
             </div>
           </Card>
@@ -240,13 +240,13 @@ export default function NotificacionesAdminPage() {
           <Card className="p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span className="text-green-600 text-lg">✅</span>
+                <div className="w-8 h-8 bg-success/10 rounded-lg flex items-center justify-center">
+                  <span className="text-success text-lg">✅</span>
                 </div>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Enviadas</p>
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-sm font-medium text-text-secondary">Enviadas</p>
+                <p className="text-2xl font-semibold text-text-primary">
                   {notifications.filter((n) => n.status === 'sent').length}
                 </p>
               </div>
@@ -256,13 +256,13 @@ export default function NotificacionesAdminPage() {
           <Card className="p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <span className="text-yellow-600 text-lg">⏳</span>
+                <div className="w-8 h-8 bg-warning/10 rounded-lg flex items-center justify-center">
+                  <span className="text-warning text-lg">⏳</span>
                 </div>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Programadas</p>
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-sm font-medium text-text-secondary">Programadas</p>
+                <p className="text-2xl font-semibold text-text-primary">
                   {notifications.filter((n) => n.status === 'scheduled').length}
                 </p>
               </div>
@@ -272,13 +272,13 @@ export default function NotificacionesAdminPage() {
           <Card className="p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <span className="text-gray-600 text-lg">📝</span>
+                <div className="w-8 h-8 bg-background-secondary rounded-lg flex items-center justify-center">
+                  <span className="text-text-secondary text-lg">📝</span>
                 </div>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Borradores</p>
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-sm font-medium text-text-secondary">Borradores</p>
+                <p className="text-2xl font-semibold text-text-primary">
                   {notifications.filter((n) => n.status === 'draft').length}
                 </p>
               </div>
@@ -289,22 +289,22 @@ export default function NotificacionesAdminPage() {
         {/* Notifications List */}
         <Card>
           <div className="p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Notificaciones Recientes</h3>
+            <h3 className="text-lg font-medium text-text-primary mb-4">Notificaciones Recientes</h3>
             <div className="space-y-4">
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
+                  className="border border-border rounded-lg p-4 hover:bg-background-secondary"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
-                        <h4 className="text-sm font-medium text-gray-900">{notification.title}</h4>
+                        <h4 className="text-sm font-medium text-text-primary">{notification.title}</h4>
                         {getTypeBadge(notification.type)}
                         {getStatusBadge(notification.status)}
                       </div>
-                      <p className="text-sm text-gray-600 mb-2">{notification.message}</p>
-                      <div className="flex items-center space-x-4 text-xs text-gray-500">
+                      <p className="text-sm text-text-secondary mb-2">{notification.message}</p>
+                      <div className="flex items-center space-x-4 text-xs text-text-secondary">
                         <span>Destinatarios: {getTargetLabel(notification.target)}</span>
                         <span>
                           Creada: {new Date(notification.created_at).toLocaleDateString()}

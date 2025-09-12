@@ -9,7 +9,8 @@ export interface SelectOption {
   disabled?: boolean
 }
 
-export interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'size' | 'onChange'> {
+export interface SelectProps
+  extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'size' | 'onChange'> {
   label?: string
   error?: string
   helperText?: string
@@ -52,7 +53,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     }
 
     const baseClasses =
-      'border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 bg-white'
+      'border rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 bg-background text-text-primary'
 
     const sizeClasses = {
       sm: 'px-3 py-2 text-sm',
@@ -62,11 +63,11 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
 
     const variantClasses = {
       default: error
-        ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-        : 'border-gray-300 focus:border-primary-green focus:ring-primary-green',
+        ? 'border-error focus:border-error focus:ring-error'
+        : 'border-border focus:border-accent focus:ring-accent',
       outlined: error
-        ? 'border-2 border-red-300 focus:border-red-500 focus:ring-red-500'
-        : 'border-2 border-gray-300 focus:border-primary-green focus:ring-primary-green',
+        ? 'border-2 border-error focus:border-error focus:ring-error'
+        : 'border-2 border-border focus:border-accent focus:ring-accent',
     }
 
     const widthClasses = fullWidth ? 'w-full' : 'w-auto'
@@ -74,7 +75,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className={clsx('flex flex-col', fullWidth && 'w-full')}>
         {label && (
-          <label htmlFor={selectId} className="mb-2 text-sm font-medium text-gray-700">
+          <label htmlFor={selectId} className="mb-2 text-sm font-medium text-text-primary">
             {label}
           </label>
         )}
@@ -110,7 +111,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           {/* Custom dropdown arrow */}
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
             <svg
-              className="w-5 h-5 text-gray-400"
+              className="w-5 h-5 text-text-muted"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -129,9 +130,9 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         {(error || helperText) && (
           <div className="mt-1">
             {error ? (
-              <p className="text-sm text-red-600">{error}</p>
+              <p className="text-sm text-error">{error}</p>
             ) : (
-              <p className="text-sm text-gray-500">{helperText}</p>
+              <p className="text-sm text-text-muted">{helperText}</p>
             )}
           </div>
         )}

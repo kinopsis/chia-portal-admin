@@ -77,8 +77,8 @@ export default function ReportesAdminPage() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Reportes</h1>
-            <p className="text-gray-600">Generar reportes y estadísticas del sistema</p>
+            <h1 className="text-2xl font-bold text-text-primary">Reportes</h1>
+            <p className="text-text-secondary">Generar reportes y estadísticas del sistema</p>
           </div>
         </div>
 
@@ -87,13 +87,13 @@ export default function ReportesAdminPage() {
           <Card className="p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <span className="text-blue-600 text-lg">📊</span>
+                <div className="w-8 h-8 bg-info/10 rounded-lg flex items-center justify-center">
+                  <span className="text-info text-lg">📊</span>
                 </div>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Reportes Disponibles</p>
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-sm font-medium text-text-secondary">Reportes Disponibles</p>
+                <p className="text-2xl font-semibold text-text-primary">
                   {reportTypes.filter((r) => r.status === 'available').length}
                 </p>
               </div>
@@ -103,13 +103,13 @@ export default function ReportesAdminPage() {
           <Card className="p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span className="text-green-600 text-lg">✅</span>
+                <div className="w-8 h-8 bg-success/10 rounded-lg flex items-center justify-center">
+                  <span className="text-success text-lg">✅</span>
                 </div>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Generados Hoy</p>
-                <p className="text-2xl font-semibold text-gray-900">0</p>
+                <p className="text-sm font-medium text-text-secondary">Generados Hoy</p>
+                <p className="text-2xl font-semibold text-text-primary">0</p>
               </div>
             </div>
           </Card>
@@ -117,13 +117,13 @@ export default function ReportesAdminPage() {
           <Card className="p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <span className="text-yellow-600 text-lg">⏳</span>
+                <div className="w-8 h-8 bg-warning/10 rounded-lg flex items-center justify-center">
+                  <span className="text-warning text-lg">⏳</span>
                 </div>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">En Desarrollo</p>
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-sm font-medium text-text-secondary">En Desarrollo</p>
+                <p className="text-2xl font-semibold text-text-primary">
                   {reportTypes.filter((r) => r.status === 'coming_soon').length}
                 </p>
               </div>
@@ -133,13 +133,13 @@ export default function ReportesAdminPage() {
           <Card className="p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <span className="text-purple-600 text-lg">📈</span>
+                <div className="w-8 h-8 bg-info/10 rounded-lg flex items-center justify-center">
+                  <span className="text-info text-lg">📈</span>
                 </div>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Total Reportes</p>
-                <p className="text-2xl font-semibold text-gray-900">{reportTypes.length}</p>
+                <p className="text-sm font-medium text-text-secondary">Total Reportes</p>
+                <p className="text-2xl font-semibold text-text-primary">{reportTypes.length}</p>
               </div>
             </div>
           </Card>
@@ -152,12 +152,12 @@ export default function ReportesAdminPage() {
               <div className="flex items-start justify-between">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-background-secondary rounded-lg flex items-center justify-center">
                       <span className="text-xl">{report.icon}</span>
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-gray-900">{report.title}</h3>
+                    <h3 className="text-lg font-medium text-text-primary">{report.title}</h3>
                   </div>
                 </div>
                 <Badge variant={report.status === 'available' ? 'success' : 'warning'} size="sm">
@@ -165,7 +165,7 @@ export default function ReportesAdminPage() {
                 </Badge>
               </div>
 
-              <p className="mt-3 text-sm text-gray-500">{report.description}</p>
+              <p className="mt-3 text-sm text-text-secondary">{report.description}</p>
 
               <div className="mt-6">
                 <Button
@@ -185,8 +185,8 @@ export default function ReportesAdminPage() {
 
         {/* Instructions */}
         <Card className="p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Instrucciones</h3>
-          <div className="space-y-3 text-sm text-gray-600">
+          <h3 className="text-lg font-medium text-text-primary mb-4">Instrucciones</h3>
+          <div className="space-y-3 text-sm text-text-secondary">
             <p>• Los reportes se generan en formato PDF y Excel según el tipo de información.</p>
             <p>• Los reportes incluyen datos actualizados hasta el momento de la generación.</p>
             <p>

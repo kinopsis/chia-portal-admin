@@ -44,7 +44,7 @@ function FuncionariosDashboard() {
         title="Panel de Funcionarios"
         description="Gestión de contenido del Portal de Atención Ciudadana de Chía"
         breadcrumbs={breadcrumbs}
-        variant="funcionario"
+        variant="admin"
       />
       <div className="container-custom py-8">
         <div className="max-w-6xl mx-auto space-y-8">
@@ -63,7 +63,7 @@ function FuncionariosDashboard() {
                     <span className={`text-${module.color}-600 text-xl`}>{module.icon}</span>
                   </div>
                   <h3 className="text-lg font-semibold mb-2">{module.title}</h3>
-                  <p className="text-gray-600 text-sm mb-4">
+                  <p className="text-text-secondary text-sm mb-4">
                     {module.description}
                   </p>
                   <Link href={module.href}>
@@ -85,19 +85,19 @@ function FuncionariosDashboard() {
               <h3 className="text-lg font-semibold mb-4">Estadísticas de Gestión</h3>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Trámites Gestionados:</span>
+                  <span className="text-text-secondary">Trámites Gestionados:</span>
                   <span className="font-semibold">156</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">OPAs Procesadas:</span>
+                  <span className="text-text-secondary">OPAs Procesadas:</span>
                   <span className="font-semibold">89</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">FAQs Publicadas:</span>
+                  <span className="text-text-secondary">FAQs Publicadas:</span>
                   <span className="font-semibold">234</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Servicios Activos:</span>
+                  <span className="text-text-secondary">Servicios Activos:</span>
                   <span className="font-semibold">45</span>
                 </div>
               </div>
@@ -107,27 +107,27 @@ function FuncionariosDashboard() {
               <h3 className="text-lg font-semibold mb-4">Información del Funcionario</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Nombre:</span>
+                  <span className="text-text-secondary">Nombre:</span>
                   <span className="font-medium">
                     {userProfile?.nombre} {userProfile?.apellido}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Email:</span>
+                  <span className="text-text-secondary">Email:</span>
                   <span className="font-medium">{userProfile?.email}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Dependencia:</span>
+                  <span className="text-text-secondary">Dependencia:</span>
                   <span className="font-medium">
-                    {userProfile?.dependencia?.nombre || 'No asignada'}
+                    {userProfile?.dependencia_id || 'No asignada'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Rol:</span>
+                  <span className="text-text-secondary">Rol:</span>
                   <span className="font-medium capitalize">{userProfile?.rol}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Último acceso:</span>
+                  <span className="text-text-secondary">Último acceso:</span>
                   <span className="font-medium">Ahora</span>
                 </div>
               </div>

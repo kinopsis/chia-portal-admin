@@ -80,12 +80,12 @@ export const TramitesFilters: React.FC<TramitesFiltersProps> = ({
   return (
     <div className={cn('space-y-6', className)} data-testid="tramites-filters">
       {/* Hero Search Box - Prominent and Separate - Responsive */}
-      <div className="bg-gradient-to-r from-primary-green/5 to-primary-yellow/5 rounded-2xl p-4 sm:p-6 lg:p-8 border border-primary-green/10">
+      <div className="bg-gradient-to-r from-primary-green/10 to-primary-yellow/10 rounded-2xl p-4 sm:p-6 lg:p-8 border border-primary-green/20">
         <div className="max-w-4xl mx-auto text-center space-y-4">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-2">
             Encuentra tu trámite o servicio
           </h2>
-          <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
+          <p className="text-sm sm:text-base text-text-secondary mb-4 sm:mb-6">
             Busca por nombre, código, palabras clave o requisitos
           </p>
 
@@ -104,7 +104,7 @@ export const TramitesFilters: React.FC<TramitesFiltersProps> = ({
 
             {/* Real-time Results Counter */}
             {totalResults !== undefined && searchQuery.trim() && (
-              <div className="mt-3 text-sm text-gray-600 animate-fade-in">
+              <div className="mt-3 text-sm text-text-secondary animate-fade-in">
                 <span className="font-medium text-primary-green">{totalResults.toLocaleString()}</span>
                 {' '}resultado{totalResults !== 1 ? 's' : ''} encontrado{totalResults !== 1 ? 's' : ''}
               </div>
@@ -248,7 +248,7 @@ const ProgressiveFilters: React.FC<ProgressiveFiltersProps> = ({
           onClick={() => setIsExpanded(!isExpanded)}
           className={cn(
             'flex items-center gap-2 transition-all duration-200',
-            isExpanded && 'bg-primary-green/5 border-primary-green/20'
+            isExpanded && 'bg-primary-green/10 border-primary-green/30'
           )}
           data-testid="filters-toggle"
         >
@@ -266,19 +266,19 @@ const ProgressiveFilters: React.FC<ProgressiveFiltersProps> = ({
           )}
         </Button>
 
-        {/* Quick Actions */}
-        {hasActiveFilters && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClearFilters}
-            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-            data-testid="quick-clear-filters"
-          >
-            <RotateCcw className="h-4 w-4 mr-1" />
-            Limpiar
-          </Button>
-        )}
+          {/* Quick Actions */}
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClearFilters}
+              className="text-error hover:text-error-dark hover:bg-error-light"
+              data-testid="quick-clear-filters"
+            >
+              <RotateCcw className="h-4 w-4 mr-1" />
+              Limpiar
+            </Button>
+          )}
       </div>
 
       {/* Expandable Filter Panel */}
@@ -290,11 +290,11 @@ const ProgressiveFilters: React.FC<ProgressiveFiltersProps> = ({
           {/* Filter Panel Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-text-primary">
                 Filtros de Búsqueda
               </h3>
               {activeFiltersCount > 0 && (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-light text-success">
                   {activeFiltersCount} activo{activeFiltersCount !== 1 ? 's' : ''}
                 </span>
               )}
@@ -321,7 +321,7 @@ const ProgressiveFilters: React.FC<ProgressiveFiltersProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsExpanded(false)}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-text-muted hover:text-text-primary"
                   title="Cerrar filtros"
                 >
                   ✕
@@ -334,7 +334,7 @@ const ProgressiveFilters: React.FC<ProgressiveFiltersProps> = ({
           {children}
 
           {/* Filter Actions */}
-          <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-between pt-4 border-t border-border">
             <div className="flex items-center gap-4">
               <Button
                 variant="outline"
@@ -342,7 +342,7 @@ const ProgressiveFilters: React.FC<ProgressiveFiltersProps> = ({
                 disabled={!hasActiveFilters}
                 className={cn(
                   'flex items-center gap-2',
-                  hasActiveFilters && 'hover:bg-red-50 hover:border-red-300 hover:text-red-700'
+                  hasActiveFilters && 'hover:bg-error-light hover:border-error-dark hover:text-error-dark'
                 )}
                 data-testid="clear-filters-button"
               >
@@ -352,7 +352,7 @@ const ProgressiveFilters: React.FC<ProgressiveFiltersProps> = ({
 
               {/* Active Filters Summary */}
               {hasActiveFilters && (
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-text-secondary">
                   {activeFiltersCount > 0 && (
                     <span>
                       {activeFiltersCount} filtro{activeFiltersCount !== 1 ? 's' : ''} aplicado{activeFiltersCount !== 1 ? 's' : ''}
@@ -363,15 +363,15 @@ const ProgressiveFilters: React.FC<ProgressiveFiltersProps> = ({
             </div>
 
             {/* Filter Status */}
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-text-muted">
               {hasActiveFilters ? (
                 <span className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-success rounded-full"></div>
                   Filtros activos
                 </span>
               ) : (
                 <span className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+                  <div className="w-2 h-2 bg-background-tertiary rounded-full"></div>
                   Sin filtros
                 </span>
               )}

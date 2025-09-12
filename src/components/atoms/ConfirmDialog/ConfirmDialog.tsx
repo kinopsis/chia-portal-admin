@@ -36,8 +36,8 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
   const defaultIcon =
     confirmVariant === 'danger' ? (
-      <div className="w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-        <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="w-12 h-12 mx-auto mb-4 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+        <svg className="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -47,9 +47,9 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         </svg>
       </div>
     ) : (
-      <div className="w-12 h-12 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+      <div className="w-12 h-12 mx-auto mb-4 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
         <svg
-          className="w-6 h-6 text-blue-600"
+          className="w-6 h-6 text-blue-600 dark:text-blue-400"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -92,9 +92,9 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       <div className="text-center">
         {icon || defaultIcon}
 
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
+        <h3 className="text-lg font-semibold text-text-primary dark:text-gray-200 mb-2">{title}</h3>
 
-        {children || <p className="text-gray-600 mb-4">{message}</p>}
+        {children || <p className="text-text-secondary dark:text-gray-300 mb-4">{message}</p>}
       </div>
     </Modal>
   )

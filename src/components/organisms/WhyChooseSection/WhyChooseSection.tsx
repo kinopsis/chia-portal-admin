@@ -79,25 +79,25 @@ const BenefitCard: React.FC<{
         return {
           iconBg: 'bg-primary-green/10 dark:bg-primary-green/20',
           iconText: 'text-primary-green dark:text-primary-green-light',
-          titleText: 'text-gray-900 dark:text-gray-100'
+          titleText: 'text-text-primary'
         }
       case 'secondary':
         return {
-          iconBg: 'bg-primary-yellow/10 dark:bg-primary-yellow/20',
+          iconBg: 'bg-primary-yellow/10 dark:bg-primary-yellow/15',
           iconText: 'text-primary-yellow-dark dark:text-primary-yellow',
-          titleText: 'text-gray-900 dark:text-gray-100'
+          titleText: 'text-text-primary'
         }
       case 'accent':
         return {
-          iconBg: 'bg-blue-50 dark:bg-blue-900/30',
-          iconText: 'text-blue-600 dark:text-blue-400',
-          titleText: 'text-gray-900 dark:text-gray-100'
+          iconBg: 'bg-primary-blue/10 dark:bg-primary-blue/20',
+          iconText: 'text-primary-blue dark:text-primary-blue-light',
+          titleText: 'text-text-primary'
         }
       default:
         return {
-          iconBg: 'bg-gray-100 dark:bg-gray-700',
-          iconText: 'text-gray-600 dark:text-gray-300',
-          titleText: 'text-gray-900 dark:text-gray-100'
+          iconBg: 'bg-background-secondary dark:bg-background-secondary/60',
+          iconText: 'text-text-secondary dark:text-text-secondary-light',
+          titleText: 'text-text-primary'
         }
     }
   }
@@ -129,7 +129,7 @@ const BenefitCard: React.FC<{
           )}>
             {benefit.title}
           </h3>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+          <p className="text-text-secondary leading-relaxed">
             {benefit.description}
           </p>
         </div>
@@ -162,7 +162,7 @@ const BenefitCard: React.FC<{
           )}>
             {benefit.title}
           </h3>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+          <p className="text-text-secondary leading-relaxed">
             {benefit.description}
           </p>
         </div>
@@ -200,7 +200,7 @@ const BenefitCard: React.FC<{
         )}>
           {benefit.title}
         </h3>
-        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+        <p className="text-text-secondary leading-relaxed">
           {benefit.description}
         </p>
       </div>
@@ -223,9 +223,9 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({
   const getBackgroundClasses = () => {
     switch (background) {
       case 'gradient':
-        return 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800'
+        return 'bg-gradient-to-br from-background-secondary to-background via-background'
       case 'subtle':
-        return 'bg-gray-50/50 dark:bg-gray-900/50'
+        return 'bg-background-secondary/50'
       default:
         return ''
     }
@@ -249,14 +249,14 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({
       >
         {/* Section Header */}
         <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <h2 
+          <h2
             id="why-choose-title"
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100"
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary"
           >
             {title}
           </h2>
           {subtitle && (
-            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
+            <p className="text-lg sm:text-xl text-text-secondary leading-relaxed">
               {subtitle}
             </p>
           )}

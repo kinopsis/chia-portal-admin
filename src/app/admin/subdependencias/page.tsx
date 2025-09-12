@@ -141,7 +141,7 @@ const SubdependenciasAdminPage: React.FC = () => {
         <div>
           <div className="font-medium">{record.nombre}</div>
           {record.descripcion && (
-            <div className="text-sm text-gray-500 truncate max-w-xs">{record.descripcion}</div>
+            <div className="text-sm text-text-muted truncate max-w-xs">{record.descripcion}</div>
           )}
         </div>
       ),
@@ -160,7 +160,7 @@ const SubdependenciasAdminPage: React.FC = () => {
       key: 'tramites_count',
       title: 'Trámites',
       render: (value, record) => (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-info/10 text-info">
           {record.tramites_count || 0}
         </span>
       ),
@@ -172,7 +172,7 @@ const SubdependenciasAdminPage: React.FC = () => {
       render: (value, record) => (
         <span
           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            record.activa ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            record.activa ? 'bg-success/10 text-success' : 'bg-error/10 text-error'
           }`}
         >
           {record.activa ? 'Activa' : 'Inactiva'}
@@ -184,7 +184,7 @@ const SubdependenciasAdminPage: React.FC = () => {
       title: 'Actualizado',
       sortable: true,
       render: (value, record) => (
-        <span className="text-sm text-gray-500">{formatDate(record.updated_at)}</span>
+        <span className="text-sm text-text-muted">{formatDate(record.updated_at)}</span>
       ),
     },
   ]
@@ -283,10 +283,10 @@ const SubdependenciasAdminPage: React.FC = () => {
     return (
       <div className="p-6">
         <Card>
-          <div className="text-center py-8">
-            <div className="text-red-600 mb-2">❌</div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Error</h3>
-            <p className="text-gray-600">{error}</p>
+        <div className="text-center py-8">
+            <div className="text-error mb-2">❌</div>
+            <h3 className="text-lg font-semibold text-text-primary mb-2">Error</h3>
+            <p className="text-text-secondary">{error}</p>
             <Button onClick={loadData} className="mt-4">
               Reintentar
             </Button>
@@ -302,8 +302,8 @@ const SubdependenciasAdminPage: React.FC = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Gestión de Subdependencias</h1>
-            <p className="text-gray-600">Administra las subdependencias organizacionales</p>
+            <h1 className="text-2xl font-bold text-text-primary">Gestión de Subdependencias</h1>
+            <p className="text-text-secondary">Administra las subdependencias organizacionales</p>
           </div>
           <Button onClick={() => setIsCreateModalOpen(true)} className="flex items-center gap-2">
             <span>➕</span>
@@ -392,11 +392,11 @@ const SubdependenciasAdminPage: React.FC = () => {
         >
           {selectedSubdependencia && (
             <>
-              <p className="text-gray-600">
+              <p className="text-text-secondary">
                 ¿Estás seguro de que deseas eliminar la subdependencia{' '}
                 <strong>{selectedSubdependencia.nombre}</strong>?
               </p>
-              <p className="text-sm text-red-600 mt-2">Esta acción no se puede deshacer.</p>
+              <p className="text-sm text-error mt-2">Esta acción no se puede deshacer.</p>
             </>
           )}
         </ConfirmDialog>

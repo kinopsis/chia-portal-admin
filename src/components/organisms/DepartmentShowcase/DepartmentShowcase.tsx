@@ -2,7 +2,7 @@
 
 /**
  * DepartmentShowcase Component
- * 
+ *
  * Displays department quick access with:
  * - 4-column responsive grid layout
  * - Department icons and names
@@ -61,7 +61,7 @@ const defaultDepartments: DepartmentData[] = [
     tramites: 15,
     href: '/dependencias/planeacion',
     color: 'blue',
-    description: 'Planificación urbana y desarrollo territorial'
+    description: 'Planificación urbana y desarrollo territorial',
   },
   {
     id: 'hacienda',
@@ -71,7 +71,7 @@ const defaultDepartments: DepartmentData[] = [
     tramites: 23,
     href: '/dependencias/hacienda',
     color: 'green',
-    description: 'Gestión financiera y tributaria municipal'
+    description: 'Gestión financiera y tributaria municipal',
   },
   {
     id: 'salud',
@@ -81,7 +81,7 @@ const defaultDepartments: DepartmentData[] = [
     tramites: 8,
     href: '/dependencias/salud',
     color: 'red',
-    description: 'Servicios de salud pública y bienestar'
+    description: 'Servicios de salud pública y bienestar',
   },
   {
     id: 'ambiente',
@@ -91,8 +91,8 @@ const defaultDepartments: DepartmentData[] = [
     tramites: 12,
     href: '/dependencias/ambiente',
     color: 'green',
-    description: 'Protección ambiental y sostenibilidad'
-  }
+    description: 'Protección ambiental y sostenibilidad',
+  },
 ]
 
 /**
@@ -107,45 +107,45 @@ const DepartmentCard: React.FC<{
     switch (department.color) {
       case 'blue':
         return {
-          iconBg: 'bg-blue-50 dark:bg-blue-900/30',
-          iconText: 'text-blue-600 dark:text-blue-400',
-          accent: 'text-blue-600 dark:text-blue-400'
+          iconBg: 'bg-accent/10',
+          iconText: 'text-accent',
+          accent: 'text-accent',
         }
       case 'green':
         return {
-          iconBg: 'bg-green-50 dark:bg-green-900/30',
-          iconText: 'text-green-600 dark:text-green-400',
-          accent: 'text-green-600 dark:text-green-400'
+          iconBg: 'bg-success/10',
+          iconText: 'text-success',
+          accent: 'text-success',
         }
       case 'yellow':
         return {
-          iconBg: 'bg-yellow-50 dark:bg-yellow-900/30',
-          iconText: 'text-yellow-600 dark:text-yellow-400',
-          accent: 'text-yellow-600 dark:text-yellow-400'
+          iconBg: 'bg-warning/10',
+          iconText: 'text-warning',
+          accent: 'text-warning',
         }
       case 'purple':
         return {
-          iconBg: 'bg-purple-50 dark:bg-purple-900/30',
-          iconText: 'text-purple-600 dark:text-purple-400',
-          accent: 'text-purple-600 dark:text-purple-400'
+          iconBg: 'bg-info/10',
+          iconText: 'text-info',
+          accent: 'text-info',
         }
       case 'red':
         return {
-          iconBg: 'bg-red-50 dark:bg-red-900/30',
-          iconText: 'text-red-600 dark:text-red-400',
-          accent: 'text-red-600 dark:text-red-400'
+          iconBg: 'bg-error/10',
+          iconText: 'text-error',
+          accent: 'text-error',
         }
       case 'indigo':
         return {
-          iconBg: 'bg-indigo-50 dark:bg-indigo-900/30',
-          iconText: 'text-indigo-600 dark:text-indigo-400',
-          accent: 'text-indigo-600 dark:text-indigo-400'
+          iconBg: 'bg-accent/10',
+          iconText: 'text-accent',
+          accent: 'text-accent',
         }
       default:
         return {
-          iconBg: 'bg-gray-100 dark:bg-gray-700',
-          iconText: 'text-gray-600 dark:text-gray-300',
-          accent: 'text-gray-600 dark:text-gray-300'
+          iconBg: 'bg-neutral/10',
+          iconText: 'text-neutral',
+          accent: 'text-neutral',
         }
     }
   }
@@ -161,18 +161,22 @@ const DepartmentCard: React.FC<{
   if (variant === 'minimal') {
     return (
       <Link href={department.href} className="block">
-        <div 
-          className="text-center space-y-3 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
+        <div
+          className="text-center space-y-3 p-4 rounded-lg hover:bg-background-secondary transition-colors duration-200"
           onClick={handleClick}
         >
           {/* Icon */}
-          <div className={clsx(
-            'w-12 h-12 mx-auto rounded-lg flex items-center justify-center',
-            colors.iconBg
-          )}>
+          <div
+            className={clsx(
+              'w-12 h-12 mx-auto rounded-lg flex items-center justify-center',
+              colors.iconBg
+            )}
+          >
             <span className={clsx('text-xl', colors.iconText)}>
               {typeof department.icon === 'string' ? (
-                <span role="img" aria-hidden="true">{department.icon}</span>
+                <span role="img" aria-hidden="true">
+                  {department.icon}
+                </span>
               ) : (
                 department.icon
               )}
@@ -181,12 +185,8 @@ const DepartmentCard: React.FC<{
 
           {/* Content */}
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-              {department.name}
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {department.tramites} trámites
-            </p>
+            <h3 className="font-semibold text-text-primary">{department.name}</h3>
+            <p className="text-sm text-text-muted">{department.tramites} trámites</p>
           </div>
         </div>
       </Link>
@@ -196,18 +196,22 @@ const DepartmentCard: React.FC<{
   if (variant === 'compact') {
     return (
       <Link href={department.href} className="block">
-        <div 
-          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
+        <div
+          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-background-secondary transition-colors duration-200"
           onClick={handleClick}
         >
           {/* Icon */}
-          <div className={clsx(
-            'w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0',
-            colors.iconBg
-          )}>
+          <div
+            className={clsx(
+              'w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0',
+              colors.iconBg
+            )}
+          >
             <span className={clsx('text-lg', colors.iconText)}>
               {typeof department.icon === 'string' ? (
-                <span role="img" aria-hidden="true">{department.icon}</span>
+                <span role="img" aria-hidden="true">
+                  {department.icon}
+                </span>
               ) : (
                 department.icon
               )}
@@ -216,10 +220,8 @@ const DepartmentCard: React.FC<{
 
           {/* Content */}
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate">
-              {department.name}
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <h3 className="font-semibold text-text-primary truncate">{department.name}</h3>
+            <p className="text-sm text-text-muted">
               {department.subdependencies} subdep. • {department.tramites} trámites
             </p>
           </div>
@@ -240,13 +242,17 @@ const DepartmentCard: React.FC<{
         onClick={handleClick}
       >
         {/* Icon */}
-        <div className={clsx(
-          'w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center',
-          colors.iconBg
-        )}>
+        <div
+          className={clsx(
+            'w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center',
+            colors.iconBg
+          )}
+        >
           <span className={clsx('text-2xl', colors.iconText)}>
             {typeof department.icon === 'string' ? (
-              <span role="img" aria-hidden="true">{department.icon}</span>
+              <span role="img" aria-hidden="true">
+                {department.icon}
+              </span>
             ) : (
               department.icon
             )}
@@ -255,38 +261,28 @@ const DepartmentCard: React.FC<{
 
         {/* Content */}
         <div className="space-y-3">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-            {department.name}
-          </h3>
+          <h3 className="text-lg font-bold text-text-primary">{department.name}</h3>
 
           {department.description && (
-            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-              {department.description}
-            </p>
+            <p className="text-sm text-text-secondary leading-relaxed">{department.description}</p>
           )}
 
           {/* Stats */}
           <div className="space-y-2 text-sm">
             <div className="flex justify-between items-center">
-              <span className="text-gray-500 dark:text-gray-400">Subdependencias:</span>
+              <span className="text-text-muted">Subdependencias:</span>
               <span className={clsx('font-semibold', colors.accent)}>
                 {department.subdependencies}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-500 dark:text-gray-400">Trámites:</span>
-              <span className={clsx('font-semibold', colors.accent)}>
-                {department.tramites}
-              </span>
+              <span className="text-text-muted">Trámites:</span>
+              <span className={clsx('font-semibold', colors.accent)}>{department.tramites}</span>
             </div>
           </div>
 
           {/* CTA */}
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full mt-4"
-          >
+          <Button variant="outline" size="sm" className="w-full mt-4">
             Explorar →
           </Button>
         </div>
@@ -302,22 +298,17 @@ const DepartmentShowcaseSkeleton: React.FC<{ count: number }> = ({ count }) => {
   const skeletonItems = Array.from({ length: count }, (_, index) => (
     <Card key={index} padding="lg" className="animate-pulse">
       <div className="text-center space-y-4">
-        <div className="w-16 h-16 mx-auto bg-gray-200 dark:bg-gray-700 rounded-xl" />
+        <div className="w-16 h-16 mx-auto bg-background-secondary rounded-xl" />
         <div className="space-y-2">
-          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mx-auto" />
-          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mx-auto" />
+          <div className="h-4 bg-background-secondary rounded w-3/4 mx-auto" />
+          <div className="h-3 bg-background-secondary rounded w-1/2 mx-auto" />
         </div>
       </div>
     </Card>
   ))
 
   return (
-    <ResponsiveContainer
-      layout="grid"
-      gridCols={{ xs: 1, sm: 2, lg: 4 }}
-      gap="lg"
-      padding="none"
-    >
+    <ResponsiveContainer layout="grid" gridCols={{ xs: 1, sm: 2, lg: 4 }} gap="lg" padding="none">
       {skeletonItems}
     </ResponsiveContainer>
   )
@@ -327,8 +318,8 @@ const DepartmentShowcaseSkeleton: React.FC<{ count: number }> = ({ count }) => {
  * DepartmentShowcase component
  */
 export const DepartmentShowcase: React.FC<DepartmentShowcaseProps> = ({
-  title = "Acceso rápido por dependencia",
-  subtitle = "Encuentra los trámites organizados por dependencia municipal",
+  title = 'Acceso rápido por dependencia',
+  subtitle = 'Encuentra los trámites organizados por dependencia municipal',
   departments = defaultDepartments,
   loading = false,
   error = null,
@@ -348,8 +339,8 @@ export const DepartmentShowcase: React.FC<DepartmentShowcaseProps> = ({
           centered={true}
         >
           <div className="text-center space-y-4">
-            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mx-auto" />
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mx-auto" />
+            <div className="h-8 bg-background-secondary rounded w-1/2 mx-auto" />
+            <div className="h-4 bg-background-secondary rounded w-3/4 mx-auto" />
           </div>
           <DepartmentShowcaseSkeleton count={4} />
         </ResponsiveContainer>
@@ -362,18 +353,18 @@ export const DepartmentShowcase: React.FC<DepartmentShowcaseProps> = ({
     return (
       <section className={clsx('py-16 sm:py-20 lg:py-24', className)}>
         <div className="text-center">
-          <div className="text-red-500 text-4xl mb-4">⚠️</div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          <div className="text-error text-4xl mb-4">⚠️</div>
+          <h3 className="text-lg font-semibold text-text-primary mb-2">
             Error al cargar dependencias
           </h3>
-          <p className="text-gray-600 dark:text-gray-400">{error}</p>
+          <p className="text-text-secondary">{error}</p>
         </div>
       </section>
     )
   }
 
   return (
-    <section 
+    <section
       className={clsx('py-16 sm:py-20 lg:py-24', className)}
       aria-labelledby="departments-title"
     >
@@ -386,16 +377,14 @@ export const DepartmentShowcase: React.FC<DepartmentShowcaseProps> = ({
       >
         {/* Section Header */}
         <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <h2 
+          <h2
             id="departments-title"
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100"
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary"
           >
             {title}
           </h2>
           {subtitle && (
-            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-              {subtitle}
-            </p>
+            <p className="text-lg sm:text-xl text-text-secondary leading-relaxed">{subtitle}</p>
           )}
         </div>
 
@@ -428,11 +417,11 @@ export const DepartmentShowcasePresets = {
   homepage: {
     variant: 'cards' as const,
   },
-  
+
   sidebar: {
     variant: 'compact' as const,
   },
-  
+
   overview: {
     variant: 'minimal' as const,
   },

@@ -1,8 +1,11 @@
+'use client'
+
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Header, Footer } from '@/components'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { ServiceUpdateProvider } from '@/contexts/ServiceUpdateContext'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 import { QueryProvider } from '@/providers/QueryProvider'
 import { ToastProvider } from '@/components/ui/toast'
 import { ConditionalLayout } from '@/components/layout'
@@ -70,4 +73,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </body>
     </html>
   )
+}  )
 }
